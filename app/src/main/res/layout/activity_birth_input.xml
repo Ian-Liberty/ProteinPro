@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".user.signup.ActivityNicknameInput">
+    tools:context=".user.signup.ActivityBirthInput">
 
     <TextView
         android:id="@+id/textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="닉네임을 \n입력해주세요"
+        android:text="생일을 \n입력해주세요"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,6 +20,38 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.252" />
 
+
+    <DatePicker
+
+        android:id="@+id/vDatePicker"
+
+        android:layout_width="237dp"
+
+        android:layout_height="120dp"
+
+        android:calendarViewShown="false"
+
+        android:datePickerMode="spinner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview"
+        app:layout_constraintVertical_bias="0.109" />
+
+    <TextView
+        android:id="@+id/warning_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="경고경고경고"
+        android:textColor="#FF0000"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vDatePicker" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/next_BTN"
         android:layout_width="match_parent"
@@ -27,29 +59,14 @@
         android:layout_marginHorizontal="30dp"
         android:background="@drawable/btn_ripple"
         android:enabled="false"
-        android:text="회원가입"
+        android:text="다음"
         android:textColor="@drawable/txt_color"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname_ET"
-        app:layout_constraintVertical_bias="0.119" />
 
-    <EditText
-        android:id="@+id/nickname_ET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:ems="10"
-        android:hint="닉네임"
-        android:inputType="textEmailAddress"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.541" />
+        app:layout_constraintTop_toBottomOf="@+id/warning_tv"
+        app:layout_constraintVertical_bias="0.300" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

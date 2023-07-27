@@ -26,7 +26,6 @@
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/btn_ripple"
         android:text="로그인"
-        android:enabled="false"
         android:textColor="@drawable/txt_color"
         app:layout_constraintBottom_toTopOf="@+id/or_TV"
         app:layout_constraintEnd_toEndOf="parent"
