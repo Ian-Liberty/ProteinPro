@@ -11,16 +11,17 @@ data class User(
     var email: String = "",
     var nickname: String = "",
     var birthDate: String = "",
-    var height: Double = 0.0,
-    var weight: Double = 0.0,
+    var password: String = "",
+    var height: Int = 0,
+    var weight: Int = 0,
     var activityLevel: ActivityLevel = ActivityLevel.SEDENTARY
 ): Serializable {
     // 활동량을 정의하기 위한 enum 클래스
     enum class ActivityLevel {
-        SEDENTARY, // 앉아서 일하는 경우 (거의 활동하지 않음)
-        LIGHTLY_ACTIVE, // 가벼운 활동 (일상적인 운동이나 운동이 없음)
-        MODERATELY_ACTIVE, // 보통의 활동 (주 3-4회 운동)
-        VERY_ACTIVE, // 매우 활동적 (매일 운동)
-        EXTRA_ACTIVE // 매우 활동적 (매일 고강도 운동)
+        SEDENTARY, // 앉아서 일하는 경우 ("운동을 전혀 하지 않음")
+        LIGHTLY_ACTIVE, // 가벼운 활동 ("주 1-3회 가벼운 운동")
+        MODERATELY_ACTIVE, // 보통의 활동 ("주 4-5회 가볍거나 적당한 운동")
+        VERY_ACTIVE, // 매우 활동적 ("주6-7회 적당한 운동/ 주3-4회 격한 운동" )
+        EXTRA_ACTIVE // 매우 활동적 ("주 7회 격한 운동")
     }
 }

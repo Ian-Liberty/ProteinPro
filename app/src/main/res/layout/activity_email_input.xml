@@ -32,9 +32,8 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.300"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/warning_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/email_ET" />
 
     <EditText
         android:id="@+id/email_ET"

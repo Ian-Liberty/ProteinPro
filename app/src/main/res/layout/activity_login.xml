@@ -100,6 +100,7 @@
         app:layout_constraintTop_toBottomOf="@+id/logo_IV">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_ET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="이메일"
@@ -123,6 +124,7 @@
         app:layout_constraintTop_toBottomOf="@+id/email_TILO">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_ET"
             android:layout_width="match_parent"
             android:layout_height="61dp"
             android:hint="비밀번호"

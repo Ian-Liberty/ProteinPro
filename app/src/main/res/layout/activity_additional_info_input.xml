@@ -62,6 +62,7 @@
                 android:text="성별"/>
 
             <RadioGroup
+                android:id="@+id/gender_RG"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -146,6 +147,7 @@
                 android:text="활동량"/>
 
             <RadioGroup
+                android:id="@+id/activityLevel_RG"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
 
@@ -184,7 +186,6 @@
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/btn_ripple"
-                android:enabled="false"
                 android:text=" 제출하기 "
                 android:textColor="@drawable/txt_color"
                 android:textSize="20sp"/>

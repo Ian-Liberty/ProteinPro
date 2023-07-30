@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -12,7 +14,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityEmailCheckBinding
 import com.example.proteinpro.user.util.User
 
@@ -23,8 +24,9 @@ class ActivityEmailCheck : AppCompatActivity() {
     private lateinit var resend_tv:TextView
     private lateinit var limit_time_tv:TextView
     private lateinit var countDownTimer: CountDownTimer
-    private val initialMillis: Long = 3 * 60 * 1000 // 03:00
+    private val initialMillis: Long = 10 * 60 * 1000 // 10:00
 
+    // 인텐트 변수
     private lateinit var receivedIntent: Intent
     private lateinit var user: User
 
@@ -66,6 +68,20 @@ class ActivityEmailCheck : AppCompatActivity() {
         initListener()
         // 함수 실행
         startCountdown(initialMillis)
+
+        for(editText in certNum) {
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    checkAllEditTextFilled()
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+            })
+        }
     }
 
     private fun initViews(){
@@ -73,7 +89,6 @@ class ActivityEmailCheck : AppCompatActivity() {
         next_btn = binding.nextBTN
 
         limit_time_tv = binding.limitTimeTv
-
 
 
         user_email_tv = binding.userEmailTV
@@ -110,6 +125,11 @@ class ActivityEmailCheck : AppCompatActivity() {
         }
     }
 
+    /***
+     * TODO
+     * API 연결 전이기에 검사하지 않고 6칸 차있으면 바로 넘어감
+     * API 연결 후 인증번호 인증 후 반환값에 맞게 동작하도록 수정 필요
+     */
     private fun onClickButtonListener(): View.OnClickListener? {
         return View.OnClickListener {
             cert = "" // 버튼을 클릭할 때마다 cert 변수 초기화
@@ -118,9 +138,28 @@ class ActivityEmailCheck : AppCompatActivity() {
                 Toast.makeText(applicationContext, "인증번호를 전부 입력해주세요.", Toast.LENGTH_SHORT).show()
             else {
                 for (i in 0..5) cert += certNum[i].text
-                Toast.makeText(applicationContext, cert, Toast.LENGTH_SHORT).show()
+                Log.i ("cert", ""+cert)
+
+                if(checkCertNum(cert)){
+
+                }else{
+
+                }
+
+                val mIntent = Intent(this, ActivityPasswordInput::class.java)
+
+                mIntent.putExtra("user", user)
+
+                startActivity(mIntent)
+
             }
         }
+    }
+
+    private fun checkCertNum(cert: String): Boolean {
+        // 인증번호 체크 함수 실행
+
+        return true
     }
 
     private fun onDelKeyListener() {
@@ -162,10 +201,24 @@ class ActivityEmailCheck : AppCompatActivity() {
         countDownTimer.start()
     }
 
+    //
     private fun restartCountdown() {
         countDownTimer.cancel() // 기존 타이머 취소
-        limit_time_tv.text = "03:00" // TextView를 03:00으로 초기화
+        limit_time_tv.text = "10:00" // TextView를 03:00으로 초기화
         startCountdown(initialMillis) // 타이머 재시작
+    }
+
+    private fun checkAllEditTextFilled() {
+        var allFilled = true
+        for(editText in certNum){
+            if(editText.text.isBlank()){
+                allFilled = false
+                break
+            }
+
+        }
+
+        next_btn.isEnabled = allFilled
     }
 
 
