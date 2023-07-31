@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.proteinpro.databinding.ActivityLoginBinding
 import com.example.proteinpro.user.ActivityFindPassword
+import com.example.proteinpro.user.signup.ActivityBirthInput
 import com.example.proteinpro.user.signup.ActivityTermsOfService
 import com.example.proteinpro.user.util.PreferenceHelper
 import com.example.proteinpro.user.util.Retrofit.ApiClient
@@ -94,7 +95,7 @@ class ActivityLogin : AppCompatActivity() {
 
         signUp_tv.setOnClickListener{
             Log.i ("signUpTV", "회원가입 클릭")
-            val mIntent = Intent(this, ActivityTermsOfService::class.java)
+            val mIntent = Intent(this, ActivityBirthInput::class.java)
             startActivity(mIntent)
         }
 

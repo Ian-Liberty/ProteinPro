@@ -3,11 +3,13 @@ import android.content.Intent
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityLoginBinding
 import com.example.proteinpro.databinding.ActivityTermsOfServiceBinding
+import com.example.proteinpro.user.util.User
 
 class ActivityTermsOfService : AppCompatActivity() {
     // 변수 선언
@@ -15,6 +17,9 @@ class ActivityTermsOfService : AppCompatActivity() {
         private lateinit var termsOfService_cb: CheckBox
         private lateinit var fullAgreement_cb: CheckBox
         private lateinit var personalData_cb: CheckBox
+
+        private lateinit var receivedIntent: Intent
+        private lateinit var user: User
 
         // 전역 변수로 바인딩 객체 선언
         private var mBinding:
@@ -31,6 +36,11 @@ class ActivityTermsOfService : AppCompatActivity() {
             // getRoot 메서드로 레이아웃 내부의 최상위 위치 뷰의
             // 인스턴스를 활용하여 생성된 뷰를 액티비티에 표시 합니다.
             setContentView(binding.root)// < 기존의 setContentView 는 주석 처리해 주세요!
+
+            receivedIntent = intent
+            // 회원가입 유저 객체 상태 업데이트
+            user = receivedIntent.getSerializableExtra("user") as User
+            Log.i ("인텐트 테스트", ""+user)
 
             initViews()
             initListener()
@@ -49,7 +59,9 @@ class ActivityTermsOfService : AppCompatActivity() {
         private fun initListener(){
             // 리스너 초기화
             next_btn.setOnClickListener {
-                val mIntent = Intent(getApplicationContext(), ActivityBirthInput::class.java)
+
+                val mIntent = Intent(getApplicationContext(), ActivityEmailInput::class.java)
+                mIntent.putExtra("user", user)
                 startActivity(mIntent)
             }
 

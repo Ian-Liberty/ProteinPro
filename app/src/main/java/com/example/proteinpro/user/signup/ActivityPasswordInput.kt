@@ -9,9 +9,12 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityPasswordInputBinding
+import com.example.proteinpro.user.util.PreferenceHelper
+import com.example.proteinpro.user.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.user.util.User
 
 class ActivityPasswordInput : AppCompatActivity() {
@@ -19,6 +22,10 @@ class ActivityPasswordInput : AppCompatActivity() {
     private lateinit var next_btn:Button
     private lateinit var  password_et:EditText
     private lateinit var warning_tv:TextView
+
+    // 유틸 함수 선언
+    private lateinit var preferenceHelper: PreferenceHelper
+    private lateinit var retrofitHelper: RetrofitHelper
 
 
     private lateinit var receivedIntent: Intent
@@ -46,10 +53,14 @@ class ActivityPasswordInput : AppCompatActivity() {
         // 회원가입 유저 객체 상태 업데이트
         user = receivedIntent.getSerializableExtra("user") as User
         Log.i ("인텐트 테스트", ""+user)
-
+        initUtils()
         initViews()
         initListener()
 
+    }
+    private fun initUtils(){
+        preferenceHelper= PreferenceHelper(this)
+        retrofitHelper = RetrofitHelper(this)
     }
 
     private fun initViews(){
@@ -67,9 +78,21 @@ class ActivityPasswordInput : AppCompatActivity() {
 
             val mIntent = Intent(getApplicationContext(), ActivityNicknameInput::class.java)
 
-            mIntent.putExtra("user", user)
+
             user.password = password_et.text.toString()
-            startActivity(mIntent)
+
+            mIntent.putExtra("user", user)
+
+            retrofitHelper.signUp(user){isSuccess ->
+                if(isSuccess){
+
+                    startActivity(mIntent)
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요", Toast.LENGTH_SHORT).show()
+                }
+
+            }
 
         }
 

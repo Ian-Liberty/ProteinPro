@@ -80,11 +80,12 @@ class ActivityEmailInput : AppCompatActivity() {
 
         next_btn.setOnClickListener {
             //이메일 중복 체크
+            // 유저 객체에 이메일 값 할당
+            user.email = email_et.getText().toString()
             retrofitHelper.checkEmailDuplication(user.email){ isSuccess ->
                 if (isSuccess) {
-                    // 중복값 없음
-                    // 유저 객체에 이메일 값 할당
-                    user.email = email_et.getText().toString()
+                    // 중복값없음
+
                     val mIntent = Intent(this, ActivityEmailCheck::class.java)
                     mIntent.putExtra("user", user)
                     startActivity(mIntent)

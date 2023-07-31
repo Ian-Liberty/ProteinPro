@@ -58,7 +58,7 @@ class ActivityBirthInput : AppCompatActivity() {
         )
         nextButton.setOnClickListener {
 
-            val mIntent = Intent(getApplicationContext(), ActivityEmailInput::class.java)
+            val mIntent = Intent(getApplicationContext(), ActivityTermsOfService::class.java)
 
             val user = User(birthDate =user_birth)
 

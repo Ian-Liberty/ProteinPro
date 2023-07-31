@@ -73,22 +73,14 @@ class ActivityNicknameInput : AppCompatActivity() {
         // 리스너 초기화
         next_btn.setOnClickListener {
             user.nickname = nickname_et.text.toString()
+            val mIntent = Intent(this, ActivityAdditionalInfoInput::class.java)
 
+            mIntent.putExtra("user", user)
             retrofitHelper.checkNicknameDuplication(user.nickname){isSuccess ->
                 if(isSuccess){
 
-                    retrofitHelper.signUp(user){isSuccess ->
-                        if(isSuccess){
-                            val mIntent = Intent(this, ActivityAdditionalInfoInput::class.java)
+                    startActivity(mIntent)
 
-                            mIntent.putExtra("user", user)
-
-                            startActivity(mIntent)
-                        }else{
-                            Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요",Toast.LENGTH_SHORT).show()
-                        }
-
-                    }
 
                 }else{
                     //중복된 닉네임
