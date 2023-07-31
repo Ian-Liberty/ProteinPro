@@ -7,14 +7,9 @@ import android.widget.Button
 import android.widget.DatePicker
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityBirthInputBinding
-import com.example.proteinpro.databinding.ActivityLoginBinding
 import com.example.proteinpro.user.util.User
-import java.sql.Date
-import java.time.LocalDate
 import java.util.Calendar
-import java.util.Calendar.getInstance
 
 // 생일 데이터 받는 화면
 
@@ -65,7 +60,7 @@ class ActivityBirthInput : AppCompatActivity() {
 
             val mIntent = Intent(getApplicationContext(), ActivityEmailInput::class.java)
 
-            val user = User(birthDate=user_birth)
+            val user = User(birthDate =user_birth)
 
             mIntent.putExtra("user", user)
 

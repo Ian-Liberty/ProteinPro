@@ -14,6 +14,7 @@ data class User(
     var password: String = "",
     var height: Int = 0,
     var weight: Int = 0,
+    var gender: Int = -1,
     var activityLevel: ActivityLevel = ActivityLevel.SEDENTARY
 ): Serializable {
     // 활동량을 정의하기 위한 enum 클래스
@@ -23,5 +24,15 @@ data class User(
         MODERATELY_ACTIVE, // 보통의 활동 ("주 4-5회 가볍거나 적당한 운동")
         VERY_ACTIVE, // 매우 활동적 ("주6-7회 적당한 운동/ 주3-4회 격한 운동" )
         EXTRA_ACTIVE // 매우 활동적 ("주 7회 격한 운동")
+    }
+
+    fun getActivityLevelIntensity(): Int {
+        return when (activityLevel) {
+            ActivityLevel.SEDENTARY -> 1
+            ActivityLevel.LIGHTLY_ACTIVE -> 2
+            ActivityLevel.MODERATELY_ACTIVE -> 3
+            ActivityLevel.VERY_ACTIVE -> 4
+            ActivityLevel.EXTRA_ACTIVE -> 5
+        }
     }
 }

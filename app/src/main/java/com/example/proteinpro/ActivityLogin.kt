@@ -85,7 +85,6 @@ class ActivityLogin : AppCompatActivity() {
 
             login(this, email_et.text.toString(), password_et.text.toString())
 
-
         }
 
         kakaoLogin_btn.setOnClickListener{
@@ -148,11 +147,7 @@ class ActivityLogin : AppCompatActivity() {
                 Log.i("onFailure", t.toString())
             }
 
-
-
         })
-
-
 
     }
 

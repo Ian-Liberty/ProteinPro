@@ -1,4 +1,9 @@
 package com.example.proteinpro.user.signup
+import android.content.Context
+import com.example.proteinpro.user.util.Retrofit.ApiClient
+import com.google.gson.JsonElement
+import retrofit2.Call
+import retrofit2.Callback
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +20,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.example.proteinpro.databinding.ActivityEmailCheckBinding
+import com.example.proteinpro.user.util.PreferenceHelper
+import com.example.proteinpro.user.util.Retrofit.RetrofitHelper
+import com.example.proteinpro.user.util.Retrofit.UserDataInterface
 import com.example.proteinpro.user.util.User
+import retrofit2.Response
 
 class ActivityEmailCheck : AppCompatActivity() {
     //변수 선언
@@ -29,6 +38,10 @@ class ActivityEmailCheck : AppCompatActivity() {
     // 인텐트 변수
     private lateinit var receivedIntent: Intent
     private lateinit var user: User
+
+    //유틸 클래스 선언
+    private lateinit var retrofitHelper: RetrofitHelper
+    private lateinit var preferenceHelper: PreferenceHelper
 
     //6블록 인증번호 입력
     private var cert: String = ""
@@ -64,9 +77,13 @@ class ActivityEmailCheck : AppCompatActivity() {
         user = receivedIntent.getSerializableExtra("user") as User
         Log.i ("인텐트 테스트", ""+user)
 
+        //유틸 인터페이스 초기화
+
+        initUtils()
         initViews()
         initListener()
         // 함수 실행
+
         startCountdown(initialMillis)
 
         for(editText in certNum) {
@@ -83,13 +100,16 @@ class ActivityEmailCheck : AppCompatActivity() {
             })
         }
     }
+    private fun initUtils(){
+        retrofitHelper = RetrofitHelper(this)
+        preferenceHelper = PreferenceHelper(this)
+    }
 
     private fun initViews(){
         // 뷰 초기화
         next_btn = binding.nextBTN
 
         limit_time_tv = binding.limitTimeTv
-
 
         user_email_tv = binding.userEmailTV
         user_email_tv.setText(user.email)
@@ -121,7 +141,18 @@ class ActivityEmailCheck : AppCompatActivity() {
         next_btn.setOnClickListener(onClickButtonListener())
         resend_tv.setOnClickListener{
             //리스너 초기화
-            restartCountdown()
+            retrofitHelper.requestCertNum(user.email){isSuccess ->
+                if (isSuccess){
+                // 인증번호 요청 성공
+                    Toast.makeText(getApplicationContext(), "인증번호를 다시 보내드렸어요!",Toast.LENGTH_SHORT).show()
+                    restartCountdown()
+                }
+                else{
+                // 인증번호 요청 실패
+                }
+
+            }
+
         }
     }
 
@@ -137,29 +168,29 @@ class ActivityEmailCheck : AppCompatActivity() {
             if (cert.length != 6)
                 Toast.makeText(applicationContext, "인증번호를 전부 입력해주세요.", Toast.LENGTH_SHORT).show()
             else {
-                for (i in 0..5) cert += certNum[i].text
                 Log.i ("cert", ""+cert)
 
-                if(checkCertNum(cert)){
+                val token = preferenceHelper.get_jwt_Token().toString()
+                retrofitHelper.checkAuthnum(cert, token){isSuccess ->
+                    if(isSuccess){
+                        // 인증번호 확인 완료
+                        val mIntent = Intent(this, ActivityPasswordInput::class.java)
 
-                }else{
+                        mIntent.putExtra("user", user)
+
+                        startActivity(mIntent)
+
+                    }else{
+                        // 인증 실패
+
+
+
+                    }
 
                 }
 
-                val mIntent = Intent(this, ActivityPasswordInput::class.java)
-
-                mIntent.putExtra("user", user)
-
-                startActivity(mIntent)
-
             }
         }
-    }
-
-    private fun checkCertNum(cert: String): Boolean {
-        // 인증번호 체크 함수 실행
-
-        return true
     }
 
     private fun onDelKeyListener() {

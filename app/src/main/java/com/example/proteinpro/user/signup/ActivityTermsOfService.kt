@@ -101,8 +101,6 @@ class ActivityTermsOfService : AppCompatActivity() {
                 next_btn.isEnabled = fullAgreement_cb.isChecked
             }
 
-
-
         }
 
 

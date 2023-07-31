@@ -14,12 +14,19 @@ import androidx.appcompat.app.AlertDialog
 import com.example.proteinpro.MainActivity
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityAdditionalInfoInputBinding
+import com.example.proteinpro.user.util.PreferenceHelper
+import com.example.proteinpro.user.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.user.util.User
 
 class ActivityAdditionalInfoInput : AppCompatActivity() {
     // 인텐트 변수
     private lateinit var receivedIntent: Intent
     private lateinit var user: User
+
+    // 유틸 함수 선언
+    private lateinit var preferenceHelper: PreferenceHelper
+    private lateinit var retrofitHelper: RetrofitHelper
+
     //view 선언
     //제출 번튼
     private lateinit var next_btn: Button
@@ -68,9 +75,15 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
         user = receivedIntent.getSerializableExtra("user") as User
         Log.i ("인텐트 테스트", ""+user)
 
+        initUtils()
         initViews()
         initListener()
 
+    }
+
+    private fun initUtils(){
+        preferenceHelper=PreferenceHelper(this)
+        retrofitHelper = RetrofitHelper(this)
     }
 
     private fun initViews(){
@@ -102,13 +115,58 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
             val heightText = height_et.text.toString().trim()
             val weightText = weight_et.text.toString().trim()
             val activityLevelCheckedId = activityLevel_rg.checkedRadioButtonId
+
+            // 키 몸무게
+            user.height =heightText.toInt()
+            user.weight =weightText.toInt()
+            // 유저성별
+            if(genderCheckedId == male_rb.id){
+                user.gender = 1//남
+            }else{
+                user.gender = 0//여
+            }
+
+            // 유저활동량
+            when (activityLevelCheckedId) {
+                never_rb.id -> {
+                    user.activityLevel = User.ActivityLevel.SEDENTARY
+                }
+                one_three_rb.id -> {
+                    user.activityLevel = User.ActivityLevel.LIGHTLY_ACTIVE
+                }
+                four_five_rb.id -> {
+                    user.activityLevel = User.ActivityLevel.MODERATELY_ACTIVE
+                }
+                six_seven_rb.id -> {
+                    user.activityLevel = User.ActivityLevel.VERY_ACTIVE
+                }
+                seven_hard.id -> {
+                    user.activityLevel = User.ActivityLevel.EXTRA_ACTIVE
+                }
+                else -> {
+                    user.activityLevel = User.ActivityLevel.SEDENTARY
+                }
+            }
+
             if (genderCheckedId == -1 || heightText.isEmpty() || weightText.isEmpty() || activityLevelCheckedId == -1) {
+                // 빈값이 있을경우
                 showWarningAlertDialog()
             } else {
-                val mIntent = Intent(getApplicationContext(), MainActivity::class.java)
-                startActivity(mIntent)
 
-                Toast.makeText(getApplicationContext(), "${user.nickname} 님 환영합니다!",Toast.LENGTH_SHORT).show()
+                retrofitHelper.userDataUpdate(user){isSuccess->
+                    if(isSuccess){
+                        val mIntent = Intent(getApplicationContext(), MainActivity::class.java)
+                        startActivity(mIntent)
+
+                        Toast.makeText(getApplicationContext(), "${user.nickname} 님 환영합니다!",Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(getApplicationContext(), "데이터 저장에 실패했습니다. 관리자에게 문의하세요!",Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+
+
+
             }
         }
 

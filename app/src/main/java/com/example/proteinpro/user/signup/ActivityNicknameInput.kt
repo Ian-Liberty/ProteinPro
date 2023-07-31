@@ -1,4 +1,5 @@
 package com.example.proteinpro.user.signup
+import android.widget.Toast
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,8 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityNicknameInputBinding
+import com.example.proteinpro.user.util.PreferenceHelper
+import com.example.proteinpro.user.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.user.util.User
 
 
@@ -20,6 +23,10 @@ class ActivityNicknameInput : AppCompatActivity() {
     private lateinit var nickname_et:EditText
     private lateinit var warning_tv: TextView
     private lateinit var next_btn: Button
+
+    //유틸 클래스 선언
+    private lateinit var retrofitHelper: RetrofitHelper
+    private lateinit var preferenceHelper: PreferenceHelper
 
     private lateinit var receivedIntent: Intent
     private lateinit var user: User
@@ -46,8 +53,14 @@ class ActivityNicknameInput : AppCompatActivity() {
         user = receivedIntent.getSerializableExtra("user") as User
         Log.i ("인텐트 테스트", ""+user)
 
+        initUtils()
         initViews()
         initListener()
+    }
+
+    private  fun initUtils(){
+        preferenceHelper = PreferenceHelper(this)
+        retrofitHelper = RetrofitHelper(this)
     }
     private fun initViews(){
         // 뷰 초기화
@@ -59,12 +72,28 @@ class ActivityNicknameInput : AppCompatActivity() {
     private fun initListener(){
         // 리스너 초기화
         next_btn.setOnClickListener {
-
-            val mIntent = Intent(this, ActivityAdditionalInfoInput::class.java)
             user.nickname = nickname_et.text.toString()
-            mIntent.putExtra("user", user)
 
-            startActivity(mIntent)
+            retrofitHelper.checkNicknameDuplication(user.nickname){isSuccess ->
+                if(isSuccess){
+
+                    retrofitHelper.signUp(user){isSuccess ->
+                        if(isSuccess){
+                            val mIntent = Intent(this, ActivityAdditionalInfoInput::class.java)
+
+                            mIntent.putExtra("user", user)
+
+                            startActivity(mIntent)
+                        }else{
+                            Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요",Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+
+                }else{
+                    //중복된 닉네임
+                }
+            }
 
         }
 
@@ -81,7 +110,7 @@ class ActivityNicknameInput : AppCompatActivity() {
 
                 if(isNicknameValid(nickname_et.text.toString())){
 
-                    //비밀번호 형식 유효
+                    //닉네임 형식 유효
                     warning_tv.isVisible = false
 
                     next_btn.isEnabled = true
@@ -99,7 +128,6 @@ class ActivityNicknameInput : AppCompatActivity() {
             }
 
         })
-
 
     }
 
