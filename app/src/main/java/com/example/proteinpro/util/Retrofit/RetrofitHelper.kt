@@ -1,11 +1,11 @@
-package com.example.proteinpro.user.util.Retrofit
-import com.example.proteinpro.user.util.Retrofit.ApiClient
+package com.example.proteinpro.util.Retrofit
+import com.example.proteinpro.util.Retrofit.ApiClient
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import com.example.proteinpro.user.util.PreferenceHelper
-import com.example.proteinpro.user.util.User
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.User
 import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.Callback
@@ -146,7 +146,6 @@ class RetrofitHelper(context: Context?) {
 
         })
 
-
     }
 
     /***
@@ -157,7 +156,7 @@ class RetrofitHelper(context: Context?) {
         val retrofit = ApiClient.getApiClient()
         val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
 
-        val request = UserDataInterface.인증번호정보(token,inputNum)
+        val request = UserDataInterface.인증번호정보(token, inputNum)
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
         val call = api.인증번호체크(request)
@@ -266,7 +265,7 @@ class RetrofitHelper(context: Context?) {
 
         val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
 
-        val request = UserDataInterface.회원가입기본(닉네임,이메일,비밀번호,성별,생년월일,몸무게,신장,활동량,등급)
+        val request = UserDataInterface.회원가입기본(닉네임, 이메일, 비밀번호, 성별, 생년월일, 몸무게, 신장, 활동량, 등급)
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
         val call = api.회원가입(request)
@@ -321,7 +320,7 @@ class RetrofitHelper(context: Context?) {
         val retrofit = ApiClient.getApiClient()
         val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
 
-        val request = UserDataInterface.회원정보변경기본(닉네임,이메일,성별,생년월일,몸무게,신장,활동량)
+        val request = UserDataInterface.회원정보변경기본(닉네임, 이메일, 성별, 생년월일, 몸무게, 신장, 활동량)
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
         val call = api.사용자정보변경하기(request)
@@ -364,5 +363,51 @@ class RetrofitHelper(context: Context?) {
 
     }
 
+    fun resetPassword(email: String , password: String, onResult: (Boolean) -> Unit){
+
+        val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
+
+        val request = UserDataInterface.비밀번호재설정기본(email, password)
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.비밀번호재설정(request)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        if(jsonResponse.get("결과").asString == "1"){
+                        Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                            onResult(true)
+                        }else{
+                        Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                            onResult(false)
+                        }
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+        })
+
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.example.proteinpro.user.util
+package com.example.proteinpro.util
 
 import android.app.Activity
 import android.content.Context

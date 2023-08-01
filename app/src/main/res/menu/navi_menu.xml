@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/home_menu"
+        android:enabled="true"
+        android:icon="@drawable/baseline_home_24"
+        android:title="홈"
+        android:checked="true" />
+
+    <item android:id="@+id/search_menu"
+        android:enabled="true"
+        android:icon="@drawable/baseline_search_24"
+        android:title="검색" />
+
+    <item android:id="@+id/calculate_menu"
+        android:enabled="true"
+        android:icon="@drawable/baseline_calculate_24"
+        android:title="계산기" />
+
+    <item android:id="@+id/etc_menu"
+        android:enabled="true"
+        android:icon="@drawable/baseline_fitness_center_24"
+        android:title="기타 기능" />
+
+    <item android:id="@+id/user_menu"
+        android:enabled="true"
+        android:icon="@drawable/baseline_person_24"
+        android:title="내 정보" />
+</menu>

@@ -8,20 +8,23 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityPasswordInputBinding
-import com.example.proteinpro.user.util.PreferenceHelper
-import com.example.proteinpro.user.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.user.util.User
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.Retrofit.RetrofitHelper
+import com.example.proteinpro.util.User
 
 class ActivityPasswordInput : AppCompatActivity() {
     // 변수 선언
     private lateinit var next_btn:Button
     private lateinit var  password_et:EditText
     private lateinit var warning_tv:TextView
+
+    private lateinit var back_btn_lo : LinearLayout
 
     // 유틸 함수 선언
     private lateinit var preferenceHelper: PreferenceHelper
@@ -74,10 +77,13 @@ class ActivityPasswordInput : AppCompatActivity() {
     private fun initListener(){
         // 리스너 초기화
 
+        back_btn_lo.setOnClickListener {
+            finish()
+        }
+
         next_btn.setOnClickListener {
 
             val mIntent = Intent(getApplicationContext(), ActivityNicknameInput::class.java)
-
 
             user.password = password_et.text.toString()
 

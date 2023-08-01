@@ -1,4 +1,4 @@
-package com.example.proteinpro.user.util.Retrofit
+package com.example.proteinpro.util.Retrofit
 
 class ServerData {
 

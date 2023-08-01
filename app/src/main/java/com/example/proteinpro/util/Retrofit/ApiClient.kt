@@ -1,6 +1,6 @@
-package com.example.proteinpro.user.util.Retrofit
+package com.example.proteinpro.util.Retrofit
 
-import com.example.proteinpro.user.util.Retrofit.ServerData.Companion.Server_URL
+import com.example.proteinpro.util.Retrofit.ServerData.Companion.Server_URL
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -39,7 +39,7 @@ object ApiClient {
 
     }
 
-    fun getUserApiService():UserDataInterface{
+    fun getUserApiService(): UserDataInterface {
         return getApiClient().create(UserDataInterface::class.java)
     }
 

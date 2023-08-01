@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -14,9 +15,9 @@ import androidx.appcompat.app.AlertDialog
 import com.example.proteinpro.MainActivity
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityAdditionalInfoInputBinding
-import com.example.proteinpro.user.util.PreferenceHelper
-import com.example.proteinpro.user.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.user.util.User
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.Retrofit.RetrofitHelper
+import com.example.proteinpro.util.User
 
 class ActivityAdditionalInfoInput : AppCompatActivity() {
     // 인텐트 변수
@@ -30,7 +31,7 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
     //view 선언
     //제출 번튼
     private lateinit var next_btn: Button
-
+    private lateinit var back_btn_lo: LinearLayout
     private lateinit var skip_tv : TextView
 
     // 성별
@@ -82,7 +83,7 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
     }
 
     private fun initUtils(){
-        preferenceHelper=PreferenceHelper(this)
+        preferenceHelper= PreferenceHelper(this)
         retrofitHelper = RetrofitHelper(this)
     }
 
@@ -90,6 +91,7 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
         // 뷰 초기화
 
         next_btn = binding.nextBTN
+        back_btn_lo = binding.backBtnLo
 
         skip_tv = binding.skipTV
 
@@ -173,6 +175,10 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
         skip_tv.setOnClickListener{
 
             showSkipAlertDialog()
+        }
+
+        back_btn_lo.setOnClickListener {
+            finish()
         }
 
     }

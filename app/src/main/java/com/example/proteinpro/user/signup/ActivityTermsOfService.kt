@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityLoginBinding
 import com.example.proteinpro.databinding.ActivityTermsOfServiceBinding
-import com.example.proteinpro.user.util.User
+import com.example.proteinpro.util.User
 
 class ActivityTermsOfService : AppCompatActivity() {
     // 변수 선언
@@ -17,6 +18,8 @@ class ActivityTermsOfService : AppCompatActivity() {
         private lateinit var termsOfService_cb: CheckBox
         private lateinit var fullAgreement_cb: CheckBox
         private lateinit var personalData_cb: CheckBox
+
+        private lateinit var back_btn_lo : LinearLayout
 
         private lateinit var receivedIntent: Intent
         private lateinit var user: User
@@ -54,6 +57,8 @@ class ActivityTermsOfService : AppCompatActivity() {
             termsOfService_cb = binding.termsOfServiceCB
             fullAgreement_cb = binding.fullAgreementCB
             personalData_cb = binding.personalDataCB
+
+            back_btn_lo = binding.backBtnLo
 
         }
         private fun initListener(){
@@ -111,6 +116,10 @@ class ActivityTermsOfService : AppCompatActivity() {
                 }
 
                 next_btn.isEnabled = fullAgreement_cb.isChecked
+            }
+
+            back_btn_lo.setOnClickListener{
+                finish()
             }
 
         }

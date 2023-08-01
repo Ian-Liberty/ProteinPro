@@ -1,4 +1,4 @@
-package com.example.proteinpro.user.util.Retrofit
+package com.example.proteinpro.util.Retrofit
 
 import com.google.gson.JsonElement
 import retrofit2.Call
@@ -33,6 +33,11 @@ interface UserDataInterface {
         val 닉네임: String,
         val 이메일: String,
         val 비밀번호: String
+    )
+
+    data class 비밀번호재설정기본(
+        val 이메일: String,
+        val 새비밀번호:String
     )
 
     data class 회원가입기본(
@@ -84,5 +89,8 @@ interface UserDataInterface {
 
     @PUT("user/info")
     fun 사용자정보변경하기(@Body request: 회원정보변경기본) : Call<JsonElement?>?
+
+    @POST("user/reset")
+    fun 비밀번호재설정(@Body request: 비밀번호재설정기본) : Call<JsonElement?>?
 
 }

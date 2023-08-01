@@ -7,6 +7,42 @@
     tools:context=".user.signup.ActivityTermsOfService">
 
 
+    <LinearLayout
+        android:id="@+id/header_lo"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toTopOf="@+id/textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:id="@+id/back_btn_lo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/baseline_arrow_back_ios_new_24"
+                android:background="#00000000"/>
+            <TextView
+                android:id="@+id/back_btn_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#007AFF"
+                android:textSize="18sp"
+                android:text="Back"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/logo_IV"
         android:layout_width="300dp"

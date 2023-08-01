@@ -5,10 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.proteinpro.databinding.ActivityBirthInputBinding
-import com.example.proteinpro.user.util.User
+import com.example.proteinpro.util.User
 import java.util.Calendar
 
 // 생일 데이터 받는 화면
@@ -19,6 +20,8 @@ class ActivityBirthInput : AppCompatActivity() {
     private lateinit var nextButton: Button
     private lateinit var warning_tv: TextView
     private lateinit var user_birth: String
+
+    private lateinit var back_btn_lo: LinearLayout
 
     // 전역 변수로 바인딩 객체 선언
     private var mBinding: ActivityBirthInputBinding? =null
@@ -42,6 +45,7 @@ class ActivityBirthInput : AppCompatActivity() {
         datePicker = binding.vDatePicker
         nextButton = binding.nextBTN
         warning_tv = binding.warningTv
+        back_btn_lo = binding.backBtnLo
 
         // 현재 날짜 기준으로 만 14세 미만인지 체크하고 결과를 출력하는 함수 호출
         checkIfUnder14YearsOld(datePicker.year, datePicker.month, datePicker.dayOfMonth)
@@ -65,6 +69,10 @@ class ActivityBirthInput : AppCompatActivity() {
             mIntent.putExtra("user", user)
 
             startActivity(mIntent)
+        }
+
+        back_btn_lo.setOnClickListener{
+            finish()
         }
 
     }
@@ -101,7 +109,10 @@ class ActivityBirthInput : AppCompatActivity() {
             // 만 14세 이상인 경우 처리
             // 여기에 원하는 동작을 추가합니다.
 
-            user_birth = "$year-$month-$dayOfMonth"
+            // 월은 0 부터 시작함 ㅠ
+            val selectMonth = month +1
+
+            user_birth = "$year-$selectMonth-$dayOfMonth"
 
             warning_tv.isVisible = false// 경고 제거
             nextButton.isEnabled = true// 버튼 활성화

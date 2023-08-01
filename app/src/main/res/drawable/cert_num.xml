@@ -10,13 +10,13 @@
 
                 android:width="1dp"
 
-                android:color="#5555FF" />
+                android:color="#193EC1" />
 
             <corners android:radius="4dp" />
 
             <solid
 
-                android:color="#FFFFFF" />
+                android:color="#E8E8E9" />
 
         </shape>
 
@@ -37,7 +37,7 @@
 
             <solid
 
-                android:color="#F1F1F1" />
+                android:color="#E8E8E9" />
 
         </shape>
 

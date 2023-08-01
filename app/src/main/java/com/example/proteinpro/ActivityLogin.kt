@@ -10,14 +10,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.proteinpro.databinding.ActivityLoginBinding
-import com.example.proteinpro.user.ActivityFindPassword
+import com.example.proteinpro.user.ActivityFindPassword_InputEmail
 import com.example.proteinpro.user.signup.ActivityBirthInput
-import com.example.proteinpro.user.signup.ActivityTermsOfService
-import com.example.proteinpro.user.util.PreferenceHelper
-import com.example.proteinpro.user.util.Retrofit.ApiClient
-import com.example.proteinpro.user.util.Retrofit.UserDataInterface
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.Retrofit.ApiClient
+import com.example.proteinpro.util.Retrofit.UserDataInterface
 import com.google.gson.JsonElement
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,10 +30,12 @@ class ActivityLogin : AppCompatActivity() {
     // 인텐트 변수
     private lateinit var login_btn: Button
     private lateinit var kakaoLogin_btn: Button
+
     private lateinit var signUp_tv: TextView
     private lateinit var findPassword_tv: TextView
     private lateinit var email_et : EditText
     private lateinit var password_et: EditText
+
 
     // 전역 변수로 바인딩 객체 선언
     private var mBinding: ActivityLoginBinding? =null
@@ -101,7 +101,7 @@ class ActivityLogin : AppCompatActivity() {
 
         findPassword_tv.setOnClickListener{
             Log.i ("findPasswordTV", "비밀번호 찾기")
-            val mIntent = Intent(this, ActivityFindPassword::class.java)
+            val mIntent = Intent(this, ActivityFindPassword_InputEmail::class.java)
             startActivity(mIntent)
         }
     }
