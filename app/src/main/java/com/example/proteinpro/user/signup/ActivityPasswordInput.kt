@@ -12,11 +12,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityPasswordInputBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.util.User
+import com.example.proteinpro.util.Class.User
 
 class ActivityPasswordInput : AppCompatActivity() {
     // 변수 선언
@@ -72,6 +71,7 @@ class ActivityPasswordInput : AppCompatActivity() {
         next_btn = binding.nextBTN
         password_et = binding.passwordET
         warning_tv = binding.warningTv
+        back_btn_lo =binding.backBtnLo
 
     }
     private fun initListener(){

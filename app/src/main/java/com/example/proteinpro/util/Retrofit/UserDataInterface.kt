@@ -62,6 +62,10 @@ interface UserDataInterface {
         val 활동량: Int
     )
 
+    data class 토큰기본(
+        val 토큰: String
+    )
+
     /***
      * 요청 포맷
      */
@@ -92,5 +96,10 @@ interface UserDataInterface {
 
     @POST("user/reset")
     fun 비밀번호재설정(@Body request: 비밀번호재설정기본) : Call<JsonElement?>?
+
+    @POST("user/token")
+    fun 사용자토큰체크(@Body request: 토큰기본) : Call<JsonElement?>?
+
+
 
 }

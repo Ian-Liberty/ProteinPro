@@ -8,6 +8,7 @@ class PreferenceHelper(context: Context?) {
 
     private var user_prefs: SharedPreferences? = null
 
+
     init {
         this.user_prefs = context?.getSharedPreferences("user_prefs", Activity.MODE_PRIVATE)
     }

@@ -1,4 +1,4 @@
-package com.example.proteinpro.util
+package com.example.proteinpro.util.Class
 
 // 인텐트(Intent)를 사용하여 User 객체를 다른 액티비티로 전달하려면,
 // User 클래스가 Serializable 또는 Parcelable 인터페이스를 구현해야 합니다.

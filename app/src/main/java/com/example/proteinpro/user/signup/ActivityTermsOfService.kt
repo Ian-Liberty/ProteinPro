@@ -7,10 +7,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
-import com.example.proteinpro.R
-import com.example.proteinpro.databinding.ActivityLoginBinding
 import com.example.proteinpro.databinding.ActivityTermsOfServiceBinding
-import com.example.proteinpro.util.User
+import com.example.proteinpro.util.Class.User
 
 class ActivityTermsOfService : AppCompatActivity() {
     // 변수 선언

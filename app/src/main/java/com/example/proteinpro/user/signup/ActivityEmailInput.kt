@@ -1,6 +1,4 @@
 package com.example.proteinpro.user.signup
-import android.widget.Toast
-import android.content.Context
 import android.util.Log
 import android.content.Intent
 
@@ -9,23 +7,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.proteinpro.MainActivity
-import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityEmailInputBinding
 import com.example.proteinpro.util.PreferenceHelper
-import com.example.proteinpro.util.Retrofit.ApiClient
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.util.Retrofit.UserDataInterface
-import com.example.proteinpro.util.User
-import com.google.gson.JsonElement
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.proteinpro.util.Class.User
 
 //이메일 입력
 class ActivityEmailInput : AppCompatActivity() {

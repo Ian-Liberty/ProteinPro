@@ -1,11 +1,10 @@
 package com.example.proteinpro.util.Retrofit
-import com.example.proteinpro.util.Retrofit.ApiClient
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.example.proteinpro.util.PreferenceHelper
-import com.example.proteinpro.util.User
+import com.example.proteinpro.util.Class.User
 import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.Callback
@@ -406,6 +405,53 @@ class RetrofitHelper(context: Context?) {
                 Log.i("onFailure", t.toString())
                 onResult(false)
             }
+        })
+
+    }
+
+    fun checkToken(token: String, onResult: (Boolean) -> Unit){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
+
+        val request = UserDataInterface.토큰기본(token)
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.사용자토큰체크(request)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        if(jsonResponse.get("결과").asString == "1"){
+                            Log.i ("정보태그", ""+jsonResponse.get("메세지"))
+                            onResult(true)
+                        }else{
+                            Log.i ("정보태그", ""+jsonResponse.get("메세지"))
+                            onResult(false)
+                        }
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+
         })
 
     }

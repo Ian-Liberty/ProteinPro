@@ -13,11 +13,10 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.example.proteinpro.MainActivity
-import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityAdditionalInfoInputBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.util.User
+import com.example.proteinpro.util.Class.User
 
 class ActivityAdditionalInfoInput : AppCompatActivity() {
     // 인텐트 변수

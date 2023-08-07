@@ -15,13 +15,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-import com.example.proteinpro.R
-import com.example.proteinpro.databinding.ActivityEmailInputBinding
 import com.example.proteinpro.databinding.ActivityFindPasswordCheckEmailBinding
-import com.example.proteinpro.user.signup.ActivityPasswordInput
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.util.User
+import com.example.proteinpro.util.Class.User
 
 class ActivityFindPassword_CheckEmail : AppCompatActivity() {
 

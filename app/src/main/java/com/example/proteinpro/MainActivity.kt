@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         setBottomNavi()
 
     }
+
     private fun setBottomNavi(){
         bottomNavigationView = binding.mainBNV
         bottomNavigationView.run { setOnItemSelectedListener {
@@ -64,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         }
             selectedItemId = R.id.home_menu
         }
-
 
     }
 

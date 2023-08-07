@@ -1,59 +1,234 @@
 package com.example.proteinpro
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.proteinpro.databinding.FragmentHomeBinding
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.RecyclerView.FoodItem
+import com.example.proteinpro.util.RecyclerView.FoodListAdapter
+import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import org.json.JSONObject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FragmentHome.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FragmentHome : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    //컨텍스트 변수
+    private lateinit var mainActivity: MainActivity
 
+    private lateinit var binding: FragmentHomeBinding
+    private lateinit var popularProtein_rv : RecyclerView
+    private lateinit var valueForMoney_rv : RecyclerView
+    private lateinit var recentProtein_rv : RecyclerView
+    //
+    private lateinit var popularProtein_tv : TextView
+    private lateinit var valueForMoney_tv : TextView
+    private lateinit var recentProtein_tv : TextView
+
+    //
+    private lateinit var popularProteinAdapter : FoodListAdapter
+    private lateinit var valueForMoneyAdapter: FoodListAdapter
+    private lateinit var recentProteinAdapter: FoodListAdapter
+
+    //
+    //유틸 클래스 선언
+    private lateinit var foodRetrofitHelper: FoodRetrofitHelper
+    private lateinit var preferenceHelper: PreferenceHelper
+    //
+
+    private var recentList = ArrayList<FoodItem>()
+    private var popularList = ArrayList<FoodItem>()
+    private var valueForMoneyList = ArrayList<FoodItem>()
+
+    private var ramdom = Math.random()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        mainActivity = context as MainActivity
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        return binding.root
+
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Log.i ("onViewCreated", "random: $ramdom")
+
+        initUtils()
+        initData()
+
+        initViews()
+        setRecyclerview()
+        initListener()
+        Log.i ("recentList.size", ""+recentList.size)
+
+    }
+    private fun initData() {
+
+        if(recentList.size == 0){
+            getSampleProteinList(1)
+        }
+        if(popularList.size == 0){
+            getSampleProteinList(3)
+        }
+        if(valueForMoneyList.size == 0){
+            getSampleProteinList(2)
+        }
+
+    }
+    private fun setRecyclerview() {
+
+            //1최근
+            recentProtein_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            recentProteinAdapter = FoodListAdapter(mainActivity, recentList)
+            recentProtein_rv.adapter = recentProteinAdapter
+
+            //2가성비
+            valueForMoney_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            valueForMoneyAdapter = FoodListAdapter(mainActivity, valueForMoneyList)
+            valueForMoney_rv.adapter = valueForMoneyAdapter
+
+            //3인기
+            popularProtein_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            popularProteinAdapter = FoodListAdapter(mainActivity ,popularList)
+            popularProtein_rv.adapter = popularProteinAdapter
+
+    }
+    private fun getSampleProteinList(order: Int){
+
+        foodRetrofitHelper.searchMainFoodList(order, object : FoodRetrofitHelper.MainFoodListCallback {
+
+            override fun onSuccess(foodList: JsonArray) {
+                // 받아온 리스트를 이용하여 작업 수행
+                // 예시: RecyclerView에 리스트를 바인딩하는 등
+                Log.i ("initData",  ""+foodList.size()+" 개의 데이터 가져오기 성공 : $foodList")
+
+                for(jsonElement in foodList){
+                    Log.i ("데이터 파싱중", ""+jsonElement)
+                    val item = jsonElement.asJsonObject
+
+                    val key = getStringFromJson(item, "키")
+                    val name = getStringFromJson(item, "이름")
+                    val taste = getStringFromJson(item, "맛")
+                    val price = getIntFromJson(item, "가격")
+                    val capacity = getIntFromJson(item, "용량")
+                    val capacityUnit = getStringFromJson(item, "단위")
+                    val image = getStringFromJson(item, "이미지")
+                    val costPerformance = getFloatFromJson(item, "가성비")
+                    val quantity = getIntFromJson(item, "수량")
+                    val brand = getStringFromJson(item, "브랜드")
+
+                    val fooditem = FoodItem(key, name, taste, price,capacity, capacityUnit, image, costPerformance, quantity, brand)
+
+                    if(order == 1){
+                        recentList.add(fooditem)
+
+                    }else if(order == 2){
+                        valueForMoneyList.add(fooditem)
+
+                    }else{// order ==3
+                        popularList.add(fooditem)
+
+                    }
+
+                }
+
+                if(order==1){
+                    recentProteinAdapter.setItem_list(recentList)
+                }else if(order == 2){
+                    valueForMoneyAdapter.setItem_list(valueForMoneyList)
+                }else {
+                    popularProteinAdapter.setItem_list(popularList)
+                }
+
+            }
+
+            override fun onFailure() {
+                // 요청 실패 처리
+                // 예시: 에러 메시지 표시 등
+                Log.i ("initData", "데이터 받아오기 실패")
+
+            }
+
+        }
+        )
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentHome.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FragmentHome().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun initViews(){
+        // 뷰 초기화
+        //리사이클러뷰
+       popularProtein_rv= binding.popularProteinRV
+       recentProtein_rv= binding.recentProteinRV
+       valueForMoney_rv= binding.valueForMoneyRV
+
+        //더보기 텍스트뷰
+        popularProtein_tv = binding.popularProteinMoreTV
+        recentProtein_tv = binding.recentProteinMoreTV
+        valueForMoney_tv = binding.valueForMoneyMoreTV
+
+        //리사이클러뷰 초기화
+
+//        recentList = ArrayList<FoodItem>()
+//        popularList = ArrayList<FoodItem>()
+//        valueForMoneyList = ArrayList<FoodItem>()
+
     }
+    private fun initListener(){
+        // 리스너 초기화
+
+    }
+    private fun initUtils(){
+        // 유틸 클래스 초기화
+        foodRetrofitHelper = FoodRetrofitHelper(mainActivity)
+        preferenceHelper = PreferenceHelper(mainActivity)
+
+    }
+
+    private fun getStringFromJson(jsonObject: JsonObject, key: String): String {
+        return if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull) {
+            jsonObject.get(key).asString
+        } else {
+            ""
+        }
+    }
+
+    private fun getIntFromJson(jsonObject: JsonObject, key: String): Int {
+        return if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull) {
+            jsonObject.get(key).asInt
+        } else {
+            0
+        }
+    }
+
+    private fun getFloatFromJson(jsonObject: JsonObject, key: String): Float {
+        return if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull) {
+            jsonObject.get(key).asFloat
+        } else {
+            0.0f
+        }
+    }
+
+
 }

@@ -6,10 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".ActivityLogin">
 
-
     <ImageView
         android:id="@+id/logo_IV"
-        android:layout_width="308dp"
+        android:layout_width="310dp"
         android:layout_height="145dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,6 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="이메일"
+            android:singleLine="true"
             tools:layout_editor_absoluteX="56dp"
             tools:layout_editor_absoluteY="328dp" />
 
@@ -128,6 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="61dp"
             android:hint="비밀번호"
+            android:singleLine="true"
             android:inputType="textPassword"
             tools:layout_editor_absoluteX="-2dp"
             tools:layout_editor_absoluteY="421dp" />

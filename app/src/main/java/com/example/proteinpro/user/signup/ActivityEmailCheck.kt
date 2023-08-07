@@ -1,9 +1,4 @@
 package com.example.proteinpro.user.signup
-import android.content.Context
-import com.example.proteinpro.util.Retrofit.ApiClient
-import com.google.gson.JsonElement
-import retrofit2.Call
-import retrofit2.Callback
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -23,9 +18,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.proteinpro.databinding.ActivityEmailCheckBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.util.Retrofit.UserDataInterface
-import com.example.proteinpro.util.User
-import retrofit2.Response
+import com.example.proteinpro.util.Class.User
 
 class ActivityEmailCheck : AppCompatActivity() {
     //변수 선언
