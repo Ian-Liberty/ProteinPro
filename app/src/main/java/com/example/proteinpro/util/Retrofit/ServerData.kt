@@ -11,6 +11,9 @@ class ServerData {
         const val public_URL = "http://49.247.132.156"
         const val img_URL = Server_URL+"img/food/"
 
+        //
+
+
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.proteinpro.user.signup
+package com.example.proteinpro.view.user.signup
 import android.widget.Toast
 
 import android.content.Intent
@@ -12,7 +12,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import com.example.proteinpro.MainActivity
+import com.example.proteinpro.view.main.MainActivity
 import com.example.proteinpro.databinding.ActivityAdditionalInfoInputBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper

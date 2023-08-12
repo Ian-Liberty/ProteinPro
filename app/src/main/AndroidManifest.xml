@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,53 +16,59 @@
         android:theme="@style/Theme.ProteinPro"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
-
-
-        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+        <activity
+            android:name=".view.main.search.ActivitySearchFilter"
+            android:exported="false" />
+        <activity
+            android:name=".view.main.search.ActivitySearchResult"
+            android:exported="false" />
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="oauth"
+
+                <data
+                    android:host="oauth"
                     android:scheme="kakao44316c42987d9a62edd1c49462605432" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".user.ActivityFindPassword_NewPassword"
+            android:name=".view.user.ActivityFindPassword_NewPassword"
             android:exported="false" />
         <activity
-            android:name=".user.ActivityFindPassword_CheckEmail"
+            android:name=".view.user.ActivityFindPassword_CheckEmail"
             android:exported="false" /> <!-- usesCleartextTraffic 의 경우 https 관련 처리 전 임시 테스트용임 https 처리후 삭제해줄것 -->
         <activity
-            android:name=".user.ActivityFindPassword_InputEmail"
+            android:name=".view.user.ActivityFindPassword_InputEmail"
             android:exported="false" />
         <activity
-            android:name=".user.signup.ActivityBirthInput"
+            android:name=".view.user.signup.ActivityBirthInput"
             android:exported="false" />
         <activity
-            android:name=".user.signup.ActivityAdditionalInfoInput"
+            android:name=".view.user.signup.ActivityAdditionalInfoInput"
             android:exported="false" />
         <activity
-            android:name=".user.signup.ActivityPasswordInput"
+            android:name=".view.user.signup.ActivityPasswordInput"
             android:exported="false" />
         <activity
-            android:name=".user.signup.ActivityNicknameInput"
+            android:name=".view.user.signup.ActivityNicknameInput"
             android:exported="false" />
         <activity
-            android:name=".user.signup.ActivityEmailCheck"
+            android:name=".view.user.signup.ActivityEmailCheck"
             android:exported="false" />
         <activity
-            android:name=".user.signup.ActivityEmailInput"
+            android:name=".view.user.signup.ActivityEmailInput"
             android:exported="false" />
         <activity
-            android:name=".user.signup.ActivityTermsOfService"
+            android:name=".view.user.signup.ActivityTermsOfService"
             android:exported="false" />
         <activity
-            android:name=".ActivityLogin"
-            android:exported="true" >
+            android:name=".view.ActivityLogin"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -70,7 +76,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".view.main.MainActivity"
             android:exported="false" />
     </application>
 

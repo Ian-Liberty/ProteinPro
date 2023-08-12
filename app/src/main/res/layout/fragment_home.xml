@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentHome">
+    tools:context=".view.main.home.FragmentHome">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
@@ -30,15 +30,15 @@
                 android:layout_height="70dp"
                 android:src="@drawable/proteinlogo" />
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/protein_SV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_background_border_black"
-                android:transitionName="protein_SV"
-                app:queryHint="프프에서 검색해보세요!"
-                android:layout_marginBottom="20dp"/>
-
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/protein_SV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_background_border_black"
+                    android:transitionName="protein_SV"
+                    app:iconifiedByDefault="false"
+                    app:queryHint="프프에서 검색해보세요!"
+                    android:layout_marginBottom="20dp"/>
 
         </LinearLayout>
 

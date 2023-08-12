@@ -1,24 +1,23 @@
-package com.example.proteinpro.user
-
+package com.example.proteinpro.view.user.signup
+import android.util.Log
 import android.content.Intent
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.proteinpro.R
-import com.example.proteinpro.databinding.ActivityFindPasswordInputEmailBinding
+import com.example.proteinpro.databinding.ActivityEmailInputBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.util.Class.User
 
-class ActivityFindPassword_InputEmail : AppCompatActivity() {
-
+//이메일 입력
+class ActivityEmailInput : AppCompatActivity() {
     // 변수 선언
     private lateinit var next_btn: Button
     private lateinit var email_et: EditText
@@ -34,29 +33,27 @@ class ActivityFindPassword_InputEmail : AppCompatActivity() {
 
     // 전역 변수로 바인딩 객체 선언
     private var mBinding:
-    ActivityFindPasswordInputEmailBinding? =null
+    ActivityEmailInputBinding? =null
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_find_password_input_email)
+        Log.i ("ActivityEmailInput", "onCreate")
+//        setContentView(R.layout.activity_email_input)
 
-        // 자동 생성된 뷰 바인딩 클래스에서의 inflate라는 메서드를 활용해서
-        // 액티비티에서 사용할 바인딩 클래스의 인스턴스 생성
-        mBinding = ActivityFindPasswordInputEmailBinding.inflate(layoutInflater)
-        // getRoot 메서드로 레이아웃 내부의 최상위 위치 뷰의
-        // 인스턴스를 활용하여 생성된 뷰를 액티비티에 표시 합니다.
-        setContentView(binding.root)// < 기존의 setContentView 는 주석 처리해 주세요!
-
-
-        user = User()
-
+        mBinding = ActivityEmailInputBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        // 인텐트 초기화
+        receivedIntent = intent
+        // 회원가입 유저 객체 상태 업데이트
+        user = receivedIntent.getSerializableExtra("user") as User
         Log.i ("인텐트 테스트", ""+user)
 
         initUtils()
         initViews()
         initListener()
+
 
     }
 
@@ -80,26 +77,24 @@ class ActivityFindPassword_InputEmail : AppCompatActivity() {
             retrofitHelper.checkEmailDuplication(user.email){ isSuccess ->
                 if (isSuccess) {
                     // 중복값없음
-                    Log.i ("정보태그", "중복값 없음")
 
-                } else {
-                    //  중복값 있음 혹은 오류
-
-                    val mIntent = Intent(this, ActivityFindPassword_CheckEmail::class.java)
+                    val mIntent = Intent(this, ActivityEmailCheck::class.java)
                     mIntent.putExtra("user", user)
                     startActivity(mIntent)
                     // 인증번호 보내기
                     retrofitHelper.requestCertNum(user.email){isSuccess ->
                         if(isSuccess) {
                             // 인증번호 보내기 성공
-                            Log.i ("정보태그", "인증번호 보내기 성공")
 
                         }else{
-                            // 인증번호 보내기 성공
-                            Log.i ("정보태그", "인증번호 보내기 실패")
+
                         }
 
                     }
+
+                } else {
+                    // 중복값 있음 혹은 오류
+                Log.i ("정보태그", "중복값 있음 혹은 오류 checkEmailDuplication 함수 로그 확인")
                 }
             }
 
@@ -153,4 +148,9 @@ class ActivityFindPassword_InputEmail : AppCompatActivity() {
         // 입력된 이메일이 정규표현식과 일치하는지 검사하여 결과 반환
         return email.matches(emailRegex)
     }
+
+
+
+
+
 }

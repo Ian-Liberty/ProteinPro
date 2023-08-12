@@ -1,4 +1,4 @@
-package com.example.proteinpro
+package com.example.proteinpro.view.main.home
 
 import android.content.Context
 import android.os.Bundle
@@ -10,21 +10,30 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.proteinpro.R
 import com.example.proteinpro.databinding.FragmentHomeBinding
+import com.example.proteinpro.util.Class.AdapterType
+import com.example.proteinpro.util.Class.ViewType
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.RecyclerView.FoodItem
 import com.example.proteinpro.util.RecyclerView.FoodListAdapter
 import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
+import com.example.proteinpro.view.main.MainActivity
 import com.google.gson.JsonArray
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import org.json.JSONObject
 
 class FragmentHome : Fragment() {
     //컨텍스트 변수
     private lateinit var mainActivity: MainActivity
 
+    // 뷰 객체
+
     private lateinit var binding: FragmentHomeBinding
+    //
+    private lateinit var protein_search_sv: androidx.appcompat.widget.SearchView
+
+    //
+
     private lateinit var popularProtein_rv : RecyclerView
     private lateinit var valueForMoney_rv : RecyclerView
     private lateinit var recentProtein_rv : RecyclerView
@@ -81,6 +90,7 @@ class FragmentHome : Fragment() {
         initViews()
         setRecyclerview()
         initListener()
+
         Log.i ("recentList.size", ""+recentList.size)
 
     }
@@ -101,21 +111,33 @@ class FragmentHome : Fragment() {
 
             //1최근
             recentProtein_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-            recentProteinAdapter = FoodListAdapter(mainActivity, recentList)
+            recentProteinAdapter = FoodListAdapter(mainActivity, recentList, AdapterType.RECENT_FOOD_LIST)
             recentProtein_rv.adapter = recentProteinAdapter
 
             //2가성비
             valueForMoney_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-            valueForMoneyAdapter = FoodListAdapter(mainActivity, valueForMoneyList)
+            valueForMoneyAdapter = FoodListAdapter(mainActivity, valueForMoneyList, AdapterType.VALUE_FOR_MONEY_LIST)
             valueForMoney_rv.adapter = valueForMoneyAdapter
 
             //3인기
             popularProtein_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-            popularProteinAdapter = FoodListAdapter(mainActivity ,popularList)
+            popularProteinAdapter = FoodListAdapter(mainActivity ,popularList, AdapterType.POPULAR_FOOD_LIST)
             popularProtein_rv.adapter = popularProteinAdapter
 
     }
     private fun getSampleProteinList(order: Int){
+
+        if(order == 1){
+            recentList.clear()
+
+        }else if(order == 2){
+            valueForMoneyList.clear()
+
+        }else{// order ==3
+            popularList.clear()
+
+        }
+
 
         foodRetrofitHelper.searchMainFoodList(order, object : FoodRetrofitHelper.MainFoodListCallback {
 
@@ -139,26 +161,34 @@ class FragmentHome : Fragment() {
                     val quantity = getIntFromJson(item, "수량")
                     val brand = getStringFromJson(item, "브랜드")
 
-                    val fooditem = FoodItem(key, name, taste, price,capacity, capacityUnit, image, costPerformance, quantity, brand)
+                    val fooditem = FoodItem(key, name, taste, price,capacity, capacityUnit, image, costPerformance, quantity, brand, ViewType.FOOD_CARDVIEW_TYPE)
 
                     if(order == 1){
+
                         recentList.add(fooditem)
 
                     }else if(order == 2){
+
                         valueForMoneyList.add(fooditem)
 
                     }else{// order ==3
+
                         popularList.add(fooditem)
 
                     }
 
                 }
 
+                val more_btn_item = FoodItem(viewType = ViewType.MORE_BUTTON_TYPE)
                 if(order==1){
+
+                    recentList.add(more_btn_item)
                     recentProteinAdapter.setItem_list(recentList)
                 }else if(order == 2){
+                    valueForMoneyList.add(more_btn_item)
                     valueForMoneyAdapter.setItem_list(valueForMoneyList)
                 }else {
+                    popularList.add(more_btn_item)
                     popularProteinAdapter.setItem_list(popularList)
                 }
 
@@ -188,15 +218,65 @@ class FragmentHome : Fragment() {
         recentProtein_tv = binding.recentProteinMoreTV
         valueForMoney_tv = binding.valueForMoneyMoreTV
 
-        //리사이클러뷰 초기화
-
-//        recentList = ArrayList<FoodItem>()
-//        popularList = ArrayList<FoodItem>()
-//        valueForMoneyList = ArrayList<FoodItem>()
+        // 검색창
+        protein_search_sv = binding.proteinSV
 
     }
     private fun initListener(){
         // 리스너 초기화
+
+       val recent_rv_Listener = object : FoodListAdapter.OnItemClickListener {
+            override fun onItemClick(v: View?, position: Int) {
+                Log.i ("recent_rv_Listener", "itemclick : "+position )
+            }
+
+            override fun onMoreClick(v: View?, position: Int) {
+                Log.i ("recent_onMoreClick", "recentmore : "+v )
+            }
+        }
+        val popular_rv_Listener = object  : FoodListAdapter.OnItemClickListener {
+            override fun onItemClick(v: View?, position: Int) {
+                Log.i ("popular_rv_Listener", "itemclick : "+position )
+            }
+
+            override fun onMoreClick(v: View?, position: Int) {
+                Log.i ("popular_onMoreClick", "recentmore : "+v )
+            }
+
+        }
+        val valueForMoney_rv_Listener = object  : FoodListAdapter.OnItemClickListener{
+            override fun onItemClick(v: View?, position: Int) {
+                Log.i ("valueForMoney_rv_Listener", "itemclick : "+position )
+            }
+
+            override fun onMoreClick(v: View?, position: Int) {
+                Log.i ("valueForMoney_onMoreClick", "recentmore : "+v )
+            }
+
+        }
+        recentProteinAdapter.setOnItemClickListener(recent_rv_Listener)
+        valueForMoneyAdapter.setOnItemClickListener(valueForMoney_rv_Listener)
+        popularProteinAdapter.setOnItemClickListener(popular_rv_Listener)
+
+
+//        protein_search_sv.setOnClickListener {
+//            (activity as MainActivity?)!!.bottomNavigationView.selectedItemId = R.id.search_menu
+//        }
+
+        protein_search_sv.setOnSearchClickListener {
+
+        }
+
+        protein_search_sv.setOnQueryTextFocusChangeListener{ protein_search_sv, hasFocus ->
+            if(hasFocus) {
+                // 포커스 가지고 있는경우
+                (activity as MainActivity?)!!.bottomNavigationView.selectedItemId = R.id.search_menu
+                protein_search_sv.clearFocus()
+            }
+        }
+
+
+
 
     }
     private fun initUtils(){

@@ -11,6 +11,7 @@ data class FoodItem(
     val image: String = "",
     val costPerformance: Float = 0.0f,
     val quantity: Int = 0,
-    val brand: String = ""
+    val brand: String = "",
+    val viewType: Int = 1
 
 )

@@ -1,4 +1,4 @@
-package com.example.proteinpro
+package com.example.proteinpro.view
 
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -12,19 +12,20 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityLoginBinding
-import com.example.proteinpro.user.ActivityFindPassword_InputEmail
-import com.example.proteinpro.user.signup.ActivityBirthInput
+import com.example.proteinpro.view.user.ActivityFindPassword_InputEmail
+import com.example.proteinpro.view.user.signup.ActivityBirthInput
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.ApiClient
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.util.Retrofit.UserDataInterface
+import com.example.proteinpro.view.main.MainActivity
 import com.google.gson.JsonElement
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback

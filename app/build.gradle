@@ -55,4 +55,6 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.15.0" // 카카오 로그인
     implementation 'com.github.bumptech.glide:glide:4.12.0' // 이미지로딩 라이브러리
 
+    //flexboxLayout
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }
