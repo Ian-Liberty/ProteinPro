@@ -100,7 +100,6 @@ class MainActivity : AppCompatActivity() {
                 add(R.id.fl_container, fragment)
             }
             show(fragment)
-            addToBackStack(null)
             commit()
         }
         activeFragment = fragment

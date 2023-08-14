@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment
 import com.example.proteinpro.view.main.MainActivity
 import com.example.proteinpro.databinding.FragmentSearchBinding
 import com.example.proteinpro.util.Class.CategorySettings
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -47,11 +49,13 @@ class FragmentSearch : Fragment() {
 
 // 유틸 클래스
 
+    private lateinit var preferenceHelper: PreferenceHelper
+    private lateinit var retrofitHelper: RetrofitHelper
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         mainActivity = context as MainActivity// 컨텍스트 받아오기
-
 
     }
 
@@ -87,7 +91,11 @@ class FragmentSearch : Fragment() {
 
                 Log.i ("검색 시작", "검색어 : ${query}")
 
-                var fragment_search_result = FragmentSearch_result()
+                var fragment_search_result = FragmentSearch_result().apply {
+                    arguments = Bundle().apply {
+                        putString("searchQuery", query)
+                    }
+                }
                 mainActivity.switchFragment(fragment_search_result)
 
                 return true
@@ -118,6 +126,9 @@ class FragmentSearch : Fragment() {
 
     // 유틸 클래스 할당
     private fun initUtils() {
+
+        preferenceHelper = PreferenceHelper(context)
+        retrofitHelper = RetrofitHelper(context)
 
     }
 

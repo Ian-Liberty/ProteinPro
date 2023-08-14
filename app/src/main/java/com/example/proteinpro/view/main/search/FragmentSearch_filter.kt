@@ -84,56 +84,59 @@ class FragmentSearch_filter : Fragment() {
     private fun chipGeneration(){
 
         val filter_list = FilterSettings()
-        val effect_list = filter_list.getEffectItems()
-        val type_list = filter_list.getTypeItems()
-        val allergy_list = filter_list.getAllergyItems()
-        val taste_list = filter_list.getTasteItems()
-        val etc_list = filter_list.getEtcItems()
+        val effect_list = filter_list.effectFilterItems
+        val type_list = filter_list.kindFilterItems
+        val allergy_list = filter_list.allergyFilterItems
+        val taste_list = filter_list.tasteFilterItems
+        val etc_list = filter_list.etcFilterItems
 
         for(filter in effect_list) {
 
-            val chip = createChip(filter)
+            val chip = createFilterChip(filter)
 
             effect_cg.addView(chip)
         }
         for(filter in type_list) {
 
-            val chip = createChip(filter)
+            val chip = createFilterChip(filter)
 
 
             type_cg.addView(chip)
         }
         for(filter in allergy_list) {
 
-            val chip = createChip(filter)
+            val chip = createFilterChip(filter)
 
 
             allergy_cg.addView(chip)
         }
         for(filter in taste_list) {
 
-            val chip = createChip(filter)
+            val chip = createFilterChip(filter)
 
 
             taste_cg.addView(chip)
         }
         for(filter in etc_list) {
 
-            val chip = createChip(filter)
+            val chip = createFilterChip(filter)
 
             etc_cg.addView(chip)
         }
 
     }
 
-    private fun createChip(label: String): Chip {
+    private fun createFilterChip(filter: FilterSettings.FilterItem): Chip {
 
         val chip = ChipBinding.inflate(layoutInflater).root
-        chip.text = label
+        chip.text = filter.Key
         chip.textSize = 16F
 
+
         chip.setOnClickListener {
-            Log.i ("칩 클릭 이벤트", "이 Chip은 ${label} Chip 입니다.")
+
+            Log.i ("칩 클릭 이벤트", "이 Chip은 ${filter.Key} Chip 입니다. 요청할때 값은 ${filter.name} 입니다. child 값은 ${filter.child} 입니다.")
+
         }
 
         return chip
