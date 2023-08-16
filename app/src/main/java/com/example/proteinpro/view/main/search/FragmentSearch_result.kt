@@ -284,8 +284,8 @@ class FragmentSearch_result : Fragment() {
                 filter_cg.removeView(chip)
                 selectedChips.remove(filter)
                 Log.i ("칩 삭제 이벤트", "${filter} Chip 삭제")
+                Log.i ("칩 삭제 이벤트", "selectedChips: $selectedChips ")
                 setFilter()
-                initData()
             }
 
             chip.setOnClickListener {
@@ -505,6 +505,17 @@ class FragmentSearch_result : Fragment() {
     private fun setFilter(){
         val filterSettings = FilterSettings()
         val foundItems =filterSettings.findFilterItemsByKeys(selectedChips)
+        allNames.clear()
+        kindNames.clear()
+        allergyNames.clear()
+        tasteNames.clear()
+        etcNames.clear()
+
+        all = ""
+        kind = ""
+        allergy = ""
+        taste = ""
+        etc = ""
 
         for(item in foundItems) {
             if(item.type == FilterSettings.FilterType.ALL){
@@ -536,6 +547,7 @@ class FragmentSearch_result : Fragment() {
         // 초기화
         // data
         resultList.clear()
+        skip = 1
         initData()
 
     }

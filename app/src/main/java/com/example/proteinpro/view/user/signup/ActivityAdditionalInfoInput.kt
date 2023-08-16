@@ -50,8 +50,6 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
     private lateinit var six_seven_rb : RadioButton
     private lateinit var seven_hard : RadioButton
 
-
-
     // 전역 변수로 바인딩 객체 선언
     private var mBinding:
     ActivityAdditionalInfoInputBinding? =null
@@ -166,8 +164,6 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
 
                 }
 
-
-
             }
         }
 
@@ -236,5 +232,6 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
         // 다이얼로그 생성 및 표시
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
+
     }
 }
