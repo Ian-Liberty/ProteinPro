@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -60,6 +61,12 @@ class Fragment_Calculator : Fragment() {
     private lateinit var datePicker: DatePicker
     private lateinit var user_birth: String
 
+    //
+
+    private lateinit var help_iv : ImageView
+
+
+
     // 유틸 클래스
     // 유틸 함수 선언
     private lateinit var preferenceHelper: PreferenceHelper
@@ -88,14 +95,17 @@ class Fragment_Calculator : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initUtils()
-        initData()
         initViews()
         initListener()
-
+        initData()
     }
 
     // 리스너 선언
     private fun initListener() {
+
+        help_iv.setOnClickListener{
+            showPopupMessage(mainActivity, "","하루 탄단지 섭취량 계산은  Harris-Benedict(해리스-베네딕트 방정식)을 이용하여 기초대사량(BMR)을 계산과 활동량을 토대로 탄단지 비율에 맞게 계산됩니다.")
+        }
 
         next_btn.setOnClickListener {
 
@@ -106,7 +116,7 @@ class Fragment_Calculator : Fragment() {
                 val activityLevelCheckedId = activityLevel_rg.checkedRadioButtonId
 
                 val year = datePicker.year
-                val selectMonth = datePicker.month
+                val selectMonth = datePicker.month+1
                 val dayOfMonth = datePicker.dayOfMonth
                 val userBirth = "$year-$selectMonth-$dayOfMonth"
 
@@ -197,14 +207,71 @@ class Fragment_Calculator : Fragment() {
         six_seven_rb = binding.sixSevenRB
         seven_hard = binding.sevenHardRB
 
+        help_iv = binding.helpIV
+
     }
 
     // 현재 프래그먼트에서 필요한 데이터 받아오기
     private fun initData() {
+        // 정보가 존재하는 유저일 경우 초기값 넣어주기
+        val user = preferenceHelper.getUser()
+        if(user != null){
+
+            // 성별
+            if(user?.gender == 0){
+                // 여성일경우
+                genderRadioGroup.check(R.id.female)
+            }else{
+                // 남자일 경우
+                genderRadioGroup.check(R.id.male)
+            }
+
+            // 몸무게
+            if(user.weight == -1){
+
+            }else{
+                weight_et.setText(user.weight.toString())
+            }
+
+            // 키
+            if(user.height== -1){
+
+            }else{
+                height_et.setText(user.height.toString())
+            }
+
+            val birth = user.birthDate
+            val dateParts = birth.split("-")// 년 월 일 분리후 리스트로 만듦
+
+            // 생일
+            if(dateParts.size == 3) {// 정상분리될 경우 3이어야 함
+                val year = dateParts[0].toInt()
+                val month = dateParts[1].toInt() - 1 // 월은 0부터 시작하므로 1을 빼줌
+                val day = dateParts[2].toInt()
+
+                datePicker.updateDate(year, month, day)// 날짜 업데이트
+
+            }else{
+                Log.d("계산기 초기설정","생일정보 오류")
+            }
+
+            // 활동레벨
+
+            when(user.activityLevel){
+              User.ActivityLevel.SEDENTARY -> activityLevel_rg.check(R.id.never_RB)
+                User.ActivityLevel.LIGHTLY_ACTIVE -> activityLevel_rg.check(R.id.one_three_RB)
+                User.ActivityLevel.MODERATELY_ACTIVE -> activityLevel_rg.check(R.id.four_five_RB)
+                User.ActivityLevel.VERY_ACTIVE -> activityLevel_rg.check(R.id.six_seven_RB)
+                User.ActivityLevel.EXTRA_ACTIVE -> activityLevel_rg.check(R.id.seven_hard_RB)
+            }
+
+        }
 
     }
     // 유틸 클래스 할당
     private fun initUtils() {
+
+        preferenceHelper = PreferenceHelper(mainActivity)
 
     }
 
@@ -236,5 +303,16 @@ class Fragment_Calculator : Fragment() {
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
 
+    }
+
+    fun showPopupMessage(context: Context, title: String, message: String) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 }

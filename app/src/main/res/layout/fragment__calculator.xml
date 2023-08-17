@@ -135,11 +135,12 @@
                     android:orientation="horizontal">
                     <EditText
                         android:id="@+id/height_ET"
-                        android:layout_width="wrap_content"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="14sp"
                         android:maxLength="3"
+                        android:inputType="number"
                         android:singleLine="true"/>
                     <TextView
                         android:id="@+id/cm_TV"
@@ -150,11 +151,12 @@
                         android:text="cm"/>
                     <EditText
                         android:id="@+id/weight_ET"
-                        android:layout_width="wrap_content"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="14sp"
                         android:maxLength="3"
+                        android:inputType="number"
                         android:singleLine="true"/>
                     <TextView
                         android:id="@+id/kg_TV"

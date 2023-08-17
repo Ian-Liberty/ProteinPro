@@ -100,6 +100,9 @@ interface UserDataInterface {
     @POST("user/token")
     fun 사용자토큰체크(@Body request: 토큰기본) : Call<JsonElement?>?
 
+    @POST("user/info")
+    fun 사용자정보불러오기(@Body request: 토큰기본) : Call<JsonElement?>?
+
 
 
 }

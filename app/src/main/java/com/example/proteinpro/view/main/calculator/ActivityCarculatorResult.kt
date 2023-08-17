@@ -1,5 +1,6 @@
 package com.example.proteinpro.view.main.calculator
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Spannable
@@ -8,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityCarculatorResultBinding
 import com.example.proteinpro.util.Class.HarrisBenedict1919Calculator
@@ -21,8 +23,11 @@ class ActivityCarculatorResult : AppCompatActivity() {
     lateinit var fat_tv : TextView
     lateinit var bmi_tv : TextView
     //
-    lateinit var intakeHelp_iv : ImageView
-    lateinit var bmiHelp_iv : ImageView
+
+    private lateinit var help_iv : ImageView
+    private lateinit var bmiHelp_iv : ImageView
+    private lateinit var intakeHelp_iV : ImageView
+
 
 
     // 전역 변수로 바인딩 객체 선언
@@ -31,8 +36,6 @@ class ActivityCarculatorResult : AppCompatActivity() {
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,12 +82,34 @@ class ActivityCarculatorResult : AppCompatActivity() {
         fat_tv = binding.fatTV
         bmi_tv = binding.BMITV
 
-        intakeHelp_iv = binding.IntakeHelpIV
+        intakeHelp_iV = binding.IntakeHelpIV
         bmiHelp_iv = binding.BMIHelpIV
+        help_iv = binding.helpIV
 
     }
     private fun initListener(){
         // 리스너 초기화
+
+        help_iv.setOnClickListener {
+            showPopupMessage(this, "",
+            "하루 탄단지 섭취량 계산은  Harris-Benedict(해리스-베네딕트 방정식)을 이용하여 기초대사량(BMR)을 계산과 활동량을 토대로 탄단지 비율에 맞게 계산됩니다."
+                )
+        }
+        bmiHelp_iv.setOnClickListener {
+            showPopupMessage(this, "",
+                "BMI(Body Mass Index)란?\n" +
+                        "인간의 비만도를 나타내는 지수로, 체중과 키의 관계로 계산됩니다."
+            )
+
+        }
+        intakeHelp_iV.setOnClickListener {
+            showPopupMessage(this, "",
+                "● 탄수화물을 적게 섭취하면 지방이 에너지원으로 사용되어 효과적으로 체지방을 줄일 수 있어요.\n" +"\n"+
+                        "● 단백질은 장기간 과잉 섭취했을 때 대사질환 발생 위험이 높아질 수 있어요. 체중2배(kg당 2g)이상을 목표로 잡는 경우 매년 검진으로 신과 간기능, 대사질환 관련 수치를 확인하고 조절해주세요.\n" +"\n"+
+                        "● 지방은 탄수화물, 단백질에 비해 칼로리가 높아 체지방으로 쌓이기 쉬우니 20% 정도로 조절하는 좋아요."
+            )
+
+        }
 
     }
     private fun initUtils(){
@@ -135,5 +160,16 @@ class ActivityCarculatorResult : AppCompatActivity() {
 
         return spannable
 
+    }
+
+    fun showPopupMessage(context: Context, title: String, message: String) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("확인") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 }

@@ -1,4 +1,5 @@
 package com.example.proteinpro.view.main.home
+import android.content.Intent
 
 import android.content.Context
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.example.proteinpro.util.RecyclerView.FoodItem
 import com.example.proteinpro.util.RecyclerView.FoodListAdapter
 import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
 import com.example.proteinpro.view.main.MainActivity
+import com.example.proteinpro.view.main.search.ActivityFoodInformation
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 
@@ -228,6 +230,9 @@ class FragmentHome : Fragment() {
        val recent_rv_Listener = object : FoodListAdapter.OnItemClickListener {
             override fun onItemClick(v: View?, position: Int) {
                 Log.i ("recent_rv_Listener", "itemclick : "+position )
+
+                val mIntent = Intent(mainActivity, ActivityFoodInformation::class.java)
+                startActivity(mIntent)
             }
 
             override fun onMoreClick(v: View?, position: Int) {

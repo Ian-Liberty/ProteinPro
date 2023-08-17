@@ -6,15 +6,16 @@ package com.example.proteinpro.util.Class
 //
 //User 클래스를 Serializable 인터페이스를 사용하여 직렬화시켜 줌으로 써 User 객체는 intent에 putExtra 를 통해 전달 할 수 있습니다.
 import java.io.Serializable
+import com.example.proteinpro.util.Class.User.ActivityLevel as ActivityLevel
 
 data class User(
     var email: String = "",
     var nickname: String = "",
     var birthDate: String = "",
     var password: String = "",
-    var height: Int = 0,
-    var weight: Int = 0,
-    var gender: Int = -1,
+    var height: Int = -1,
+    var weight: Int = -1,
+    var gender: Int = -1,// 여성0 남성1
     var activityLevel: ActivityLevel = ActivityLevel.SEDENTARY
 ): Serializable {
     // 활동량을 정의하기 위한 enum 클래스
@@ -23,8 +24,38 @@ data class User(
         LIGHTLY_ACTIVE, // 가벼운 활동 ("주 1-3회 가벼운 운동")
         MODERATELY_ACTIVE, // 보통의 활동 ("주 4-5회 가볍거나 적당한 운동")
         VERY_ACTIVE, // 매우 활동적 ("주6-7회 적당한 운동/ 주3-4회 격한 운동" )
-        EXTRA_ACTIVE // 매우 활동적 ("주 7회 격한 운동")
+        EXTRA_ACTIVE // 매우 활동적 ("주 7회 격한 운동");
+
+
     }
+    companion object {
+        fun getActivitylevel(levelInt : Int): ActivityLevel {
+
+            return when(levelInt){
+                1 -> ActivityLevel.SEDENTARY
+                2 -> ActivityLevel.LIGHTLY_ACTIVE
+                3 -> ActivityLevel.MODERATELY_ACTIVE
+                4 -> ActivityLevel.VERY_ACTIVE
+                5 -> ActivityLevel.EXTRA_ACTIVE
+                else -> {
+                    ActivityLevel.SEDENTARY
+                }
+            }
+
+        }
+
+        fun getActivitylevelString(activityLevel : ActivityLevel) : String {
+            return when (activityLevel) {
+                ActivityLevel.SEDENTARY -> "운동 전혀 안함"
+                ActivityLevel.LIGHTLY_ACTIVE ->"주 1-3회 가벼운 운동"
+                ActivityLevel.MODERATELY_ACTIVE -> "주 4-5회 가볍거나 적당한 운동"
+                ActivityLevel.VERY_ACTIVE -> "주6-7회 적당한 운동/ 주3-4회 격한 운동"
+                ActivityLevel.EXTRA_ACTIVE -> "주 7회 격한 운동"
+            }
+        }
+    }
+
+
 
     fun getActivityLevelIntensity(): Int {
         return when (activityLevel) {
