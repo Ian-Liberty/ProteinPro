@@ -7,8 +7,8 @@ class ServerData {
     // java static 과 유사
     companion object {
 
-        const val Server_URL = "http://49.247.132.156/api/"
-        const val public_URL = "http://49.247.132.156"
+        const val Server_URL = "http://203.234.103.123/api/"
+        const val public_URL = "http://203.234.103.123"
         const val img_URL = Server_URL+"img/food/"
 
         //

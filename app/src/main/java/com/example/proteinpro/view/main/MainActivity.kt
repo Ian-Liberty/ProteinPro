@@ -2,8 +2,12 @@ package com.example.proteinpro.view.main
 import android.util.Log
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.proteinpro.view.main.anotherContents.FragmentAnother_Contents
 import com.example.proteinpro.view.main.home.FragmentHome
 import com.example.proteinpro.view.main.userInfo.FragmentUserInfo
@@ -15,23 +19,24 @@ import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.view.main.search.FragmentSearch
 import com.example.proteinpro.view.main.search.FragmentSearch_result
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import java.util.Stack
 
 
 class MainActivity : AppCompatActivity() {
 
+
+
     private var fragmentHome = FragmentHome()
     // 검색 관련 프래그먼트
     private var fragmentSearch = FragmentSearch()
-    private var fragmentsearchResult =FragmentSearch_result()
 
     private var fragmentCalculator = Fragment_Calculator()
     private var fragmentAnotherContents = FragmentAnother_Contents()
     private var fragmentUserInfo = FragmentUserInfo()
 
     lateinit var bottomNavigationView: BottomNavigationView
-    private val fragmentManager = supportFragmentManager
-    private var activeFragment: Fragment = fragmentHome
+    private val fm = supportFragmentManager
+
 
     // util함수
     private lateinit var preferenceHelper: PreferenceHelper
@@ -56,30 +61,48 @@ class MainActivity : AppCompatActivity() {
         //유저 정보 불러와서 쉐어드에 유저 정보로 등록
 
 //        setBottomNavi()
+
         bottomNavigationView = binding.mainBNV
+
+        // 초기 플래그먼트 설정
+        supportFragmentManager.beginTransaction().replace(R.id.fl_container, fragmentHome, "fragmentHome").commitAllowingStateLoss()
+
         bottomNavigationView.setOnItemSelectedListener {
-            val newFragment = when (it.itemId) {
-                R.id.home_menu -> fragmentHome
-                R.id.search_menu -> fragmentSearch
-                R.id.calculate_menu -> fragmentCalculator
-                R.id.etc_menu -> fragmentAnotherContents
-                R.id.user_menu -> fragmentUserInfo
-                else -> null
+
+            Log.i ("프래그먼트", ""+it.itemId)
+
+            when (it.itemId) {
+                    R.id.home_menu -> {
+                        Log.i ("프래그먼트", "home_menu")
+                        switchFragment(fragmentHome,"fragmentHome" )
+
+                }
+                    R.id.search_menu -> {
+                        Log.i ("프래그먼트", "search_menu")
+                        switchFragment(fragmentSearch,"fragmentSearch" )
+
+                }
+                    R.id.calculate_menu -> {
+                        Log.i ("프래그먼트", "calculate_menu")
+                        switchFragment(fragmentCalculator,"fragmentCalculator" )
+
+                }
+                    R.id.etc_menu -> {
+                        Log.i ("프래그먼트", "etc_menu")
+                        switchFragment(fragmentAnotherContents,"fragmentAnotherContents" )
+
+                }
+                    R.id.user_menu -> {
+                        Log.i ("프래그먼트", "user_menu")
+                        switchFragment(fragmentUserInfo,"fragmentUserInfo" )
+                }
 
             }
 
-            if (newFragment != null && newFragment != activeFragment) {
-                switchFragment(newFragment)
-            }
 
             true
         }
 
-        if (savedInstanceState == null) {
-            switchFragment(fragmentHome)
-        } else {
-            // 복원 로직이 있다면 여기에서 상태를 복원
-        }
 
         initUtils()
 
@@ -123,10 +146,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-//    private fun switchFragment(fragment: Fragment) {
-//        fragmentManager.beginTransaction().hide(activeFragment).show(fragment).commit()
-//        activeFragment = fragment
-//    }
+    fun switchFragment(fragment: Fragment , tag: String) {
+        val transaction = fm.beginTransaction()
+        transaction.replace(R.id.fl_container, fragment, tag)
+        transaction.addToBackStack(tag)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        transaction.commit()
+    }
 
     private fun initViews(){
         // 뷰 초기화
@@ -142,25 +168,45 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun switchFragment(fragment: Fragment, selectedItemId: Int? = null) {
-        fragmentManager.beginTransaction().apply {
-            activeFragment?.let { hide(it) }
-            if (!fragment.isAdded) {
-                add(R.id.fl_container, fragment)
-            }
-            show(fragment)
-            commit()
-        }
-        activeFragment = fragment
+//    fun switchFragment(fragment: Fragment, selectedItemId: Int? = null) {
+////        fragmentManager.beginTransaction().apply {
+////            activeFragment?.let { hide(it) }
+////            if (!fragment.isAdded) {
+////                add(R.id.fl_container, fragment)
+////
+////            }
+////
+////            show(fragment)
+////            commit()
+////        }
+//        activeFragment = fragment
+//        fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.fl_container, fragment).commit()
+//
+//        selectedItemId?.let{bottomNavigationView.selectedItemId = it}
+//    }
 
-        selectedItemId?.let{bottomNavigationView.selectedItemId = it}
+    private fun updateBottomMenu(navigation: BottomNavigationView) {
+        Log.i ("updateBottomMenu", "updateBottomMenu")
+
+        val tag1: Fragment? = supportFragmentManager.findFragmentByTag("fragmentHome")
+        val tag2: Fragment? = supportFragmentManager.findFragmentByTag("fragmentSearch")
+        val tag3: Fragment? = supportFragmentManager.findFragmentByTag("fragmentCalculator")
+        val tag4: Fragment? = supportFragmentManager.findFragmentByTag("fragmentAnotherContents")
+        val tag5: Fragment? = supportFragmentManager.findFragmentByTag("fragmentUserInfo")
+        val tag6: Fragment? = supportFragmentManager.findFragmentByTag("fragment_search_result")
+
+        if(tag1 != null && tag1.isVisible) {navigation.menu.findItem(R.id.home_menu).isChecked = true }
+        if(tag2 != null && tag2.isVisible) {navigation.menu.findItem(R.id.search_menu).isChecked = true }
+        if(tag3 != null && tag3.isVisible) {navigation.menu.findItem(R.id.calculate_menu).isChecked = true }
+        if(tag4 != null && tag4.isVisible) {navigation.menu.findItem(R.id.etc_menu).isChecked = true }
+        if(tag5 != null && tag5.isVisible) {navigation.menu.findItem(R.id.user_menu).isChecked = true }
+        if(tag6 != null && tag6.isVisible) {navigation.menu.findItem(R.id.search_menu).isChecked = true }
+
     }
-
     override fun onBackPressed() {
-        if (fragmentManager.backStackEntryCount > 0) {
-            fragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
-        }
+        Log.i ("백버튼", "onBackPressed")
+        super.onBackPressed()
+
+        updateBottomMenu(bottomNavigationView)
     }
 }

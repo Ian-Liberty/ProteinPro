@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
@@ -71,6 +73,8 @@ class FragmentSearch_result : Fragment() {
     private lateinit var protein_search_sv : SearchView
     private lateinit var filter_btn: Button
     private lateinit var filter_cg: ChipGroup
+
+    private lateinit var back_btn: ImageButton
 
     // 리사이클러뷰
     private lateinit var result_rv: RecyclerView
@@ -142,6 +146,11 @@ class FragmentSearch_result : Fragment() {
 
     // 리스너 선언
     private fun initListener() {
+        back_btn.setOnClickListener {
+            mainActivity.onBackPressed()
+
+        }
+
         filter_btn.setOnClickListener {
 
             val mIntent = Intent(mainActivity, ActivitySearchFilter::class.java)
@@ -176,7 +185,7 @@ class FragmentSearch_result : Fragment() {
                         putString("searchQuery", query)
                     }
                 }
-                mainActivity.switchFragment(fragment_search_result)
+                mainActivity.switchFragment(fragment_search_result,"fragment_search_result")
 
                 return true
             }
@@ -201,6 +210,9 @@ class FragmentSearch_result : Fragment() {
         result_rv = binding.resultRV
         protein_search_sv = binding.proteinSV
         protein_search_sv.setQuery(searchQuery ,false)
+
+        back_btn = binding.backBtn
+
 
     }
 

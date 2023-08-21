@@ -4,12 +4,405 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.main.search.FragmentNutrient">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/blue"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_blue"
+            android:text="#NO_포화지방 #NO_콜레스테롤" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_marginVertical="10dp"
+            android:background="#C6C6C8" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/serving_size_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:text="1회 제공량(90g)"/>
+
+            <TextView
+                android:id="@+id/kcal_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="430 kcal"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="1회 제공량당"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:background="#C6C6C8" />
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="1일 영양성분 기준치에 대한 비율"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/protein_TV"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="단백질(230mg)"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="#C6C6C8" />
+            <ProgressBar
+                android:id="@+id/protein_PB"
+                android:layout_marginVertical="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progress="115"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/nutrient_progressbar"
+                />
+
+            <TextView
+                android:id="@+id/proteinPercent_TV"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="11.5%"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/salt_TV"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="나트륨(66g)"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="#C6C6C8" />
+            <ProgressBar
+                android:id="@+id/salt_PB"
+                android:layout_marginVertical="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progress="204"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/nutrient_progressbar"
+                />
+
+            <TextView
+                android:id="@+id/saltPercent_TV"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="20.4%"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/carboh_TV"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="탄수화물(16g)"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="#C6C6C8" />
+            <ProgressBar
+                android:id="@+id/carboh_PB"
+                android:layout_marginVertical="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progress="160"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/nutrient_progressbar"
+                />
+
+            <TextView
+                android:id="@+id/carbohPercent_TV"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="20.4%"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/sugar_TV"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="당류(16g)"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="#C6C6C8" />
+            <ProgressBar
+                android:id="@+id/sugar_PB"
+                android:layout_marginVertical="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progress="296"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/nutrient_progressbar"
+                />
+
+            <TextView
+                android:id="@+id/sugarPercent_TV"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="29.6%"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/fat_TV"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="지방(0g)"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="#C6C6C8" />
+            <ProgressBar
+                android:id="@+id/fat_PB"
+                android:layout_marginVertical="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progress="0"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/nutrient_progressbar"
+                />
+
+            <TextView
+                android:id="@+id/fatPercent_TV"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="0.0%"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/transFat_TV"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="트랜스지방(12g)"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="#C6C6C8" />
+            <ProgressBar
+                android:id="@+id/transFat_PB"
+                android:layout_marginVertical="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progress="800"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/nutrient_progressbar"
+                />
+
+            <TextView
+                android:id="@+id/transFatPercent_TV"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="80.0%"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/saturatedFat_TV"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="포화지방(5mg)"/>
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="#C6C6C8" />
+            <ProgressBar
+                android:id="@+id/saturatedFat_PB"
+                android:layout_marginVertical="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progress="017"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/nutrient_progressbar"
+                />
+
+            <TextView
+                android:id="@+id/saturatedFatPercent_TV"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:text="1.7%"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+
+
+
+
+
+    </LinearLayout>
+
+
+
 
 </FrameLayout>

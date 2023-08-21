@@ -242,6 +242,9 @@ class FragmentHome : Fragment() {
         val popular_rv_Listener = object  : FoodListAdapter.OnItemClickListener {
             override fun onItemClick(v: View?, position: Int) {
                 Log.i ("popular_rv_Listener", "itemclick : "+position )
+
+                val mIntent = Intent(mainActivity, ActivityFoodInformation::class.java)
+                startActivity(mIntent)
             }
 
             override fun onMoreClick(v: View?, position: Int) {
@@ -252,6 +255,9 @@ class FragmentHome : Fragment() {
         val valueForMoney_rv_Listener = object  : FoodListAdapter.OnItemClickListener{
             override fun onItemClick(v: View?, position: Int) {
                 Log.i ("valueForMoney_rv_Listener", "itemclick : "+position )
+
+                val mIntent = Intent(mainActivity, ActivityFoodInformation::class.java)
+                startActivity(mIntent)
             }
 
             override fun onMoreClick(v: View?, position: Int) {
@@ -279,9 +285,6 @@ class FragmentHome : Fragment() {
                 protein_search_sv.clearFocus()
             }
         }
-
-
-
 
     }
     private fun initUtils(){

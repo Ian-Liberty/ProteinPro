@@ -111,6 +111,18 @@
                 tools:layout_editor_absoluteY="144dp" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/noResult_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="검색 결과가 없습니다."
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/filter_LL"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_LL" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/result_RV"
             android:layout_width="match_parent"

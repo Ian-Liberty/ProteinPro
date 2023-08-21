@@ -7,12 +7,13 @@
     tools:context=".view.main.search.ActivityFoodInformation">
 
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,61 +21,66 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/test_typebox_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/round_background_border_blue"
                     android:padding="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="프로틴 타입박스"/>
+                    android:text="프로틴 타입박스" />
+
                 <TextView
                     android:id="@+id/test_typebox_TV2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/round_background_border_blue"
                     android:padding="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="프로틴 타입박스"/>
+                    android:text="프로틴 타입박스" />
 
             </LinearLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:src="@drawable/foodtest"
-                android:scaleType="centerInside"
                 android:layout_marginVertical="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/foodtest"
 
                 />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end">
+                android:gravity="end"
+                android:orientation="horizontal">
+
                 <TextView
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#007AFF"
                     android:layout_marginLeft="5dp"
-                    android:text="#영양태그"/>
+                    android:text="#영양태그"
+                    android:textColor="#007AFF" />
+
                 <TextView
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#007AFF"
                     android:layout_marginLeft="5dp"
-                    android:text="#영양태그"/>
+                    android:text="#영양태그"
+                    android:textColor="#007AFF" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -82,17 +88,19 @@
 
                 <TextView
                     android:id="@+id/company_TV"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="회사명: 회사명"/>
+                    android:layout_weight="1"
+                    android:text="회사명: 회사명" />
+
                 <TextView
                     android:id="@+id/brand_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="브랜드: 브랜드"/>
+                    android:text="브랜드: 브랜드" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -100,17 +108,19 @@
 
                 <TextView
                     android:id="@+id/capacity_TV"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="용량: 용량_단위(g)"/>
+                    android:layout_weight="1"
+                    android:text="용량: 용량_단위(g)" />
+
                 <TextView
                     android:id="@+id/number_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="개수: 100개"/>
+                    android:text="개수: 100개" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -118,32 +128,33 @@
 
                 <TextView
                     android:id="@+id/price_TV"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="가격: n원"
                     android:textColor="#FF3B30"
-                    android:textStyle="bold"
                     android:textSize="18sp"
-                    android:text="가격: n원"/>
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/price_per_gram_of_protein_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="단백질 1g 당 n원"
                     android:textColor="#FF3B30"
-                    android:textStyle="bold"
                     android:textSize="18sp"
-                    android:text="단백질 1g 당 n원"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
                 android:layout_margin="5dp"
                 android:background="#F0F0F0"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/additive_title_TV"
@@ -203,6 +214,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2px"
@@ -211,34 +223,88 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linear_layout" />
+
             <TextView
                 android:id="@+id/allergy_ingredient_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
-                android:textSize="18sp"
-                android:text="알레르기 성분"/>
+                android:text="알레르기 성분"
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical">
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/foodtest"/>
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/foodtest" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="돼지고기"/>
+                    android:text="돼지고기" />
 
             </LinearLayout>
 
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:background="#C6C6C8"
+                app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linear_layout" />
+
+            <LinearLayout
+                android:id="@+id/AI_LL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/AI_reaview_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="AI리뷰"/>
+                <ImageView
+                    android:id="@+id/help_IV"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/baseline_help_outline_24" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/good_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="GOOD 👍"/>
+
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/good_CG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/bad_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="BAD 👎"/>
 
             <View
                 android:layout_width="match_parent"
@@ -259,17 +325,20 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="영양성분"/>
+                    android:text="영양성분" />
+
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="단백질정보"/>
+                    android:text="단백질정보" />
+
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="원료정보"/>
+                    android:text="원료정보" />
 
             </com.google.android.material.tabs.TabLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/const_vp"
                 android:layout_width="match_parent"
@@ -286,5 +355,87 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
+
+            <ImageView
+                android:id="@+id/favorite_IV"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/baseline_favorite_border_24"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="11dp" />
+
+            <TextView
+                android:id="@+id/favorite_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30"
+                tools:layout_editor_absoluteX="24dp"
+                tools:layout_editor_absoluteY="35dp" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/product_purchase_BTN"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/btn_ripple"
+            android:text="사러가기"
+            android:textColor="@drawable/txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/write_review_BTN"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.444" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/write_review_BTN"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/btn_ripple"
+            android:text="리뷰작성"
+            android:textColor="@drawable/txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/product_purchase_BTN"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.444" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

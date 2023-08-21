@@ -200,7 +200,7 @@ class FoodRetrofitHelper(context: Context?) {
                         // JSON을 파싱하여 리스트로 변환하는 작업 수행
                         if(jsonResponse.get("메세지").asString == "true"){
                             val data = jsonResponse.get("데이터").asJsonObject
-                            val more_data = data.get("데이터").asJsonObject
+                            val more_data = data.get("식품리스트").asJsonObject
 
                             val foodList = more_data.get("식품목록").asJsonArray
 

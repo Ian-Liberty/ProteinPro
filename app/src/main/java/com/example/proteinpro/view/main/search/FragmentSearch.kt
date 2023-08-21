@@ -38,14 +38,6 @@ class FragmentSearch : Fragment() {
 
     private lateinit var category_cg : ChipGroup
 
-    private lateinit var supplement_tv: TextView
-    private lateinit var Protein_beverage_tv: TextView
-    private lateinit var proteinBar_tv: TextView
-    private lateinit var ALL_tv: TextView
-    private lateinit var chickenBreast_tv: TextView
-    private lateinit var proteinSausage_tv: TextView
-    private lateinit var chickenBrestStake_tv: TextView
-    private lateinit var ETC_tv: TextView
 
 // 유틸 클래스
 
@@ -85,6 +77,9 @@ class FragmentSearch : Fragment() {
 
     // 리스너 선언
     private fun initListener() {
+        back_btn.setOnClickListener {
+            mainActivity.onBackPressed()
+        }
 
         protein_search_sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -96,7 +91,7 @@ class FragmentSearch : Fragment() {
                         putString("searchQuery", query)
                     }
                 }
-                mainActivity.switchFragment(fragment_search_result)
+                mainActivity.switchFragment(fragment_search_result, "fragment_search_result")
 
                 return true
             }
@@ -116,6 +111,7 @@ class FragmentSearch : Fragment() {
         chipGeneration()
 
         protein_search_sv =binding.proteinSV
+        back_btn =binding.backBtn
 
     }
 
@@ -153,7 +149,7 @@ class FragmentSearch : Fragment() {
                 var fragment_search_result = FragmentSearch_result()
                 fragment_search_result.arguments = bundle
 
-                mainActivity.switchFragment(fragment_search_result)
+                mainActivity.switchFragment(fragment_search_result, "fragment_search_result")
 
             }
 
@@ -161,4 +157,6 @@ class FragmentSearch : Fragment() {
         }
 
     }
+
+
 }

@@ -5,11 +5,214 @@
     android:layout_height="match_parent"
     tools:context=".view.main.search.FragmentMaterial">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#59F620"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/help_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EWG등급이란?"/>
+            <ImageView
+                android:id="@+id/Intake_help_IV"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="10dp"
+                android:src="@drawable/baseline_help_outline_24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/unmarked_LL"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:id="@+id/unmarked_count_TV"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:background="@drawable/round_material_icon_gray"
+                    android:text="1"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/unmarked_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="미표기"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/safe_LL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:id="@+id/safe_count_TV"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:background="@drawable/round_material_icon_green"
+                    android:text="1"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/safe_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="안전"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/note_LL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:id="@+id/note_count_TV"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:background="@drawable/round_material_icon_yellow"
+                    android:text="1"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/note_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="유의"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/danger_LL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:id="@+id/danger_count_TV"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:background="@drawable/round_material_icon_red"
+                    android:text="1"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/danger_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="위험"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/serving_size_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:text="성분"/>
+
+        <TextView
+            android:id="@+id/kcal_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:text="용도"
+            />
+    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/material_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_margin="10dp"
+            android:text="원재료"/>
+        <TextView
+            android:id="@+id/materialList_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="원재료 목록!"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+        <TextView
+            android:id="@+id/origin_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_margin="10dp"
+            android:text="원본"/>
+        <TextView
+            android:id="@+id/originList_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="원본 목록!"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#C6C6C8" />
+
+
+
+
+    </LinearLayout>
+
+
+
 
 </FrameLayout>
