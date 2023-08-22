@@ -228,10 +228,12 @@ class FragmentHome : Fragment() {
         // 리스너 초기화
 
        val recent_rv_Listener = object : FoodListAdapter.OnItemClickListener {
-            override fun onItemClick(v: View?, position: Int) {
+            override fun onItemClick(v: View?, position: Int, item: FoodItem) {
                 Log.i ("recent_rv_Listener", "itemclick : "+position )
 
                 val mIntent = Intent(mainActivity, ActivityFoodInformation::class.java)
+                val key = item.key
+                mIntent.putExtra("food_key", key)
                 startActivity(mIntent)
             }
 
@@ -240,10 +242,12 @@ class FragmentHome : Fragment() {
             }
         }
         val popular_rv_Listener = object  : FoodListAdapter.OnItemClickListener {
-            override fun onItemClick(v: View?, position: Int) {
+            override fun onItemClick(v: View?, position: Int, item: FoodItem) {
                 Log.i ("popular_rv_Listener", "itemclick : "+position )
 
                 val mIntent = Intent(mainActivity, ActivityFoodInformation::class.java)
+                val key = item.key
+                mIntent.putExtra("food_key", key)
                 startActivity(mIntent)
             }
 
@@ -253,10 +257,12 @@ class FragmentHome : Fragment() {
 
         }
         val valueForMoney_rv_Listener = object  : FoodListAdapter.OnItemClickListener{
-            override fun onItemClick(v: View?, position: Int) {
+            override fun onItemClick(v: View?, position: Int, item: FoodItem) {
                 Log.i ("valueForMoney_rv_Listener", "itemclick : "+position )
 
                 val mIntent = Intent(mainActivity, ActivityFoodInformation::class.java)
+                val key = item.key
+                mIntent.putExtra("food_key", key)
                 startActivity(mIntent)
             }
 

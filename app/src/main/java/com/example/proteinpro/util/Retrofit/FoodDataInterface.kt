@@ -80,4 +80,13 @@ interface FoodDataInterface {
     ): Call<JsonElement?>?
 
 
+    // 제품단일조회
+    @GET("food/{food_id}")
+    fun getFoodData(
+
+        @Path("food_id") category: String
+
+    ): Call<JsonElement?>?
+
+
 }

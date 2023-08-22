@@ -18,7 +18,7 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
 
     private var mListener: OnItemClickListener? = null
     interface OnItemClickListener {
-        fun onItemClick(v: View?, position: Int)
+        fun onItemClick(v: View?, position: Int, item: FoodItem)
         fun onMoreClick(v: View?, position: Int)
     }
 
@@ -92,18 +92,12 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
         val proteinPerGram_TV: TextView = itemView.findViewById(R.id.proteinPerGram_TV)
 
         init {
-            itemView.setOnClickListener{
-                val pos = adapterPosition
-                if(pos != RecyclerView.NO_POSITION){
-                    //리스너 객체의 메서드 호출
-                    Log.i ("리사이클러뷰 정보", "pos : $pos")
-                    mListener?.onItemClick(itemView, pos)
 
-                }
-            }
         }
 
         fun setdata(context: Context, item: FoodItem ) {
+
+
             //        Glide.with(context).load(ServerData.img_URL+item.image).into(holder.food_img_IV)
             // 본서버 적용시 위 코드를 사용할 것
             Glide.with(context).load(ServerData.img_URL+"셀렉스프로틴복숭아.JPG").into(food_img_IV)
@@ -114,6 +108,17 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
             proteinPerGram_TV.text = "단백질 1g 당 ${item.costPerformance} 원"
 
             // 이미지 설정 등 추가적인 작업이 필요하면 여기에 작성
+
+            itemView.setOnClickListener{
+                val pos = adapterPosition
+
+                    if(pos != RecyclerView.NO_POSITION){
+                        //리스너 객체의 메서드 호출
+                        Log.i ("리사이클러뷰 정보", "pos : $pos")
+                        mListener?.onItemClick(itemView, pos, item)
+
+                    }
+            }
 
         }
 
@@ -158,15 +163,7 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
         val proteinPerGram_TV: TextView = itemView.findViewById(R.id.proteinPerGram_TV)
 
         init {
-            itemView.setOnClickListener{
-                val pos = adapterPosition
-                if(pos != RecyclerView.NO_POSITION){
-                    //리스너 객체의 메서드 호출
-                    Log.i ("리사이클러뷰 정보", "pos : $pos")
-                    mListener?.onItemClick(itemView, pos)
 
-                }
-            }
         }
 
         fun setdata(context: Context, item: FoodItem ) {
@@ -180,6 +177,16 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
             proteinPerGram_TV.text = "단백질 1g 당 ${item.costPerformance} 원"
 
             // 이미지 설정 등 추가적인 작업이 필요하면 여기에 작성
+
+            itemView.setOnClickListener{
+                val pos = adapterPosition
+                if(pos != RecyclerView.NO_POSITION){
+                    //리스너 객체의 메서드 호출
+                    Log.i ("리사이클러뷰 정보", "pos : $pos")
+                    mListener?.onItemClick(itemView, pos, item)
+
+                }
+            }
 
         }
 

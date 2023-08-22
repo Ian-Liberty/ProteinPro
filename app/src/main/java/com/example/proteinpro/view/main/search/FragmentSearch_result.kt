@@ -1,7 +1,6 @@
 package com.example.proteinpro.view.main.search
 import android.util.Log
 import android.app.Activity.RESULT_OK
-import android.app.Instrumentation.ActivityResult
 import android.content.Intent
 
 import android.content.Context
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
@@ -19,24 +17,20 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-import com.example.proteinpro.R
 import com.example.proteinpro.databinding.FragmentSearchResultBinding
 import com.example.proteinpro.util.Class.AdapterType
-import com.example.proteinpro.util.Class.CategorySettings
 import com.example.proteinpro.util.Class.FilterSettings
 import com.example.proteinpro.util.Class.FoodQuery
 import com.example.proteinpro.util.Class.ViewType
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.RecyclerView.FoodItem
 import com.example.proteinpro.util.RecyclerView.FoodListAdapter
-import com.example.proteinpro.util.Retrofit.FoodDataInterface
 import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
 import com.example.proteinpro.view.main.MainActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import java.lang.Math.log
 
 /**
  * A simple [Fragment] subclass.

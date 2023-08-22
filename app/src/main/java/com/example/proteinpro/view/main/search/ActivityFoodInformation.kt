@@ -1,8 +1,12 @@
 package com.example.proteinpro.view.main.search
+import android.util.Log
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.proteinpro.databinding.ActivityFoodInformationBinding
+import com.example.proteinpro.util.Class.food.FoodInformationItem
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
 import com.example.proteinpro.util.ViewPager2Adapter.ViewPager2Adapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -17,6 +21,12 @@ class ActivityFoodInformation : AppCompatActivity() {
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
+
+    // 유틸 클래스
+    private lateinit var foodRetrofitHelper: FoodRetrofitHelper
+    private lateinit var preferenceHelper: PreferenceHelper
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_food_information)
@@ -30,6 +40,8 @@ class ActivityFoodInformation : AppCompatActivity() {
 
         viewPager2Adapter = ViewPager2Adapter(this)
         binding.viewPager.adapter = viewPager2Adapter
+
+
 
         binding.tabLayout.addOnTabSelectedListener(object  : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -54,11 +66,42 @@ class ActivityFoodInformation : AppCompatActivity() {
                 2 -> tab.text = "원료정보"
             }
         }.attach()
+
+        initUtils()
+        initData()
+    }
+
+    private fun initData() {
+      val key =  intent.getStringExtra("food_key").toString()
+
+            foodRetrofitHelper.getFoodData(key, object : FoodRetrofitHelper.FoodDataCallback {
+                override fun onSuccess(foodData: FoodInformationItem) {
+                    Log.i ("getFoodData", ""+foodData)
+
+                }
+
+                override fun onFailure() {
+
+                }
+
+
+            })
     }
 
     private fun setViewPager(){
 
 
+    }
+    private fun initViews(){
+        // 뷰 초기화
+    }
+    private fun initListener(){
+        // 리스너 초기화
+    }
+    private fun initUtils(){
+        // 유틸 클래스 초기화
+
+        foodRetrofitHelper = FoodRetrofitHelper(this)
 
     }
 
