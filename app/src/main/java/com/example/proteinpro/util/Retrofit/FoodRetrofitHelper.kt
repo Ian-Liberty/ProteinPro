@@ -14,6 +14,7 @@ import com.example.proteinpro.util.Class.food.ProteinDataItem
 import com.example.proteinpro.util.RecyclerView.FoodItem
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import java.net.URLDecoder
 
@@ -32,7 +33,6 @@ class FoodRetrofitHelper(context: Context?) {
         fun onFailure()
     }
 
-
     fun parseJsonResponse(jsonResponse: JsonArray): ArrayList<FoodItem> {
         val foodItemList = ArrayList<FoodItem>()
         val gson = Gson()
@@ -44,8 +44,6 @@ class FoodRetrofitHelper(context: Context?) {
 
         return foodItemList
     }
-
-
 
     /***
      * 메인 페이지 food 리스트 받아오기
@@ -105,7 +103,6 @@ class FoodRetrofitHelper(context: Context?) {
 
 
     /***
-     * 기능 정의
      * 유저의 검색어 혹은 카테고리에
      * 받아야할 정보
      *
@@ -234,14 +231,14 @@ class FoodRetrofitHelper(context: Context?) {
 
     }
 
-    fun getFoodData(food_key: String, callback: FoodDataCallback){
+    fun getFoodData(food_key: String,token: String?, callback: FoodDataCallback){
 
         val retrofit = ApiClient.getApiClient()
         val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
 
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
-        val call = api.getFoodData(food_key)
+        val call = api.getFoodData(food_key, token)
 
         call?.enqueue(object : Callback<JsonElement?> {
 
@@ -282,7 +279,8 @@ class FoodRetrofitHelper(context: Context?) {
                             val price = foodData.get("가격").asInt
                             val capacity = foodData.get("용량").asDouble
                             val capacityUnit = foodData.get("단위").asString
-                            val image = foodData.get("판매링크").asString
+                            val image = foodData.get("이미지").asString
+                            val link = foodData.get("판매링크").asString
                             val costPerformance= foodData.get("가성비").asFloat
                             val quantity = foodData.get("수량").asInt
                             val brand= foodData.get("브랜드").asString
@@ -303,7 +301,7 @@ class FoodRetrofitHelper(context: Context?) {
                                 additiveList.add(additiveItem)
                             }
 
-                            val allergtListStr=foodData.get("알레르기").asString
+                            val allergtListStr= stringNullCheck(foodData.get("알레르기"))
                             val positiveReviewWords= aiReviewData.get("긍정단어").asString// 긍정단어 리스트
                             val negativeReviewWords =aiReviewData.get("부정단어").asString// 긍정단어 리스트
 
@@ -390,6 +388,19 @@ class FoodRetrofitHelper(context: Context?) {
                 callback.onFailure()
             }
         })
+
+    }
+
+    fun stringNullCheck(item: JsonElement) :  String{
+
+      return  if (!item.isJsonNull) {
+          item.asString
+        } else {
+            ""
+        }
+
+    }
+    fun arrayNullCheck(item: JsonArray){
 
     }
 

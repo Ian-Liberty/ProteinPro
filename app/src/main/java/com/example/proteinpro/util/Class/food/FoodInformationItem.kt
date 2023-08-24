@@ -15,7 +15,7 @@ data class FoodInformationItem(
  val company:String ="",// 회사
  val proteinTypeList : ArrayList<String> = ArrayList(),//프로틴 타입 리스트String
  val additiveList: ArrayList<AdditiveItem> = ArrayList(),//첨가물 리스트
- val allergtListStr: String="", //알러지 리스트 String
+ val allergyListStr: String="", //알러지 리스트 String
  val positiveReviewWords: String ="",// 긍정단어 리스트
  val negativeReviewWords: String ="",// 부정단어 리스트
  val tagList : ArrayList<String> = ArrayList(),// 태그 단어

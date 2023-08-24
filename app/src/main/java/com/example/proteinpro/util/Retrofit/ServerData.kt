@@ -12,7 +12,8 @@ class ServerData {
         const val img_URL = Server_URL+"img/food/"
 
         //이전 테섭 url 49.247.132.156
-        //203.234.103.123
+        //물리 테섭 203.234.103.123
+        // 운영 서버 175.207.29.173
 
     }
 

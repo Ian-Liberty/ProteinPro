@@ -1,60 +1,145 @@
 package com.example.proteinpro.view.main.search
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.example.proteinpro.R
+import com.example.proteinpro.databinding.FragmentMaterialBinding
+import com.example.proteinpro.util.Class.food.AdditiveItem
+import com.example.proteinpro.util.Class.food.FoodInformationItem
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FragmentMaterial.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FragmentMaterial : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class FragmentMaterial(private val foodData: FoodInformationItem) : Fragment() {
+    private lateinit var foodInformationActivity: ActivityFoodInformation
+
+    // 변수 입력
+    private lateinit var binding: FragmentMaterialBinding
+    // 뷰 객체
+
+    // 유틸 클래스
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        foodInformationActivity =  context as ActivityFoodInformation
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_material, container, false)
+        binding = FragmentMaterialBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initUtils()
+        initData()
+        initListener()
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentMaterial.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FragmentMaterial().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onResume() {
+        super.onResume()
+        binding.root.requestLayout()
+    }
+
+    // 리스너 선언
+    private fun initListener() {
+
+    }
+
+    // 현재 프래그먼트에서 필요한 데이터 받아오기
+    private fun initData() {
+
+        val additiveList = foodData.additiveList
+
+        var nullCount =0
+        var LowHazardCount =0
+        var ModerateHazardCount = 0
+        var HighHazard = 0
+
+        val materialListDataLL = binding.materialListDataLL
+
+
+        for(item in additiveList){
+            val itemView = layoutInflater.inflate(R.layout.additive_item, null)
+            var gradeStr =  AdditiveItem.getEwgGradeText(item.ewgGrade)
+            var name = item.name
+            var usage = item.purpose
+
+            // 아이템 뷰 내부의 뷰들을 가져오기
+            val gradeImageView = itemView.findViewById<ImageView>(R.id.EWG_grade_IV)
+            val nameTextView = itemView.findViewById<TextView>(R.id.name_TV)
+            val usageTextView = itemView.findViewById<TextView>(R.id.usage_TV)
+
+            var imageResource :Int = R.drawable.round_material_icon_gray
+
+            when(gradeStr) {
+                "미등록"-> {nullCount ++
+                            imageResource = R.drawable.round_material_icon_gray}
+                "안전" -> {LowHazardCount++
+                    imageResource = R.drawable.round_material_icon_green}
+                "주의" -> {ModerateHazardCount++
+                    imageResource = R.drawable.round_material_icon_yellow}
+                "위험" -> {HighHazard++
+                    imageResource = R.drawable.round_material_icon_red}
             }
+
+            gradeImageView.setImageResource(imageResource)
+            nameTextView.text = item.name
+            usageTextView.text = item.purpose
+
+            // 아이템 뷰를 레이아웃에 추가
+            materialListDataLL.addView(itemView)
+
+        }
+
+        fun setCount(count : Int, countTV: TextView, textTV: TextView){
+            if(count != 0){
+
+                countTV.setText(count.toString())
+                countTV.visibility= View.VISIBLE
+                textTV.visibility= View.VISIBLE
+
+            }else{
+
+                countTV.visibility= View.GONE
+                textTV.visibility= View.GONE
+
+            }
+        }
+
+        setCount(nullCount, binding.unmarkedCountTV, binding.unmarkedTV)
+        setCount(LowHazardCount, binding.safeCountTV, binding.safeTV)
+        setCount(ModerateHazardCount, binding.noteCountTV, binding.noteTV)
+        setCount(HighHazard, binding.dangerCountTV, binding.dangerTV)
+
+        binding.materialListTV.setText(foodData.rowMaterials)
+        binding.originListTV.setText(foodData.originMaterials)
+
+    }
+    // 유틸 클래스 할당
+    private fun initUtils() {
+
+    }
+
+    private fun setAdditive(item : AdditiveItem) {
+
+
+
     }
 }

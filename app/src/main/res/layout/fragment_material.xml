@@ -167,10 +167,22 @@
             android:layout_height="2px"
             android:background="#C6C6C8" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
+            android:id="@+id/materialListData_LL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"/>
+            android:orientation="vertical"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/no_data_TV"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="표기할 성분이 없습니다."/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/material_TV"
