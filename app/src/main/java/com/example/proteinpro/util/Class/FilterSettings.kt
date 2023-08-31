@@ -11,6 +11,7 @@ class FilterSettings {
         const val ALLERGY = 2// 알러지
         const val TASTE = 3 // 맛
         const val ETC = 4 // 맛
+
     }
 
     data class FilterItem(

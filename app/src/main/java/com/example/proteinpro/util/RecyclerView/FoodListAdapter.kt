@@ -19,7 +19,7 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
     private var mListener: OnItemClickListener? = null
     interface OnItemClickListener {
         fun onItemClick(v: View?, position: Int, item: FoodItem)
-        fun onMoreClick(v: View?, position: Int)
+        fun onMoreClick(v: View?, position: Int, adapterType: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener?) {
@@ -138,7 +138,7 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
 
                 if(pos != RecyclerView.NO_POSITION) {
                     // 리스너 객체의 메서드 호출.
-                    mListener?.onMoreClick(view, pos)
+                    mListener?.onMoreClick(view, pos, adapterType)
                 }
 
             }
@@ -154,7 +154,6 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
     }
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
 
         val food_img_IV: ImageView = itemView.findViewById(R.id.food_img_IV)
         val brand_TV: TextView = itemView.findViewById(R.id.brand_TV)
@@ -175,6 +174,8 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
             name_TV.text = item.name
             data_TV.text = "${item.capacity} ${item.capacityUnit} | ${item.quantity} 개 | ${item.price} 원"
             proteinPerGram_TV.text = "단백질 1g 당 ${item.costPerformance} 원"
+
+            Log.i ("setdata", "${item.capacity} ${item.capacityUnit} | ${item.quantity} 개 | ${item.price} 원")
 
             // 이미지 설정 등 추가적인 작업이 필요하면 여기에 작성
 

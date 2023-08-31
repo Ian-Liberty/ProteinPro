@@ -1,8 +1,12 @@
 package com.example.proteinpro.view
 
+import android.Manifest
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,18 +14,23 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityLoginBinding
-import com.example.proteinpro.view.user.ActivityFindPassword_InputEmail
-import com.example.proteinpro.view.user.signup.ActivityBirthInput
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.ApiClient
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.util.Retrofit.UserDataInterface
 import com.example.proteinpro.view.main.MainActivity
+import com.example.proteinpro.view.user.ActivityFindPassword_InputEmail
+import com.example.proteinpro.view.user.signup.ActivityBirthInput
 import com.google.gson.JsonElement
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
@@ -31,11 +40,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 // 시작 페이지
 // 로그인 및 회원가입 비밀번호 찾기 등 접근 가능
 //
 class ActivityLogin : AppCompatActivity() {
-
 
     // 인텐트 변수
     private lateinit var login_btn: Button
@@ -50,12 +59,12 @@ class ActivityLogin : AppCompatActivity() {
     private lateinit var retrofitHelper: RetrofitHelper
     private lateinit var preferenceHelper: PreferenceHelper
 
-
     // 전역 변수로 바인딩 객체 선언
     private var mBinding: ActivityLoginBinding? =null
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,13 +84,17 @@ class ActivityLogin : AppCompatActivity() {
         preferenceHelper = PreferenceHelper(this)
         retrofitHelper = RetrofitHelper(this)
 
+
+        requestPermission()
         //카카오SDK 초기화
+        checkisLogin(preferenceHelper)
         KakaoSdk.init(this, "44316c42987d9a62edd1c49462605432")
 
-        checkisLogin(preferenceHelper)
         initUtils()
         initViews()
         initListener()
+
+        //
 
     }
 
@@ -165,6 +178,7 @@ class ActivityLogin : AppCompatActivity() {
         email_et.addTextChangedListener(textWatcher)
         password_et.addTextChangedListener(textWatcher)
 
+
     }
 
     private fun login(context: Context, email : String, password: String) {
@@ -187,9 +201,10 @@ class ActivityLogin : AppCompatActivity() {
                     val jsonResponse = response.body()?.asJsonObject
 
                     if (jsonResponse != null) {
-                        val loginCheck = jsonResponse.get("결과").asString
-                        if (loginCheck == "1") {
-                            val jwt_token = jsonResponse.get("토큰").asString
+                        val loginCheck = jsonResponse.get("메세지").asString
+                        if (loginCheck == "true") {
+                            val data = jsonResponse.get("데이터").asJsonObject
+                            val jwt_token = data.get("토큰").asString
                             preferenceHelper.setIsLogin(jwt_token)
                             val mIntent = Intent(context, MainActivity::class.java)
                             startActivity(mIntent)
@@ -314,6 +329,32 @@ class ActivityLogin : AppCompatActivity() {
         return text1.isNotEmpty() && text2.isNotEmpty()
     }
 
+    private fun requestPermission() {
+        Log.i ("requestPermission", "requestPermission")
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener{
+                override fun onPermissionGranted() {
+
+                    Log.i ("정보태그", "권한이 이미 허용되어 있음")
+
+                }
+
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+
+                    Log.i ("정보태그", "권한이 허용되어 있지 않음"+deniedPermissions)
+
+                    Toast.makeText(this@ActivityLogin,
+                        "권한을 허가해주세요.",
+                        Toast.LENGTH_SHORT)
+                        .show()
+
+                }
+
+            }).setDeniedMessage("권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]")
+            .setPermissions(Manifest.permission.POST_NOTIFICATIONS)
+            .check()
+
+    }
 
 
 }

@@ -391,7 +391,59 @@ class FoodRetrofitHelper(context: Context?) {
 
     }
 
-    fun stringNullCheck(item: JsonElement) :  String{
+    fun getHomeFoodList(type: String, callback: MainFoodListCallback){
+
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+        val call = api.getHomeFoodList(type)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+                if (response.isSuccessful) {
+
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+                        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        // JSON을 파싱하여 리스트로 변환하는 작업 수행
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            val data = jsonResponse.get("데이터").asJsonObject
+                            val foodList = data.get("식품목록").asJsonArray
+
+                            Log.i ("searchMainFoodList", ""+foodList)
+
+                            callback.onSuccess(foodList)
+                        }else{
+                            Log.e("onFailure", "응답이 올바르지 않음 : 메시지 값이 false 임")
+                            callback.onFailure()
+                        }
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        callback.onFailure()
+
+                    }
+                } else {
+
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    callback.onFailure()
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                callback.onFailure()
+            }
+        })
+
+    }
+
+
+        fun stringNullCheck(item: JsonElement) :  String{
 
       return  if (!item.isJsonNull) {
           item.asString

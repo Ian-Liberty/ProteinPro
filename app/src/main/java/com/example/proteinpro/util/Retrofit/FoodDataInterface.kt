@@ -13,8 +13,6 @@ import retrofit2.http.QueryMap
 
 interface FoodDataInterface {
 
-
-
     data class mainRequest(
         val order: Int
     )
@@ -89,5 +87,11 @@ interface FoodDataInterface {
         @Header("Authorization") authorization: String?
     ): Call<JsonElement?>?
 
+    @GET("food/home/list/")
+    fun getHomeFoodList(
+
+        @Query("타입") type: String
+
+    ): Call<JsonElement?>?
 
 }

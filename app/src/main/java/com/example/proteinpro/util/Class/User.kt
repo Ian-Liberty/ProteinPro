@@ -10,6 +10,7 @@ import com.example.proteinpro.util.Class.User.ActivityLevel as ActivityLevel
 
 data class User(
     var email: String = "",
+    var type : Int = 0,// 1이면 일반, 2면 카카오
     var nickname: String = "",
     var birthDate: String = "",
     var password: String = "",

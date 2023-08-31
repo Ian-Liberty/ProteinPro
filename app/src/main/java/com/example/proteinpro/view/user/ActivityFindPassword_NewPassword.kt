@@ -88,13 +88,15 @@ class ActivityFindPassword_NewPassword : AppCompatActivity() {
             mIntent.flags =Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             user.password = password_et.text.toString()
 
-            retrofitHelper.resetPassword(user.email, user.password){isSuccess ->
+            retrofitHelper.resetPassword(user.email, user.password, preferenceHelper.get_jwt_Token().toString()){isSuccess ->
                 if(isSuccess){
 
                     startActivity(mIntent)
 
                 }else{
+
                     Toast.makeText(getApplicationContext(), "비밀번호 재설정에 실패했습니다. 관리자에게 문의해 주세요", Toast.LENGTH_SHORT).show()
+
                 }
 
             }

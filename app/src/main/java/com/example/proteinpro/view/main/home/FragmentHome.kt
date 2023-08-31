@@ -223,6 +223,9 @@ class FragmentHome : Fragment() {
         // 검색창
         protein_search_sv = binding.proteinSV
 
+        //더보기 버튼
+
+
     }
     private fun initListener(){
         // 리스너 초기화
@@ -237,8 +240,14 @@ class FragmentHome : Fragment() {
                 startActivity(mIntent)
             }
 
-            override fun onMoreClick(v: View?, position: Int) {
+            override fun onMoreClick(v: View?, position: Int, moreAdapter: Int) {
                 Log.i ("recent_onMoreClick", "recentmore : "+v )
+
+                val mIntent = Intent(mainActivity, ActivityMoreList::class.java)
+
+                mIntent.putExtra("category","최근 등록된 단백질" )
+
+                startActivity(mIntent)
             }
         }
         val popular_rv_Listener = object  : FoodListAdapter.OnItemClickListener {
@@ -251,8 +260,14 @@ class FragmentHome : Fragment() {
                 startActivity(mIntent)
             }
 
-            override fun onMoreClick(v: View?, position: Int) {
+            override fun onMoreClick(v: View?, position: Int, moreAdapter: Int) {
                 Log.i ("popular_onMoreClick", "recentmore : "+v )
+
+                val mIntent = Intent(mainActivity, ActivityMoreList::class.java)
+
+                mIntent.putExtra("category","인기 단백질" )
+
+                startActivity(mIntent)
             }
 
         }
@@ -266,8 +281,15 @@ class FragmentHome : Fragment() {
                 startActivity(mIntent)
             }
 
-            override fun onMoreClick(v: View?, position: Int) {
+            override fun onMoreClick(v: View?, position: Int, moreAdapter: Int) {
                 Log.i ("valueForMoney_onMoreClick", "recentmore : "+v )
+
+                val mIntent = Intent(mainActivity, ActivityMoreList::class.java)
+
+                mIntent.putExtra("category","가성비 단백질" )
+
+                startActivity(mIntent)
+
             }
 
         }
@@ -290,6 +312,31 @@ class FragmentHome : Fragment() {
                 (activity as MainActivity?)!!.bottomNavigationView.selectedItemId = R.id.search_menu
                 protein_search_sv.clearFocus()
             }
+        }
+
+        binding.popularProteinMoreTV.setOnClickListener {
+
+            val mIntent = Intent(mainActivity, ActivityMoreList::class.java)
+
+            mIntent.putExtra("category","인기 단백질" )
+
+            startActivity(mIntent)
+        }
+        binding.recentProteinMoreTV.setOnClickListener {
+
+            val mIntent = Intent(mainActivity, ActivityMoreList::class.java)
+
+            mIntent.putExtra("category","최근 등록된 단백질" )
+
+            startActivity(mIntent)
+        }
+        binding.valueForMoneyMoreTV.setOnClickListener {
+
+            val mIntent = Intent(mainActivity, ActivityMoreList::class.java)
+
+            mIntent.putExtra("category","가성비 단백질" )
+
+            startActivity(mIntent)
         }
 
     }

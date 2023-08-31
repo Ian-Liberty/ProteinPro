@@ -152,7 +152,7 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
                 showWarningAlertDialog()
             } else {
 
-                retrofitHelper.userDataUpdate(user){isSuccess->
+                retrofitHelper.userDataUpdate(user, preferenceHelper.get_jwt_Token().toString()){isSuccess->
                     if(isSuccess){
                         val mIntent = Intent(getApplicationContext(), MainActivity::class.java)
                         startActivity(mIntent)

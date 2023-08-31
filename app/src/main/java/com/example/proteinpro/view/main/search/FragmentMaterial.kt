@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.FragmentMaterialBinding
 import com.example.proteinpro.util.Class.food.AdditiveItem
+import com.example.proteinpro.util.Class.food.AdditiveItem.Companion.getEwgGradeText
 import com.example.proteinpro.util.Class.food.FoodInformationItem
 
 
@@ -74,8 +75,27 @@ class FragmentMaterial(private val foodData: FoodInformationItem) : Fragment() {
 
         val materialListDataLL = binding.materialListDataLL
 
+        // 등급별로 아이템을 분류하기 위한 맵을 생성
+        val gradeMap = mutableMapOf<String, MutableList<AdditiveItem>>()
 
-        for(item in additiveList){
+        // 각 등급별 리스트 초기화
+        for (grade in listOf("미등록", "안전", "주의", "위험")) {
+            gradeMap[grade] = mutableListOf()
+        }
+
+        // 등급별로 아이템을 분류
+        for (item in additiveList) {
+            gradeMap[getEwgGradeText(item.ewgGrade)]?.add(item)
+        }
+
+        // 등급에 따라 정렬된 아이템 리스트 생성
+        val sortedItems = mutableListOf<AdditiveItem>()
+        for (grade in listOf("위험","주의","안전","미등록")) {
+            sortedItems.addAll(gradeMap[grade] ?: emptyList())
+        }
+
+
+        for(item in sortedItems){
             val itemView = layoutInflater.inflate(R.layout.additive_item, null)
             var gradeStr =  AdditiveItem.getEwgGradeText(item.ewgGrade)
             var name = item.name

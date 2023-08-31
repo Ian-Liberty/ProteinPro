@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.example.proteinpro.databinding.ActivityNicknameInputBinding
 import com.example.proteinpro.util.PreferenceHelper
@@ -83,13 +84,17 @@ class ActivityNicknameInput : AppCompatActivity() {
             mIntent.putExtra("user", user)
             retrofitHelper.checkNicknameDuplication(user.nickname){isSuccess ->
                 if(isSuccess){
-                    retrofitHelper.userDataUpdate(user){isSuccess->
+                    retrofitHelper.signUp(user){isSuccess ->
                         if(isSuccess){
-
-                            startActivity(mIntent)
-
+                            retrofitHelper.login(this,user.email,user.password){
+                                if(it){
+                                    startActivity(mIntent)
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "로그인에 실패 했습니다.",Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }else{
-
+                            Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요", Toast.LENGTH_SHORT).show()
                         }
 
                     }
@@ -98,6 +103,8 @@ class ActivityNicknameInput : AppCompatActivity() {
                     //중복된 닉네임
                 }
             }
+
+
 
         }
 

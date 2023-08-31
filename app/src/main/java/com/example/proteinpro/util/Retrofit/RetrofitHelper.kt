@@ -1,10 +1,12 @@
 package com.example.proteinpro.util.Retrofit
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Class.User
+import com.example.proteinpro.view.main.MainActivity
 import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.Callback
@@ -52,15 +54,16 @@ class RetrofitHelper(context: Context?) {
 
                     if (jsonResponse != null) {
                         //             응답에서 변수 호출    jsonResponse.get("키값").asString
-                        val result = jsonResponse.get("결과").asString
-                        val token = jsonResponse.get("토큰").asString
+                        val result = jsonResponse.get("메세지").asString
+                        val data = jsonResponse.get("데이터").asJsonObject
 
-                        if(result == "1"){
+                        if(result == "true"){
                             // 인증번호 전송함
                             Log.i ("requestCertNum", "인증번호 요청 성공")
+                            val token = data.get("토큰").asString
                             val pref = PreferenceHelper(ctx)
-                            pref.setIsLogin(token)
-                            Log.i ("토큰정보", token+"")
+                            pref.setCheckToken(token)
+                            Log.i ("인증토큰정보", token+"")
 
                             onResult(true)
                         }else{
@@ -90,6 +93,58 @@ class RetrofitHelper(context: Context?) {
 
     }
 
+    fun login(context: Context, email : String, password: String, onResult: (Boolean) -> Unit) {
+
+        Log.i ("login", "로그인 실행")
+
+        val retrofit = ApiClient.getApiClient()
+        val userService =retrofit.create(UserDataInterface::class.java)
+
+        val request = UserDataInterface.LoginRequest(email, password)
+
+        val call = userService.login(request)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+                Log.i("onSuccess", response.body().toString())
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+
+                    if (jsonResponse != null) {
+                        val loginCheck = jsonResponse.get("메세지").asString
+                        if (loginCheck == "true") {
+                            val data = jsonResponse.get("데이터").asJsonObject
+                            val jwt_token = data.get("토큰").asString
+
+                            val pref = PreferenceHelper(ctx)
+                            pref.setIsLogin(jwt_token)
+
+                            onResult(true)
+                        } else {
+                            onResult(false)
+                        }
+                    }else{
+                        Log.i("onFailure", "응답이 올바르지 않음")
+                        onResult(false)
+                    }
+                }else{
+                    Log.i("onFailure", "로그인 실패")
+                    onResult(false)
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+
+        })
+
+    }
+
     /***
      * 중복값 있으면 true 중복 없으면 false
      */
@@ -114,7 +169,7 @@ class RetrofitHelper(context: Context?) {
 
                     if (jsonResponse != null) {
                         // 응답에서 변수 호출 jsonResponse.get("키값").asString
-                        val result = jsonResponse.get("결과").asString
+                        val result = jsonResponse.get("메세지").asString
 
                         if(result == "false"){
                             // 중복된 이메일 있음
@@ -170,7 +225,7 @@ class RetrofitHelper(context: Context?) {
 
                     if (jsonResponse != null) {
         //             응답에서 변수 호출    jsonResponse.get("키값").asString
-                        if(jsonResponse.get("결과").asString== "1"){
+                        if(jsonResponse.get("메세지").asString== "true"){
                             Log.i ("checkAuthnum", ""+jsonResponse.get("메시지"))
                             onResult(true)
                         }else{
@@ -220,7 +275,7 @@ class RetrofitHelper(context: Context?) {
                     if (jsonResponse != null) {
         //             응답에서 변수 호출    jsonResponse.get("키값").asString
 
-                        if(jsonResponse.get("결과").asString== "true"){
+                        if(jsonResponse.get("메세지").asString== "true"){
                             Log.i ("checkNicknameDuplication", ""+jsonResponse.get("데이터"))
                             onResult(true)
                         }else{
@@ -260,12 +315,13 @@ class RetrofitHelper(context: Context?) {
         val 신장 = user.height
         val 활동량 = user.getActivityLevelIntensity()
         val 등급 = 0
+        val 탈퇴 = 0// 탈퇴전
+        val 타입 = 1// 일반로그인
 
 
         val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
 
-        val request = UserDataInterface.회원가입기본(닉네임, 이메일, 비밀번호, 성별, 생년월일, 몸무게, 신장, 활동량, 등급)
-        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+        val request = UserDataInterface.회원가입기본(닉네임, 이메일, 비밀번호, 성별, 생년월일, 몸무게, 신장, 활동량, 등급, 탈퇴, 타입)
 
         val call = api.회원가입(request)
 
@@ -279,7 +335,7 @@ class RetrofitHelper(context: Context?) {
 
                     if (jsonResponse != null) {
         //             응답에서 변수 호출    jsonResponse.get("키값").asString
-                        if(jsonResponse.get("결과").asString == "1"){
+                        if(jsonResponse.get("메세지").asString == "true"){
                             onResult(true)
                             Log.i ("signUp", ""+jsonResponse.get("데이터"))
                         }else{
@@ -307,7 +363,7 @@ class RetrofitHelper(context: Context?) {
 
     }
 
-    fun userDataUpdate(user: User, onResult: (Boolean) -> Unit){
+    fun userDataUpdate(user: User,token: String, onResult: (Boolean) -> Unit){
         val 닉네임 = user.nickname
         val 이메일 = user.email
         val 성별 = user.gender
@@ -322,7 +378,55 @@ class RetrofitHelper(context: Context?) {
         val request = UserDataInterface.회원정보변경기본(닉네임, 이메일, 성별, 생년월일, 몸무게, 신장, 활동량)
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
-        val call = api.사용자정보변경하기(request)
+        val call = api.사용자정보변경하기(request, "Bearer "+token)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            onResult(true)
+                            Log.i ("userDataUpdate", ""+jsonResponse.get("데이터"))
+                        }else{
+                            onResult(false)
+                            Log.i ("userDataUpdate", ""+jsonResponse.get("데이터"))
+                        }
+
+                    } else {
+
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+        })
+
+    }
+
+    fun resetPassword(email: String , password: String, token: String, onResult: (Boolean) -> Unit){
+
+        val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
+
+        val request = UserDataInterface.비밀번호재설정기본(email, password)
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.비밀번호재설정(request, "Bearer "+token)
 
         call?.enqueue(object : Callback<JsonElement?> {
 
@@ -335,12 +439,15 @@ class RetrofitHelper(context: Context?) {
 
                     if (jsonResponse != null) {
         //             응답에서 변수 호출    jsonResponse.get("키값").asString
-                        if(jsonResponse.get("결과").asString == "1"){
+                        if(jsonResponse.get("메세지").asString == "true"){//비밀번호 변경 성공
+                        Log.i ("정보태그", ""+jsonResponse.get("메세지"))
+
                             onResult(true)
-                            Log.i ("userDataUpdate", ""+jsonResponse.get("데이터"))
-                        }else{
+                        }
+                        else{
+                        Log.i ("정보태그", ""+jsonResponse.get("메세지"))
+
                             onResult(false)
-                            Log.i ("userDataUpdate", ""+jsonResponse.get("데이터"))
                         }
 
                     } else {
@@ -362,14 +469,14 @@ class RetrofitHelper(context: Context?) {
 
     }
 
-    fun resetPassword(email: String , password: String, onResult: (Boolean) -> Unit){
+    fun changePassword(password: String , changePassword: String, token: String, onResult: (Boolean) -> Unit){
 
         val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
 
-        val request = UserDataInterface.비밀번호재설정기본(email, password)
+        val request = UserDataInterface.비밀번호변경기본(password, changePassword)
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
-        val call = api.비밀번호재설정(request)
+        val call = api.비밀번호변경하기(request, "Bearer "+token)
 
         call?.enqueue(object : Callback<JsonElement?> {
 
@@ -381,12 +488,12 @@ class RetrofitHelper(context: Context?) {
                     Log.i("onSuccess", response.body().toString())
 
                     if (jsonResponse != null) {
-        //             응답에서 변수 호출    jsonResponse.get("키값").asString
-                        if(jsonResponse.get("결과").asString == "1"){
-                        Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            Log.i ("정보태그", ""+jsonResponse.get("데이터"))
                             onResult(true)
                         }else{
-                        Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                            Log.i ("정보태그", ""+jsonResponse.get("데이터"))
                             onResult(false)
                         }
 
@@ -417,7 +524,7 @@ class RetrofitHelper(context: Context?) {
         val request = UserDataInterface.토큰기본(token)
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
-        val call = api.사용자토큰체크(request)
+        val call = api.사용자토큰체크("Bearer "+token)
 
         call?.enqueue(object : Callback<JsonElement?> {
 
@@ -429,7 +536,7 @@ class RetrofitHelper(context: Context?) {
 
                     if (jsonResponse != null) {
         //             응답에서 변수 호출    jsonResponse.get("키값").asString
-                        if(jsonResponse.get("결과").asString == "1"){
+                        if(jsonResponse.get("메세지").asString == "true"){
                             Log.i ("정보태그", ""+jsonResponse.get("메세지"))
                             onResult(true)
                         }else{
@@ -461,10 +568,8 @@ class RetrofitHelper(context: Context?) {
         val retrofit = ApiClient.getApiClient()
         val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
 
-        val request = UserDataInterface.토큰기본(token)
-        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
-        val call = api.사용자정보불러오기(request)
+        val call = api.사용자정보불러오기("Bearer "+token)
 
         call?.enqueue(object : Callback<JsonElement?> {
 
@@ -476,7 +581,7 @@ class RetrofitHelper(context: Context?) {
 
                     if (jsonResponse != null) {
         //             응답에서 변수 호출    jsonResponse.get("키값").asString
-                        if(jsonResponse.get("결과").asString == "1"){
+                        if(jsonResponse.get("메세지").asString == "true"){
                             val data  = jsonResponse.get("데이터").asJsonObject
 
 
@@ -487,7 +592,8 @@ class RetrofitHelper(context: Context?) {
                                 height = data.get("신장").asInt,
                                 weight = data.get("몸무게").asInt,
                                 gender = data.get("성별").asInt,
-                                activityLevel = User.getActivitylevel(data.get("활동량").asInt)
+                                activityLevel = User.getActivitylevel(data.get("활동량").asInt),
+                                type = data.get("타입").asInt
                                 // 나머지 필요한 정보들도 마찬가지로 추출해야 함
                             )
 
@@ -516,5 +622,54 @@ class RetrofitHelper(context: Context?) {
         })
 
     }
+
+    fun userWithdraw(password: String, token: String, onResult: (Boolean) -> Unit){
+
+        val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
+
+        val request = UserDataInterface.회원탈퇴기본(password)
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.회원탈퇴(request,"Bearer "+token)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+                        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                            onResult(true)
+                        }else{
+                            Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                            onResult(false)
+                        }
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+        })
+
+    }
+
+
 
 }

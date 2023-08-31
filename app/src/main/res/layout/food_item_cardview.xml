@@ -31,7 +31,7 @@
             <ImageView
                 android:id="@+id/food_img_IV"
                 android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_height="220dp"
                 android:layout_gravity="center_horizontal"
                 app:srcCompat="@drawable/ic_launcher_foreground" />
 
@@ -53,6 +53,7 @@
 
             <TextView
                 android:id="@+id/data_TV"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="단위 | 개수 | 0000원 " />
@@ -61,6 +62,7 @@
                 android:id="@+id/proteinPerGram_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:text="단백질 1g당 0000원 " />
 
         </LinearLayout>

@@ -152,6 +152,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:inputType="number"
                     android:textSize="14sp"
                     android:maxLength="3"
                     android:singleLine="true"/>
@@ -167,6 +168,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:inputType="number"
                     android:textSize="14sp"
                     android:maxLength="3"
                     android:singleLine="true"/>

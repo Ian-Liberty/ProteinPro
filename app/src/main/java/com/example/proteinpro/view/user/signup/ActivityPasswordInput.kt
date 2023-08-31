@@ -89,16 +89,7 @@ class ActivityPasswordInput : AppCompatActivity() {
 
             mIntent.putExtra("user", user)
 
-            retrofitHelper.signUp(user){isSuccess ->
-                if(isSuccess){
-
-                    startActivity(mIntent)
-
-                }else{
-                    Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요", Toast.LENGTH_SHORT).show()
-                }
-
-            }
+            startActivity(mIntent)
 
         }
 

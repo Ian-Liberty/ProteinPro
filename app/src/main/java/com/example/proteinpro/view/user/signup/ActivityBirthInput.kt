@@ -90,7 +90,6 @@ class ActivityBirthInput : AppCompatActivity() {
 
             finish()
 
-
         }
 
     }
@@ -136,8 +135,5 @@ class ActivityBirthInput : AppCompatActivity() {
             nextButton.isEnabled = true// 버튼 활성화
         }
     }
-
-
-
 
 }
