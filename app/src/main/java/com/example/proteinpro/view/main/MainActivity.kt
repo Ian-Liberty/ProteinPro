@@ -25,7 +25,6 @@ import java.util.Stack
 class MainActivity : AppCompatActivity() {
 
 
-
     private var fragmentHome = FragmentHome()
     // 검색 관련 프래그먼트
     private var fragmentSearch = FragmentSearch()
@@ -194,6 +193,9 @@ class MainActivity : AppCompatActivity() {
         val tag4: Fragment? = supportFragmentManager.findFragmentByTag("fragmentAnotherContents")
         val tag5: Fragment? = supportFragmentManager.findFragmentByTag("fragmentUserInfo")
         val tag6: Fragment? = supportFragmentManager.findFragmentByTag("fragment_search_result")
+        val tag7: Fragment? = supportFragmentManager.findFragmentByTag("fragment_information_contents")
+        val tag8: Fragment? = supportFragmentManager.findFragmentByTag("fragment_mbti_contents")
+
 
         if(tag1 != null && tag1.isVisible) {navigation.menu.findItem(R.id.home_menu).isChecked = true }
         if(tag2 != null && tag2.isVisible) {navigation.menu.findItem(R.id.search_menu).isChecked = true }
@@ -201,7 +203,8 @@ class MainActivity : AppCompatActivity() {
         if(tag4 != null && tag4.isVisible) {navigation.menu.findItem(R.id.etc_menu).isChecked = true }
         if(tag5 != null && tag5.isVisible) {navigation.menu.findItem(R.id.user_menu).isChecked = true }
         if(tag6 != null && tag6.isVisible) {navigation.menu.findItem(R.id.search_menu).isChecked = true }
-
+        if(tag7 != null && tag7.isVisible) {navigation.menu.findItem(R.id.etc_menu).isChecked = true }
+        if(tag8 != null && tag8.isVisible) {navigation.menu.findItem(R.id.etc_menu).isChecked = true }
     }
     override fun onBackPressed() {
         Log.i ("백버튼", "onBackPressed")

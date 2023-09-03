@@ -62,6 +62,9 @@ dependencies {
 
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
+    //youtubePlayer
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0'
+
 
 
 }
