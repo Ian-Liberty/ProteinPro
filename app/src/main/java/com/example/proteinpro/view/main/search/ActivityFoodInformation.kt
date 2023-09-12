@@ -1,5 +1,7 @@
 package com.example.proteinpro.view.main.search
+import android.content.Intent
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 
 import android.os.Bundle
@@ -15,6 +17,7 @@ import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
 import com.example.proteinpro.R
+import com.example.proteinpro.databinding.ActivityAcitvityReviewWriteBinding
 import com.example.proteinpro.databinding.ActivityFoodInformationBinding
 import com.example.proteinpro.util.Class.food.AdditiveItem
 import com.example.proteinpro.util.Class.food.FoodInformationItem
@@ -40,6 +43,9 @@ class ActivityFoodInformation : AppCompatActivity() {
     private lateinit var foodRetrofitHelper: FoodRetrofitHelper
     private lateinit var preferenceHelper: PreferenceHelper
 
+    private lateinit var link: String
+    private lateinit var foodInformationItem :FoodInformationItem
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +62,13 @@ class ActivityFoodInformation : AppCompatActivity() {
         val Activity = this
 
         initUtils()
+        initListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val Activity = this
         initData(Activity)
-
-
-
     }
 
     private fun initData(Activity: ActivityFoodInformation) {
@@ -70,10 +79,11 @@ class ActivityFoodInformation : AppCompatActivity() {
                 override fun onSuccess(foodData: FoodInformationItem) {
                     Log.i ("getFoodData", ""+foodData)
 
-
                     binding.scrollView.visibility = View.VISIBLE
                     viewPager2Adapter = ViewPager2Adapter(Activity, foodData)
                     binding.viewPager.adapter = viewPager2Adapter
+
+                    foodInformationItem = foodData
 
                     setData(foodData)
                     initViews()
@@ -99,12 +109,17 @@ class ActivityFoodInformation : AppCompatActivity() {
     }
 
     fun setData(foodData: FoodInformationItem) {
+        Log.i ("setData", "foodKey: "+foodData.key)
+
+        link = foodData.link
+
         //title
         binding.foodNameTV.setText(foodData.name)
 
         //protein_box
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
+        binding.typeBoxLL.removeAllViews()
 
             for (text in foodData.proteinTypeList) {
 
@@ -115,9 +130,15 @@ class ActivityFoodInformation : AppCompatActivity() {
 
             }
         //메인 이미지
-        Glide.with(this).load(ServerData.img_URL+"셀렉스프로틴복숭아.JPG").into(binding.foodImgIV)
+        Glide.with(this).load("https://proteinpro.kr/api/img/food/"+foodData.image).into(binding.foodImgIV)
 
 //        Glide.with(this).load(ServerData.img_URL+foodData.image).into(binding.foodImgIV)
+
+        //후기 목록
+        binding.reviewCountTv.setText("${foodData.reviewList.size} 개의 리뷰 >")
+        binding.reviewRatingTV.setText("${foodData.grade}")
+        binding.reviewRB.rating = foodData.grade
+
         //태그
 
         var tag :String = ""
@@ -190,6 +211,10 @@ class ActivityFoodInformation : AppCompatActivity() {
         // ai 리뷰
         val goodWordList = foodData.positiveReviewWords.split(",")
         val badWordList = foodData.positiveReviewWords.split(",")
+
+        binding.goodFBL.removeAllViews()
+        binding.badFBL.removeAllViews()
+
         for (word in goodWordList) {
             createAndAddTextView(word, 0)
         }
@@ -219,7 +244,6 @@ class ActivityFoodInformation : AppCompatActivity() {
 
             }
 
-
         })
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) {tab, position ->
@@ -232,6 +256,50 @@ class ActivityFoodInformation : AppCompatActivity() {
     }
     private fun initListener(){
         // 리스너 초기화
+
+        binding.writeReviewBTN.setOnClickListener {
+
+            val mIntent = Intent(getApplicationContext(), AcitvityReviewWrite::class.java)
+
+            val foodKey =  foodInformationItem.key.toInt()
+
+            Log.i ("foodKey", ""+foodKey)
+
+            mIntent.putExtra("foodKey", foodKey)
+
+            startActivity(mIntent)
+
+        }
+
+        binding.productPurchaseBTN.setOnClickListener {
+
+            val mIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            startActivity(mIntent)
+
+        }
+
+        binding.reviewCL.setOnClickListener{
+
+            val mIntent = Intent(getApplicationContext(), ActivityReviewList::class.java)
+
+            val foodKey =  foodInformationItem.key
+
+            Log.i ("foodKey", ""+foodKey)
+
+            val goodWordList = foodInformationItem.positiveReviewWords
+            val badWordList = foodInformationItem.positiveReviewWords
+            val rating = foodInformationItem.grade
+
+            mIntent.putExtra("foodKey", foodKey)
+            mIntent.putExtra("good", goodWordList)
+            mIntent.putExtra("bad", badWordList)
+            mIntent.putExtra("rating", rating)
+            mIntent.putExtra("name", foodInformationItem.name)
+
+            startActivity(mIntent)
+
+        }
+
     }
     private fun initUtils(){
         // 유틸 클래스 초기화
@@ -274,6 +342,7 @@ class ActivityFoodInformation : AppCompatActivity() {
 
         }else if(emotion == 1){
             //부정
+
             layout = binding.badFBL
             textView.setBackgroundResource(R.drawable.round_background_border_red)
             layout.addView(textView)

@@ -100,7 +100,7 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
 
             //        Glide.with(context).load(ServerData.img_URL+item.image).into(holder.food_img_IV)
             // 본서버 적용시 위 코드를 사용할 것
-            Glide.with(context).load(ServerData.img_URL+"셀렉스프로틴복숭아.JPG").into(food_img_IV)
+            Glide.with(context).load("https://proteinpro.kr/api/img/food/"+item.image).into(food_img_IV)
 
             brand_TV.text = item.brand
             name_TV.text = item.name
@@ -168,8 +168,8 @@ class FoodListAdapter(private val context: Context, private var itemList: ArrayL
         fun setdata(context: Context, item: FoodItem ) {
             //        Glide.with(context).load(ServerData.img_URL+item.image).into(holder.food_img_IV)
             // 본서버 적용시 위 코드를 사용할 것
-            Glide.with(context).load(ServerData.img_URL+"셀렉스프로틴복숭아.JPG").into(food_img_IV)
-
+//            Glide.with(context).load(ServerData.img_URL+"셀렉스프로틴복숭아.JPG").into(food_img_IV)
+            Glide.with(context).load("https://proteinpro.kr/api/img/food/"+item.image).into(food_img_IV)
             brand_TV.text = item.brand
             name_TV.text = item.name
             data_TV.text = "${item.capacity} ${item.capacityUnit} | ${item.quantity} 개 | ${item.price} 원"

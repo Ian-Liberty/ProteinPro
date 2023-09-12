@@ -1,17 +1,46 @@
 package com.example.proteinpro.util.Retrofit
 
 import com.google.gson.JsonElement
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface FoodDataInterface {
+    data class ReviewRequest(
+        val good: String,
+        val bad: String,
+        val star: Int
+    )
+
+    data class 후기변경기본(
+
+       val 타입 : String,
+       val 후기키 : String
+
+    )
+
+    data class 후기기본(
+
+       @Field("good") val 긍정후기 : String,
+       @Field("bad") val 부정후기 : String,
+       @Field("star") val 평점 : Int
+
+    )
 
     data class mainRequest(
         val order: Int
@@ -52,15 +81,16 @@ interface FoodDataInterface {
     fun getMainFoodlist(@Query("order") order: Int): Call<JsonElement?>?
 
     @GET("food/list/{category}")
-    fun getCategoryResult(  @Path("category") category: String,
-                            @Query("kind") kind: String?,
-                            @Query("etc") etc: String?,
-                            @Query("allergy") allergy: String?,
-                            @Query("taste") taste: String?,
-                            @Query("all") all: String?,
-                            @Query("skip") skip: Int,
-                            @Query("limit") limit: Int,
-                            @Query("order") order: Int): Call<JsonElement?>?
+    fun getCategoryResult(
+        @Path("category") category: String,
+        @Query("kind") kind: String?,
+        @Query("etc") etc: String?,
+        @Query("allergy") allergy: String?,
+        @Query("taste") taste: String?,
+        @Query("all") all: String?,
+        @Query("skip") skip: Int,
+        @Query("limit") limit: Int,
+        @Query("order") order: Int): Call<JsonElement?>?
 
     @GET("food/{category}/search")
     fun getSearchList(
@@ -80,11 +110,11 @@ interface FoodDataInterface {
 
 
     // 제품단일조회
-    @GET("food/{food_id}")
+    @GET("food/m/{food_id}")
     fun getFoodData(
 
         @Path("food_id") category: String,
-        @Header("Authorization") authorization: String?
+        @Header("Authorization") authorization: String
     ): Call<JsonElement?>?
 
     @GET("food/home/list/")
@@ -94,4 +124,80 @@ interface FoodDataInterface {
 
     ): Call<JsonElement?>?
 
+    //리뷰 등록
+    @Multipart
+    @POST("review/post/{food_id}")
+    fun submitReview(
+
+        @Path("food_id") foodId: String,
+        @Header("Authorization") authorization: String,
+        @Part("good") good: RequestBody,
+        @Part("bad") bad: RequestBody,
+        @Part("star") star: Int,
+        @Part files: List<MultipartBody.Part>
+
+    ): Call<JsonElement?>?
+
+    //리뷰 리스트
+    @GET("review/list/{food_id}")
+    fun getReviewList(
+
+        @Path("food_id") category: String,
+        @Header("Authorization") authorization: String,
+        @Query("skip") skip: Int,
+        @Query("limit") limit: Int,
+        @Query("order") order: Int
+
+    ): Call<JsonElement?>?
+
+    @Multipart
+    @PUT("review/{review_id}")
+    fun updateReview(
+        @Path("review_id") reviewId: String,
+        @Header("Authorization") authorization: String,
+        @Part("good") good: RequestBody,
+        @Part("bad") bad: RequestBody,
+        @Part("star") star: Int,
+        @Part("img") img: List<String>,
+        @Part("isChanged") isChanged: Boolean,
+        @Part images: List<MultipartBody.Part>
+    ): Call<JsonElement>
+
+    @GET("review/m/{review_id}")
+    fun getReviewDetails(
+        @Path("review_id") reviewId: String,
+        @Header("Authorization") authorization: String
+    ): Call<JsonElement>
+
+    @GET("review/m/list")
+    fun myReviewList(
+
+        @Header("Authorization") authorization: String,
+        @Query("order") order : Int,
+        @Query("skip") skip : Int,
+        @Query("limit") limit : Int
+
+    ): Call<JsonElement>
+
+    @DELETE("review/del/{review_id}")
+    fun deleteReview(
+        @Path("review_id") reviewId: Int,
+        @Header("Authorization") authorization: String
+    ): Call<Void> // 이 API는 응답 데이터가 필요하지 않으므로 Call<Void>를 사용합니다.
+
+    @POST("review/like")
+    fun addLike(
+        @Body request : 후기변경기본,
+        @Header("Authorization") authorization: String
+    ): Call<Void> // 이 API는 응답 데이터가 필요하지 않으므로 Call<Void>를 사용합니다.
+
+    @DELETE("review/like/{review_id}")
+    fun deleteLike(
+        @Path("review_id") reviewId: Int,
+        @Header("Authorization") authorization: String
+    ): Call<Void> // 이 API는 응답 데이터가 필요하지 않으므로 Call<Void>를 사용합니다.
+
 }
+
+
+

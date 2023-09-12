@@ -170,7 +170,7 @@ class ActivityEmailCheck : AppCompatActivity() {
             else {
                 Log.i ("cert", ""+cert)
 
-                val token = preferenceHelper.get_jwt_Token().toString()
+                val token = preferenceHelper.getCheckToken().toString()
                 retrofitHelper.checkAuthnum(cert, token){isSuccess ->
                     if(isSuccess){
                         // 인증번호 확인 완료

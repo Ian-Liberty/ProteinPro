@@ -1,96 +1,115 @@
-package com.example.proteinpro.view.main.userInfo
+package com.example.proteinpro.view.main.search
+import android.util.Log
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setMargins
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proteinpro.R
-import com.example.proteinpro.databinding.ActivityMyReviewBinding
+import com.example.proteinpro.databinding.ActivityReviewListBinding
+import com.example.proteinpro.util.Class.food.FoodInformationItem
 import com.example.proteinpro.util.Class.food.ReviewItem
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.RecyclerView.ReviewListAdapter
+import com.example.proteinpro.util.RecyclerView.YoutubeAdapter
 import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
-import com.example.proteinpro.util.Retrofit.RetrofitHelper
-import com.example.proteinpro.view.main.search.AcitvityReviewWrite
+import com.example.proteinpro.view.main.anotherContents.ActivityProteinInformation
 import com.google.gson.Gson
 import com.google.gson.JsonArray
-import kotlin.properties.Delegates
 
-class ActivityMyReview : AppCompatActivity() {
+// 필요 데이터
+// 인텐트에선 foodkey
+// 평균평점
 
-    private lateinit var preferenceHelper: PreferenceHelper
-    private lateinit var foodRetrofitHelper: FoodRetrofitHelper
+class ActivityReviewList : AppCompatActivity() {
 
     // 전역 변수로 바인딩 객체 선언
     private var mBinding:
-            ActivityMyReviewBinding? =null
+            ActivityReviewListBinding? =null
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
 
-    private var skip: Int = 1
+    // 유틸 클래스
+    private lateinit var foodRetrofitHelper: FoodRetrofitHelper
+    private lateinit var preferenceHelper: PreferenceHelper
+
+    // 변수 선언
+    private lateinit var foodKey:String
+    private lateinit var title:String
+    private var grade: Float = 0.0f
+    private lateinit var goodWordList: String
+    private lateinit var badWordList: String
+
+    private  var skip: Int = 1
     private val itemList : ArrayList<ReviewItem> = ArrayList()
     private lateinit var adapter: ReviewListAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my_review)
+        setContentView(R.layout.activity_review_list)
 
         // 자동 생성된 뷰 바인딩 클래스에서의 inflate라는 메서드를 활용해서
         // 액티비티에서 사용할 바인딩 클래스의 인스턴스 생성
-        mBinding = ActivityMyReviewBinding.inflate(layoutInflater)
+        mBinding = ActivityReviewListBinding.inflate(layoutInflater)
         // getRoot 메서드로 레이아웃 내부의 최상위 위치 뷰의
         // 인스턴스를 활용하여 생성된 뷰를 액티비티에 표시 합니다.
         setContentView(binding.root)// < 기존의 setContentView 는 주석 처리해 주세요!
 
+        foodKey = intent.getStringExtra("foodKey").toString()
+        title = intent.getStringExtra("name").toString()
+        grade = intent.getFloatExtra("rating",-1.0f)
+        goodWordList = intent.getStringExtra("good").toString()
+        badWordList = intent.getStringExtra("bad").toString()
+
+
         initUtils()
-        initData()
         initViews()
         initListener()
 
     }
 
-    private fun initData(){
-        val token = preferenceHelper.get_jwt_Token()
-        if(token != null){
+    override fun onResume() {
+        super.onResume()
+        initData()
 
-            foodRetrofitHelper.getMyReviewList(token,skip,object : FoodRetrofitHelper.reviewListCallback{
-                override fun onSuccess(reviewList: JsonArray) {
-
-                    val gson = Gson()
-
-                    for(item in reviewList) {
-                        val reviewItem = gson.fromJson(item, ReviewItem::class.java)
-                        itemList.add(reviewItem)
-                    }
-
-                    adapter.setItem_list(itemList)
-
-                }
-
-                override fun onFailure() {
-
-
-
-                }
-
-            })
-
-
-        }
     }
+
     private fun initViews(){
         // 뷰 초기화
-
-        // 뷰 초기화
         adapter = ReviewListAdapter(this, itemList)
-        binding.reviewListRV.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.reviewListRV.adapter = adapter
+        binding.reviewRV.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.reviewRV.adapter = adapter
+
+        binding.title.setText(title)
+        binding.reviewRB.rating = grade
+
+        binding.reviewRatingTV.setText(grade.toString())
+
+        // ai 리뷰
+        val goodWordList = goodWordList.split(",")
+        val badWordList = badWordList.split(",")
+
+        binding.goodFBL.removeAllViews()
+        binding.badFBL.removeAllViews()
+
+        for (word in goodWordList) {
+            createAndAddTextView(word, 0)
+        }
+        for (word in badWordList) {
+            createAndAddTextView(word, 1)
+        }
+
 
     }
     private fun initListener(){
@@ -103,7 +122,7 @@ class ActivityMyReview : AppCompatActivity() {
 
             override fun onMenuClick(v: View?, position: Int, item: ReviewItem) {
                 Log.i ("onMenuClick", ""+item.키)
-                showPopupMenuDialog(this@ActivityMyReview, item)
+                showPopupMenuDialog(this@ActivityReviewList, item)
             }
 
             override fun onLikeClick(btn: TextView?, position: Int, item: ReviewItem) {
@@ -149,6 +168,7 @@ class ActivityMyReview : AppCompatActivity() {
         }
 
         adapter.setOnItemClickListener(rv_Listener)
+
     }
     private fun initUtils(){
         // 유틸 클래스 초기화
@@ -158,6 +178,68 @@ class ActivityMyReview : AppCompatActivity() {
 
     }
 
+    private fun initData(){
+        val token = preferenceHelper.get_jwt_Token()
+        if(token != null){
+
+            foodRetrofitHelper.getReviewList(foodKey, token, 1, skip , 10, object : FoodRetrofitHelper.reviewListCallback{
+                override fun onSuccess(reviewList: JsonArray) {
+
+                    val gson = Gson()
+
+                    for(item in reviewList) {
+                        val reviewItem = gson.fromJson(item, ReviewItem::class.java)
+                        itemList.add(reviewItem)
+                    }
+
+
+
+                    adapter.setItem_list(itemList)
+
+
+                }
+
+                override fun onFailure() {
+
+                }
+
+
+            })
+
+            foodRetrofitHelper.getFoodData(token, foodKey, object : FoodRetrofitHelper.FoodDataCallback{
+                override fun onSuccess(foodData: FoodInformationItem) {
+
+                    binding.title.setText(foodData.name)
+                    binding.reviewRB.rating = foodData.grade
+
+                    binding.reviewRatingTV.setText(foodData.grade.toString())
+
+
+                    // ai 리뷰
+                    val goodWordList = foodData.positiveReviewWords.split(",")
+                    val badWordList = foodData.negativeReviewWords.split(",")
+
+                    binding.goodFBL.removeAllViews()
+                    binding.badFBL.removeAllViews()
+
+                    for (word in goodWordList) {
+                        createAndAddTextView(word, 0)
+                    }
+                    for (word in badWordList) {
+                        createAndAddTextView(word, 1)
+                    }
+                }
+
+                override fun onFailure() {
+
+                }
+
+            })
+        }
+
+
+
+    }
 
     fun showPopupMenuDialog(context: Context, item: ReviewItem) {
         val alertDialogBuilder = AlertDialog.Builder(context)
@@ -242,4 +324,49 @@ class ActivityMyReview : AppCompatActivity() {
         alertDialog.show()
     }
 
+    /***
+     * @param word
+     * 단어
+     *
+     * @param emotion
+     * 감정 상태
+     * 0 은 긍정
+     * 1 은 부정
+     *
+     * 각 상태에 따라 다른 색으로 표현
+     *
+     */
+    private fun createAndAddTextView(word: String, emotion: Int ) {
+        val context: Context = this
+        lateinit var layout: ViewGroup
+
+        // 새로운 TextView 생성
+        val textView = TextView(context)
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        layoutParams.setMargins(Math.round(5*resources.displayMetrics.density))// 마진값 dp 단위
+        textView.layoutParams = layoutParams
+
+        if(emotion == 0){
+            // 긍정
+            layout = binding.goodFBL
+            textView.setBackgroundResource(R.drawable.round_background_border_green)
+            layout.addView(textView)
+
+        }else if(emotion == 1){
+            //부정
+
+            layout = binding.badFBL
+            textView.setBackgroundResource(R.drawable.round_background_border_red)
+            layout.addView(textView)
+        }else{
+            // 값 없음
+        }
+
+        textView.setPadding(Math.round(5*resources.displayMetrics.density))// 패딩값 dp 단위
+        textView.text = word
+
+    }
 }

@@ -22,6 +22,9 @@ data class FoodInformationItem(
  val nutritionFacts: NutritionFacts, // 영양성분
  val proteinList: ArrayList<ProteinDataItem> = ArrayList(),// 설명이 포함된 단백질 목록
  val rowMaterials: String = "",// 원재료
- val originMaterials: String = ""// 원재료 표기 원본
+ val originMaterials: String = "",// 원재료 표기 원본
+ val link: String = "",// 식품 구매 링크
+ val grade : Float = 0.0f,
+ val reviewList : ArrayList<ReviewItem> = ArrayList()
 
 )

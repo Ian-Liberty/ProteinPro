@@ -11,11 +11,14 @@ import com.example.proteinpro.util.Class.food.AdditiveItem
 import com.example.proteinpro.util.Class.food.FoodInformationItem
 import com.example.proteinpro.util.Class.food.NutritionFacts
 import com.example.proteinpro.util.Class.food.ProteinDataItem
+import com.example.proteinpro.util.Class.food.ReviewItem
 import com.example.proteinpro.util.RecyclerView.FoodItem
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.URLDecoder
 
 class FoodRetrofitHelper(context: Context?) {
@@ -28,10 +31,23 @@ class FoodRetrofitHelper(context: Context?) {
         fun onFailure()
     }
 
+    interface reviewListCallback {
+        fun onSuccess(reviewList: JsonArray)
+        fun onFailure()
+    }
+
+    interface reviewDataCallback {
+        fun  onSuccess(reviewItem: ReviewItem)
+        fun onFailure()
+    }
+
+
     interface FoodDataCallback {
         fun onSuccess(foodData: FoodInformationItem)
         fun onFailure()
     }
+
+
 
     fun parseJsonResponse(jsonResponse: JsonArray): ArrayList<FoodItem> {
         val foodItemList = ArrayList<FoodItem>()
@@ -238,7 +254,7 @@ class FoodRetrofitHelper(context: Context?) {
 
         // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
 
-        val call = api.getFoodData(food_key, token)
+        val call = api.getFoodData(food_key, "Bearer "+token)
 
         call?.enqueue(object : Callback<JsonElement?> {
 
@@ -267,6 +283,19 @@ class FoodRetrofitHelper(context: Context?) {
                             val tagJsonArray = data.get("태그").asJsonArray
                             val porteinDataJsonArray = data.get("단백질종류").asJsonArray
 
+                            // 후기
+                            val grade = getFloatFromJson(data,"후기평균점수")
+                            val numberOfReview = getIntFromJson(foodData,"총후기수")
+                            val review  = data.get("후기목록").asJsonObject
+                            var reviewList: ArrayList<ReviewItem> = ArrayList()
+
+
+                            if((review.get("후기목록").asJsonArray.isJsonNull)){
+
+                            }else{
+                                reviewList = gson.fromJson<ArrayList<ReviewItem>>(review.get("후기목록").asJsonArray, object : TypeToken<ArrayList<ReviewItem>>() {}.type)
+                            }
+
                             //foodData
                             val key = foodData.get("키").asString
                             val name = foodData.get("이름").asString
@@ -292,13 +321,14 @@ class FoodRetrofitHelper(context: Context?) {
                             // 첨가물 데이터 리스트 파싱
                             for (i in 0 until additivesJsonArray.size()) {
 
-                                val additiveJsonArray = additivesJsonArray.get(i).asJsonArray
-                                val name = additiveJsonArray.get(0).asString
-                                val ewgGrade = additiveJsonArray.get(1).asInt
-                                val purpose = additiveJsonArray.get(2).asString
+                                val additiveJsonArray = additivesJsonArray.get(i).asJsonObject
+                                val name = additiveJsonArray.get("첨가물").asString
+                                val ewgGrade = additiveJsonArray.get("등급").asInt
+                                val purpose = additiveJsonArray.get("용도").asString
                                 Log.i ("첨가물", "name: {name}")
                                 val additiveItem = AdditiveItem(name, ewgGrade, purpose)
                                 additiveList.add(additiveItem)
+
                             }
 
                             val allergtListStr= stringNullCheck(foodData.get("알레르기"))
@@ -343,6 +373,8 @@ class FoodRetrofitHelper(context: Context?) {
                             val originMaterials = foodData.get("원본").asString
                             //nere
 
+
+
                             val foodInformationItem =
                                 FoodInformationItem(
                                     key,
@@ -365,7 +397,10 @@ class FoodRetrofitHelper(context: Context?) {
                                     nutritionFacts,
                                     proteinList,
                                     rowMaterials,
-                                    originMaterials
+                                    originMaterials,
+                                    link,
+                                    grade,
+                                    reviewList
                                 )
 
                             Log.i ("searchMainFoodList", ""+foodInformationItem)
@@ -442,8 +477,339 @@ class FoodRetrofitHelper(context: Context?) {
 
     }
 
+    fun submitReview(good: String, bad: String, star: Int, food_key: String, token:String, imageFiles: List<MultipartBody.Part>, onResult: (Boolean) -> Unit){
+        Log.i ("imageFiles.size", "imageFiles.size : "+imageFiles.size)
 
-        fun stringNullCheck(item: JsonElement) :  String{
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.submitReview(food_key,"Bearer "+token,good.toRequestBody(),bad.toRequestBody(),star,imageFiles )
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            onResult(true)
+                        }else{
+                            onResult(false)
+                        }
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+        })
+
+
+    }
+
+    fun getReviewList( food_key: String,token: String,order: Int, skip:Int, limit:Int , callback: reviewListCallback){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.getReviewList(food_key, "Bearer "+token,skip, limit, order)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+                        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        // JSON을 파싱하여 리스트로 변환하는 작업 수행
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            val data = jsonResponse.get("데이터").asJsonObject
+                            val reviewData = data.get("후기목록데이터").asJsonObject
+                            val reviewList = reviewData.get("후기목록").asJsonArray
+
+                            Log.i ("getReviewList", ""+reviewData)
+
+                            callback.onSuccess(reviewList)
+                        }else{
+                            Log.e("onFailure", "응답이 올바르지 않음 : 메시지 값이 false 임")
+                            callback.onFailure()
+                        }
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        callback.onFailure()
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    callback.onFailure()
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                callback.onFailure()
+            }
+        })
+
+    }
+
+    fun getMyReviewList(token: String, skip: Int, callback: reviewListCallback){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+
+        val call = api.myReviewList("Bearer "+token, 1,skip, 10)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            val data = jsonResponse.get("데이터").asJsonObject
+                            val reviewData = data.get("후기목록데이터").asJsonObject
+                            val reviewList = reviewData.get("후기목록").asJsonArray
+
+                            Log.i ("getReviewList", ""+reviewData)
+
+                            callback.onSuccess(reviewList)
+                        }else{
+                            Log.e("onFailure", "응답이 올바르지 않음 : 메시지 값이 false 임")
+                            callback.onFailure()
+                        }
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        callback.onFailure()
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    callback.onFailure()
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                callback.onFailure()
+            }
+        })
+
+    }
+
+    fun getReviewDetails(token: String, reviewId:String , callback: reviewDataCallback){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.getReviewDetails(reviewId,"Bearer "+token)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+                        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        // JSON을 파싱하여 리스트로 변환하는 작업 수행
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            val gson = Gson()
+
+                            val data = jsonResponse.get("데이터").asJsonObject
+                            val reviewData = data.get("후기").asJsonObject
+                            val reviewItem = gson.fromJson(reviewData, ReviewItem::class.java)
+
+                            Log.i ("getReviewList", ""+reviewData)
+
+                            callback.onSuccess(reviewItem)
+                        }else{
+                            Log.e("onFailure", "응답이 올바르지 않음 : 메시지 값이 false 임")
+                            callback.onFailure()
+                        }
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        callback.onFailure()
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    callback.onFailure()
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                callback.onFailure()
+            }
+        })
+
+    }
+
+    fun updateReviews(reviewItem: ReviewItem, isChange : Boolean, token: String, imageFiles: List<MultipartBody.Part>, onResult: (Boolean) -> Unit ){
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+        val id = reviewItem.키
+        val token = "Bearer "+token
+        val good = reviewItem.긍정후기.toRequestBody()
+        val bad = reviewItem.부정후기.toRequestBody()
+        val star = reviewItem.평점
+        val img = reviewItem.이미지주소
+
+        val call = api.updateReview(id,token,good,bad,star,img,isChange,imageFiles)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            onResult(true)
+                        }else{
+                            onResult(false)
+                        }
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+        })
+    }
+
+    fun deleteReview(reviewId: Int, token: String, onResult: (Boolean) -> Unit) {
+
+        val token = "Bearer "+token
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+
+        val call = api.deleteReview(reviewId, token)
+
+        call?.enqueue(object : Callback<Void> {
+
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                onResult(true)
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                onResult(false)
+            }
+        })
+
+    }
+
+    fun addLike(type: String, reviewKey : String, token: String, onResult: (Boolean) -> Unit){
+
+        val token = "Bearer "+token
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+        val request =FoodDataInterface.후기변경기본(type,reviewKey)
+        // 로그인의 경우 UserDataInterface.LoginRequest(email, password)
+
+        val call = api.addLike(request, token)
+
+        call?.enqueue(object : Callback<Void> {
+
+
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                Log.i("onSuccess", response.body().toString())
+                onResult(true)
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+            }
+        })
+
+    }
+
+    fun deleteLike(reviewId: Int, token: String , onResult: (Boolean) -> Unit){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+        val token = "Bearer "+token
+
+        val call = api.deleteLike(reviewId, token)
+
+        call?.enqueue(object : Callback<Void> {
+
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                Log.i("onSuccess", response.body().toString())
+                onResult(true)
+
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                onResult(false)
+
+            }
+        })
+
+
+    }
+
+
+    fun stringNullCheck(item: JsonElement) :  String{
 
       return  if (!item.isJsonNull) {
           item.asString
@@ -452,10 +818,34 @@ class FoodRetrofitHelper(context: Context?) {
         }
 
     }
+
+
     fun arrayNullCheck(item: JsonArray){
 
     }
+    private fun getStringFromJson(jsonObject: JsonObject, key: String): String {
+        return if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull) {
+            jsonObject.get(key).asString
+        } else {
+            ""
+        }
+    }
 
+    private fun getIntFromJson(jsonObject: JsonObject, key: String): Int {
+        return if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull) {
+            jsonObject.get(key).asInt
+        } else {
+            0
+        }
+    }
+
+    private fun getFloatFromJson(jsonObject: JsonObject, key: String): Float {
+        return if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull) {
+            jsonObject.get(key).asFloat
+        } else {
+            0.0f
+        }
+    }
 
 
 

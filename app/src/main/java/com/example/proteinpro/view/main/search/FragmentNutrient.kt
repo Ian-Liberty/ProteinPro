@@ -134,7 +134,7 @@ class FragmentNutrient(private val foodData: FoodInformationItem) : Fragment() {
 
         // 각 성분 그램수 표시
         binding.proteinTV.setText("단백질(${nutritionFacts.protein}g)")
-        binding.sodiumTV.setText("나트륩(${nutritionFacts.sodium}mg)")
+        binding.sodiumTV.setText("나트륨(${nutritionFacts.sodium}mg)")
         binding.carbohTV.setText("탄수화물(${nutritionFacts.carbohydrates}g)")
         binding.sugarTV.setText("당류(${nutritionFacts.sugars}g)")
         binding.fatTV.setText("지방(${nutritionFacts.fat}g)")

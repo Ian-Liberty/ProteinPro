@@ -27,6 +27,7 @@ import com.example.proteinpro.util.RecyclerView.FoodItem
 import com.example.proteinpro.util.RecyclerView.FoodListAdapter
 import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
 import com.example.proteinpro.view.main.MainActivity
+import com.example.proteinpro.view.main.home.ActivityMoreList
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.JsonArray
@@ -192,6 +193,23 @@ class FragmentSearch_result : Fragment() {
 
         })
 
+        val rv_Listener = object : FoodListAdapter.OnItemClickListener {
+            override fun onItemClick(v: View?, position: Int, item: FoodItem) {
+                Log.i ("recent_rv_Listener", "itemclick : "+position )
+
+                val mIntent = Intent(mainActivity, ActivityFoodInformation::class.java)
+                val key = item.key
+                mIntent.putExtra("food_key", key)
+                startActivity(mIntent)
+            }
+
+            override fun onMoreClick(v: View?, position: Int, adapterType: Int) {
+
+            }
+
+        }
+
+        resultAdapter.setOnItemClickListener(rv_Listener)
 
 
     }

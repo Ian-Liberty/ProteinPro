@@ -11,7 +11,7 @@ class ServerData {
         const val public_URL = "http://203.234.103.123"
         const val img_URL = Server_URL+"img/food/"
         const val img_URL_board = Server_URL+"img/board/"
-
+        const val img_URL_review = Server_URL+"img/review/"
         //이전 테섭 url 49.247.132.156
         //물리 테섭 203.234.103.123
         // 운영 서버 175.207.29.173

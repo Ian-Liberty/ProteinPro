@@ -15,7 +15,7 @@ data class AdditiveItem(
                 in 0..2 -> "안전"
                 in 3..6 -> "주의"
                 in 7..10 -> "위험"
-                else -> "알 수 없음"
+                else -> "미등록"
             }
         }
     }

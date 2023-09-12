@@ -6,6 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityProteinInformationBinding
+import com.example.proteinpro.util.PreferenceHelper
+import com.example.proteinpro.util.Retrofit.ContentsRetrofitHelper
+import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 
@@ -19,7 +22,10 @@ class ActivityProteinInformation : AppCompatActivity() {
     private val binding get() = mBinding!!
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
 
-
+    // 유틸 클래스
+    // 유틸 함수 선언
+    private lateinit var preferenceHelper: PreferenceHelper
+    private lateinit var contentsRetrofitHelper: ContentsRetrofitHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +40,32 @@ class ActivityProteinInformation : AppCompatActivity() {
 
         lifecycle.addObserver(binding.youtubePlayerView)
 
-        val youtubeItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val Item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("youtubeItem",YoutubeItem::class.java)
         } else {
             intent.getSerializableExtra("youtubeItem") as YoutubeItem
         }
 
-        initdata(youtubeItem)
+
         initUtils()
+
+        if (Item != null) {
+            contentsRetrofitHelper.getBoard(Item.키.toInt(), object: ContentsRetrofitHelper.ItemCallback{
+                override fun onSuccess(youtubeItme: YoutubeItem) {
+
+                    initdata(youtubeItme)
+
+                }
+
+                override fun onFailure() {
+
+                }
+
+
+            })
+        }
+
+
         initViews()
         initListener()
 
@@ -79,6 +103,10 @@ class ActivityProteinInformation : AppCompatActivity() {
     }
     private fun initUtils(){
         // 유틸 클래스 초기화
+        preferenceHelper = PreferenceHelper(this)
+        contentsRetrofitHelper =ContentsRetrofitHelper(this)
+
+
     }
 
     fun extractVideoIdFromUrl(url: String): String? {

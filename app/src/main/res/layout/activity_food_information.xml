@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginVertical="10dp"
-                android:scaleType="centerInside"
+                android:scaleType="fitCenter"
                 android:src="@drawable/foodtest"
 
                 />
@@ -155,6 +155,72 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/review_CL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="#F0F0F0"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/review_title_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="리뷰"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/review_LL"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/review_count_tv"
+                    app:layout_constraintStart_toEndOf="@+id/review_title_TV"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <RatingBar
+                        android:id="@+id/review_RB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:numStars="5"
+                        android:stepSize="1"
+                        android:rating="3"
+                        android:progressTint="#FFcc00"
+                        android:isIndicator="true"
+                        android:layout_marginHorizontal="5dp"
+                        style="@android:style/Widget.Holo.RatingBar.Indicator"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/review_rating_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/review_count_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="2 개의 리뷰 >"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

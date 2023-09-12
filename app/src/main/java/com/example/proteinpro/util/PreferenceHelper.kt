@@ -31,6 +31,10 @@ class PreferenceHelper(context: Context?) {
         return userPrefs?.getString("JWT_Token", "값이없음")
     }
 
+    fun getCheckToken(): String? {
+        return userPrefs?.getString("email_check_Token", "값이없음")
+    }
+
     fun logout(){
 
         val autoLoginEdit = userPrefs?.edit()
