@@ -8,14 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.FragmentMaterialBinding
 import com.example.proteinpro.util.Class.food.AdditiveItem
 import com.example.proteinpro.util.Class.food.AdditiveItem.Companion.getEwgGradeText
 import com.example.proteinpro.util.Class.food.FoodInformationItem
+import com.example.proteinpro.view.main.MainActivity
 
 
 class FragmentMaterial(private val foodData: FoodInformationItem) : Fragment() {
+
+    //컨텍스트 변수
+    private lateinit var mainActivity: MainActivity
+
     private lateinit var foodInformationActivity: ActivityFoodInformation
 
     // 변수 입력
@@ -60,6 +66,10 @@ class FragmentMaterial(private val foodData: FoodInformationItem) : Fragment() {
 
     // 리스너 선언
     private fun initListener() {
+
+        binding.IntakeHelpIV.setOnClickListener {
+            showPopupMessage(foodInformationActivity, "EWG 등급이란?", "미국 비영리 환경시민단체로 자체적으로 화장품 원료의 유해성 조사를 한 후 고시하고 점수를 매겨서 유해성을 표시, 1~10까지 유해도 등급을 설정하여 각 성분의 유해성 등급에 대한 정보를 제공하고 있어요.")
+        }
 
     }
 
@@ -161,5 +171,16 @@ class FragmentMaterial(private val foodData: FoodInformationItem) : Fragment() {
 
 
 
+    }
+
+    fun showPopupMessage(context: Context, title: String, message: String) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 }

@@ -7,8 +7,10 @@ import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityTermsOfServiceBinding
 import com.example.proteinpro.util.Class.User
+import com.example.proteinpro.view.ActivityPrivacyPolicy
 
 class ActivityTermsOfService : AppCompatActivity() {
     // 변수 선언
@@ -63,9 +65,18 @@ class ActivityTermsOfService : AppCompatActivity() {
             // 리스너 초기화
             next_btn.setOnClickListener {
 
-                val mIntent = Intent(getApplicationContext(), ActivityEmailInput::class.java)
-                mIntent.putExtra("user", user)
-                startActivity(mIntent)
+                if(user.type == 2){// 카카오
+                    val mIntent = Intent(getApplicationContext(), ActivityNicknameInput::class.java)
+                    mIntent.putExtra("user", user)
+                    startActivity(mIntent)
+                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+                }else{// 이메일
+                    val mIntent = Intent(getApplicationContext(), ActivityEmailInput::class.java)
+                    mIntent.putExtra("user", user)
+                    startActivity(mIntent)
+                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+                }
+
             }
 
             // 전체 체크박스
@@ -117,10 +128,34 @@ class ActivityTermsOfService : AppCompatActivity() {
             }
 
             back_btn_lo.setOnClickListener{
-                finish()
+                onBackPressed()
             }
 
+            binding.termsOfServiceIB.setOnClickListener {
+                val mIntent = Intent(getApplicationContext(), ActivityTermsOfService::class.java)
+                startActivity(mIntent)
+            }
+
+            binding.personalDataIB.setOnClickListener {
+                val mIntent = Intent(getApplicationContext(), ActivityPrivacyPolicy::class.java)
+                startActivity(mIntent)
+            }
+
+
+
         }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if(isFinishing()){
+            //back 버튼으로 종료시 동작
+
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+
+        }
+
+    }
 
 
 }

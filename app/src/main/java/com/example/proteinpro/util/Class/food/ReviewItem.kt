@@ -13,6 +13,8 @@ data class ReviewItem(
     var 이미지주소 : ArrayList<String> = ArrayList(),
     var 좋아요여부 : Int = 0,
     var 좋아요 : Int = 0,
-    var 작성여부 : Int = 0
+    var 작성여부 : Int = 0,
+    var 식품이미지 : String = "",
+    var 식품이름 : String = ""
 
 )

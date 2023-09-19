@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
+import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityNicknameInputBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
@@ -89,6 +90,7 @@ class ActivityNicknameInput : AppCompatActivity() {
                             retrofitHelper.login(this,user.email,user.password){
                                 if(it){
                                     startActivity(mIntent)
+                                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
                                 }else{
                                     Toast.makeText(getApplicationContext(), "로그인에 실패 했습니다.",Toast.LENGTH_SHORT).show()
                                 }
@@ -158,4 +160,15 @@ class ActivityNicknameInput : AppCompatActivity() {
         return false
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if(isFinishing()){
+            //back 버튼으로 종료시 동작
+
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+
+        }
+
+    }
 }

@@ -33,20 +33,23 @@ class ActivityBirthInput : AppCompatActivity() {
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
 
     private val TAG = this.javaClass.simpleName
-    //콜백 인스턴스 생성
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            // 뒤로 버튼 이벤트 처리
-            Log.e(TAG, "뒤로가기 클릭")
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if(isFinishing()){
+            //back 버튼으로 종료시 동작
+
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
 
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_birth_input)
 
-        this.onBackPressedDispatcher.addCallback(this,callback) //
         // 자동 생성된 뷰 바인딩 클래스에서의 inflate라는 메서드를 활용해서
         // 액티비티에서 사용할 바인딩 클래스의 인스턴스 생성
         mBinding = ActivityBirthInputBinding.inflate(layoutInflater)
@@ -60,6 +63,8 @@ class ActivityBirthInput : AppCompatActivity() {
         nextButton = binding.nextBTN
         warning_tv = binding.warningTv
         back_btn_lo = binding.backBtnLo
+
+        //인텐트에서 유저정보 받아오기
 
         // 현재 날짜 기준으로 만 14세 미만인지 체크하고 결과를 출력하는 함수 호출
         checkIfUnder14YearsOld(datePicker.year, datePicker.month, datePicker.dayOfMonth)
@@ -78,18 +83,27 @@ class ActivityBirthInput : AppCompatActivity() {
         nextButton.setOnClickListener {
 
             val mIntent = Intent(getApplicationContext(), ActivityTermsOfService::class.java)
+            var getUser = intent.getSerializableExtra("user") as? User
 
-            val user = User(birthDate =user_birth)
+
+            var user=
+            if(getUser != null){
+                getUser
+            }else{
+                User(birthDate =user_birth)
+            }
+
+            user.birthDate = user_birth
 
             mIntent.putExtra("user", user)
 
             startActivity(mIntent)
+            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         }
 
         back_btn_lo.setOnClickListener{
 
-            finish()
-
+            onBackPressed()
         }
 
     }

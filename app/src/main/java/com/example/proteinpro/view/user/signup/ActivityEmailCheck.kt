@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityEmailCheckBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
@@ -179,7 +180,7 @@ class ActivityEmailCheck : AppCompatActivity() {
                         mIntent.putExtra("user", user)
 
                         startActivity(mIntent)
-
+                        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
                     }else{
                         // 인증 실패
 
@@ -250,6 +251,18 @@ class ActivityEmailCheck : AppCompatActivity() {
         }
 
         next_btn.isEnabled = allFilled
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if(isFinishing()){
+            //back 버튼으로 종료시 동작
+
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+
+        }
+
     }
 
 

@@ -44,7 +44,7 @@ class FragmentSearch_result : Fragment() {
     //컨텍스트 변수
     private lateinit var mainActivity: MainActivity
 
-    private lateinit var selectedChips: ArrayList<String>
+    private var selectedChips: ArrayList<String> = ArrayList()
     private lateinit var categoryKey : String
     private lateinit var searchQuery : String
 
@@ -91,11 +91,14 @@ class FragmentSearch_result : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result->
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
                 // 필터에서 받아온 값이 있으면
                 if (data != null) {
+                    selectedChips = ArrayList()// 초기화
+
 
                     selectedChips = data.getStringArrayListExtra("selectedChips") as ArrayList<String>
                     Log.i("result_filter", "결과값: $selectedChips")
@@ -130,6 +133,14 @@ class FragmentSearch_result : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+
+
+
+    }
+
     private fun setRecyclerview() {
 
         //1최근
@@ -149,6 +160,8 @@ class FragmentSearch_result : Fragment() {
         filter_btn.setOnClickListener {
 
             val mIntent = Intent(mainActivity, ActivitySearchFilter::class.java)
+
+            mIntent.putStringArrayListExtra("selectedChips", selectedChips)
 
             getResult.launch(mIntent)
 
@@ -294,7 +307,7 @@ class FragmentSearch_result : Fragment() {
     }
 
     private fun chipGeneration(){
-
+        filter_cg.removeAllViews()
         val filterList = selectedChips
 
         for(filter in filterList) {

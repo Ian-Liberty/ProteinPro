@@ -130,4 +130,9 @@ interface UserDataInterface {
     @POST("user/withdraw")
     fun 회원탈퇴(@Body request: 회원탈퇴기본, @Header("Authorization") authorization: String?) : Call<JsonElement?>?
 
+
+    @POST("user/wallet")
+    fun 지갑정보가져오기(@Header("Authorization") authorization: String?) : Call<JsonElement?>?
+
+
 }

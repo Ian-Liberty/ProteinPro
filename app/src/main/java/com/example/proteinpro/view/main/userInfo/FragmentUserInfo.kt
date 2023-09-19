@@ -15,9 +15,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.proteinpro.databinding.FragmentUserInfoBinding
 import com.example.proteinpro.util.Class.User
+import com.example.proteinpro.util.Class.WalletDataItem
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.view.ActivityPrivacyPolicy
@@ -160,6 +162,27 @@ class FragmentUserInfo : Fragment() {
 
         val token = preferenceHelper.get_jwt_Token()
 
+        if(token != null){
+            retrofitHelper.getWallet(token, object : RetrofitHelper.WalletData{
+                override fun onSuccess(walletData: WalletDataItem) {
+
+                    if(walletData.지갑주소 == null){
+                        binding.haveNotTokenLL.visibility = View.VISIBLE
+                        binding.haveTokenLL.visibility = View.GONE
+                    }else{
+                        binding.haveTokenLL.visibility = View.VISIBLE
+                        binding.haveNotTokenLL.visibility = View.GONE
+                    }
+
+                }
+
+                override fun onFailure() {
+
+                }
+
+            })
+        }
+
         if (!token.isNullOrEmpty()) {
             retrofitHelper.getUserInfo(token) { user, success ->
                 if (success) {
@@ -219,5 +242,7 @@ class FragmentUserInfo : Fragment() {
         retrofitHelper = RetrofitHelper(mainActivity)
 
     }
+
+
 
 }

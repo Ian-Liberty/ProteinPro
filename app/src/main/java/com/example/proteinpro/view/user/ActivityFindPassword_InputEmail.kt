@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityFindPasswordInputEmailBinding
@@ -77,15 +78,18 @@ class ActivityFindPassword_InputEmail : AppCompatActivity() {
             //이메일 중복 체크
             // 유저 객체에 이메일 값 할당
             user.email = email_et.getText().toString()
-            retrofitHelper.checkEmailDuplication(user.email){ isSuccess ->
-                if (isSuccess) {
-                    // 중복값없음
+            val mIntent = Intent(this, ActivityFindPassword_CheckEmail::class.java)
+            retrofitHelper.checkEmailDuplication(user.email , object : RetrofitHelper.signupType {
+                override fun onSuccess() {                    // 중복값없음
                     Log.i ("정보태그", "중복값 없음")
 
-                } else {
+                    Toast.makeText(getApplicationContext(), "가입된 이메일이 아닙니다. 올바른 이메일을 입력해 주세요!",Toast.LENGTH_SHORT).show()
+
+                }
+
+                override fun onFailure(userSignupType: Int) {
                     //  중복값 있음 혹은 오류
 
-                    val mIntent = Intent(this, ActivityFindPassword_CheckEmail::class.java)
                     mIntent.putExtra("user", user)
                     startActivity(mIntent)
                     // 인증번호 보내기
@@ -101,7 +105,8 @@ class ActivityFindPassword_InputEmail : AppCompatActivity() {
 
                     }
                 }
-            }
+
+            })
 
 //         checkEmailDuplication(this, email_et.text.toString())
 

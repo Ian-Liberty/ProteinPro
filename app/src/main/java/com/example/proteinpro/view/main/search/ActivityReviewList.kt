@@ -72,22 +72,22 @@ class ActivityReviewList : AppCompatActivity() {
         goodWordList = intent.getStringExtra("good").toString()
         badWordList = intent.getStringExtra("bad").toString()
 
-
         initUtils()
-        initViews()
-        initListener()
 
     }
 
     override fun onResume() {
         super.onResume()
+        initViews()
+        initListener()
         initData()
 
     }
 
     private fun initViews(){
         // 뷰 초기화
-        adapter = ReviewListAdapter(this, itemList)
+        itemList.clear()
+        adapter = ReviewListAdapter(this, itemList, "ReviewList")
         binding.reviewRV.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.reviewRV.adapter = adapter
 
@@ -109,7 +109,6 @@ class ActivityReviewList : AppCompatActivity() {
         for (word in badWordList) {
             createAndAddTextView(word, 1)
         }
-
 
     }
     private fun initListener(){
@@ -191,8 +190,6 @@ class ActivityReviewList : AppCompatActivity() {
                         val reviewItem = gson.fromJson(item, ReviewItem::class.java)
                         itemList.add(reviewItem)
                     }
-
-
 
                     adapter.setItem_list(itemList)
 

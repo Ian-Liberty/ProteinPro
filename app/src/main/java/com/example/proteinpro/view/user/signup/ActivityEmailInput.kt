@@ -10,7 +10,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
+import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityEmailInputBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
@@ -74,13 +76,13 @@ class ActivityEmailInput : AppCompatActivity() {
             //이메일 중복 체크
             // 유저 객체에 이메일 값 할당
             user.email = email_et.getText().toString()
-            retrofitHelper.checkEmailDuplication(user.email){ isSuccess ->
-                if (isSuccess) {
-                    // 중복값없음
+            val mIntent = Intent(this, ActivityNicknameInput::class.java)
+            retrofitHelper.checkEmailDuplication(user.email , object : RetrofitHelper.signupType {
+                override fun onSuccess() {// 이메일 중복 없음
 
-                    val mIntent = Intent(this, ActivityEmailCheck::class.java)
                     mIntent.putExtra("user", user)
                     startActivity(mIntent)
+                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
                     // 인증번호 보내기
                     retrofitHelper.requestCertNum(user.email){isSuccess ->
                         if(isSuccess) {
@@ -91,12 +93,23 @@ class ActivityEmailInput : AppCompatActivity() {
                         }
 
                     }
-
-                } else {
-                    // 중복값 있음 혹은 오류
-                Log.i ("정보태그", "중복값 있음 혹은 오류 checkEmailDuplication 함수 로그 확인")
                 }
-            }
+
+                override fun onFailure(userSignupType: Int) {// 이메일 중복 있음
+
+                    if(userSignupType == 2 || userSignupType == 1){
+                        // 이미 가입된 회원가입 타입이 카카오 계정이라면
+                        //자동 로그인?
+                        Toast.makeText(getApplicationContext(), "이미 가입된 유저입니다. 다른 이메일을 사용해 주세요",Toast.LENGTH_SHORT).show()
+                    }else{
+                        // 에러
+                        Log.i ("정보태그", "오류 checkEmailDuplication 함수 로그 확인")
+
+                    }
+
+                }
+
+            })
 
 //         checkEmailDuplication(this, email_et.text.toString())
 
@@ -149,7 +162,17 @@ class ActivityEmailInput : AppCompatActivity() {
         return email.matches(emailRegex)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
 
+        if(isFinishing()){
+            //back 버튼으로 종료시 동작
+
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+
+        }
+
+    }
 
 
 

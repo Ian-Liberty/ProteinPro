@@ -18,7 +18,7 @@ import com.example.proteinpro.R
 import com.example.proteinpro.util.Class.food.ReviewItem
 import com.example.proteinpro.util.Retrofit.ServerData
 
-class ReviewListAdapter(private val context: Context, private var itemList: ArrayList<ReviewItem>): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class ReviewListAdapter(private val context: Context, private var itemList: ArrayList<ReviewItem> , private var adapterType: String): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var mListener: OnItemClickListener? = null
     interface OnItemClickListener {
@@ -55,10 +55,24 @@ class ReviewListAdapter(private val context: Context, private var itemList: Arra
         val date_tv: TextView = view.findViewById(R.id.date_TV)
         val menu_btn: ImageButton = view.findViewById(R.id.menu_IB)
         val imagelist_rv: RecyclerView = view.findViewById(R.id.imageList_rv)
+        val food_img_iv :ImageView = view.findViewById(R.id.food_img_IV)
 
         fun setdata(context: Context, item: ReviewItem ) {
 
-            nickname_tv.setText(item.닉네임)
+            if(adapterType == "myReview"){
+                food_img_iv.visibility = View.VISIBLE
+                nickname_tv.setText(item.식품이름)
+
+                val url = "https://proteinpro.kr/api/img/food/"+item.식품이미지
+
+                Glide.with(context)
+                    .load(url)
+                    .into(food_img_iv)
+            }else{
+                nickname_tv.setText(item.닉네임)
+                food_img_iv.visibility == View.GONE
+            }
+
             good_tv.setText(item.긍정후기)
             bad_tv.setText(item.부정후기)
             like_tv.setText("👍"+item.좋아요)

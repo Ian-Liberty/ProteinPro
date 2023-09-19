@@ -15,7 +15,7 @@ class FilterSettings {
     }
 
     data class FilterItem(
-        val type: Int,
+        val type: Int = -1,
         val name: String = "",// http요청시 사용해야하는 이름
         val Key : String = "", // 앱 에서 조회하기 위한 키 및 표시되는 이름
         val child: ArrayList<FilterItem> = ArrayList()
@@ -41,7 +41,6 @@ class FilterSettings {
     val 밀 = FilterItem(FilterType.ALLERGY,"밀", "밀")
     val 아몬드 = FilterItem(FilterType.ALLERGY,"아몬드", "아몬드")
     val 토마토 = FilterItem(FilterType.ALLERGY,"토마토", "토마토")
-
 
     val 초코 = FilterItem(FilterType.TASTE,"초코", "초코")
     val 곡물 = FilterItem(FilterType.TASTE,"곡물", "곡물")
@@ -75,8 +74,8 @@ class FilterSettings {
     )
     val kindFilterItems: ArrayList<FilterItem> = arrayListOf(
 
-        FilterItem(FilterType.ALL,"식물성단백질","식물성 \uD83C\uDF31", 유당없음list),
-        FilterItem(FilterType.ALL,"동물성단백질","동물성 \uD83D\uDC2E", 유당없음list),
+        FilterItem(FilterType.ALL,"식물성단백질","식물성 \uD83C\uDF31", 식물성list),
+        FilterItem(FilterType.ALL,"동물성단백질","동물성 \uD83D\uDC2E", 동물성list),
         mpc,
         mpi,
         wpc,

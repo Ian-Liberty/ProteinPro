@@ -35,7 +35,6 @@ class FragmentProteinInformation(private val foodData: FoodInformationItem) : Fr
         foodInformationActivity = context as ActivityFoodInformation
 
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

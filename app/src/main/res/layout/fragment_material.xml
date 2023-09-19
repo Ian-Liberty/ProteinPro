@@ -196,7 +196,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="원재료 목록!"/>
+            android:text="제공되는 정보가 없습니다."/>
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
@@ -213,7 +213,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="원본 목록!"/>
+            android:text="제공되는 정보가 없습니다."/>
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"

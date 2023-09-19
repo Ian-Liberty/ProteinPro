@@ -1,19 +1,29 @@
 package com.example.proteinpro.view.main.userInfo
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityAccountManagementBinding
+import com.example.proteinpro.util.Class.User
+import com.example.proteinpro.util.Class.WalletDataItem
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
 import com.example.proteinpro.view.ActivityLogin
+import com.example.proteinpro.view.user.signup.ActivityBirthInput
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 import kotlin.math.log
 
 class ActivityAccountManagement : AppCompatActivity() {
@@ -43,17 +53,28 @@ class ActivityAccountManagement : AppCompatActivity() {
         initUtils()
         initViews()
         initListener()
+        initData()
 
+
+    }
+
+    private fun initData() {
+
+        val token = preferenceHelper.get_jwt_Token()
 
     }
 
     private fun initViews(){
 
+        Log.i ("로그인 정보", "preferenceHelper.getUser()?.type"+ preferenceHelper.getUser()?.type)
+
         var loginType : String
         if(preferenceHelper.getUser()?.type == 1){// 일반로그인
             loginType = "일반 로그인"
+            binding.changePasswordBTN.visibility = View.VISIBLE
         }else if(preferenceHelper.getUser()?.type == 2){// 카카오 로그인
             loginType = "카카오 로그인"
+            binding.changePasswordBTN.visibility = View.GONE
         }else{
             loginType = ""
         }
@@ -92,34 +113,48 @@ class ActivityAccountManagement : AppCompatActivity() {
         //회원 탈퇴
         binding.withdrawalBTN.setOnClickListener {
 
-            showWithdrawDialog(this) { userInput ->
-                if (userInput.isNotEmpty()) {
-                    // 비밀번호가 입력되었을 때의 처리
-                    // 예: 비밀번호 검증, 탈퇴 로직 실행 등
-                    // 탈퇴 로직 처리
 
-                    retrofitHelper.userWithdraw(userInput, preferenceHelper.get_jwt_Token().toString()){
+            if(preferenceHelper.getUser()?.type == 1){// 일반로그인
 
-                        if(it){
-                            preferenceHelper.logout()
+                showWithdrawDialog(this) { userInput ->
+                    if (userInput.isNotEmpty()) {
+                        // 비밀번호가 입력되었을 때의 처리
+                        // 예: 비밀번호 검증, 탈퇴 로직 실행 등
+                        // 탈퇴 로직 처리
 
-                            val mIntent = Intent(this, ActivityLogin::class.java)
+                        retrofitHelper.userWithdraw(userInput, preferenceHelper.get_jwt_Token().toString()){
 
-                            mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            startActivity(mIntent)
-                            Toast.makeText(getApplicationContext(), "정상적으로 회원 탈퇴 처리 되었습니다.",Toast.LENGTH_SHORT).show()
-                        }else{
-                            showInvalidPasswordDialog(this)
+                            if(it){
+                                preferenceHelper.logout()
+
+                                val mIntent = Intent(this, ActivityLogin::class.java)
+
+                                mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(mIntent)
+                                Toast.makeText(getApplicationContext(), "정상적으로 회원 탈퇴 처리 되었습니다.",Toast.LENGTH_SHORT).show()
+                            }else{
+                                showInvalidPasswordDialog(this)
+                            }
+
                         }
+                    } else {
+                        // 비밀번호가 입력되지 않았을 때의 처리
+                        // 예: 사용자에게 경고 메시지 표시
+                        Toast.makeText(getApplicationContext(), "비밀번호가 입력되지 않았습니다.",Toast.LENGTH_SHORT).show()
 
                     }
-                } else {
-                    // 비밀번호가 입력되지 않았을 때의 처리
-                    // 예: 사용자에게 경고 메시지 표시
-
-
                 }
+
+            }else if(preferenceHelper.getUser()?.type == 2){// 카카오 로그인
+
+
+
+
+            }else{
+
             }
+
+
 
 
         }
@@ -176,6 +211,96 @@ class ActivityAccountManagement : AppCompatActivity() {
             dialog.dismiss()
         }
         builder.show()
+    }
+
+    fun checkKakao(){
+
+        // 로그인 조합 예제
+
+// 카카오계정으로 로그인 공통 callback 구성
+// 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
+        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+            if (error != null) {
+                Log.e(ContentValues.TAG, "카카오계정으로 로그인 실패", error)
+            } else if (token != null) {
+                Log.i(ContentValues.TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+
+                UserApiClient.instance.me{ user, error ->
+                    if (error != null) {
+                        Log.e(ContentValues.TAG, "사용자 정보 요청 실패", error)
+
+                        Toast.makeText(getApplicationContext(), "카카오 인증에 실패 했습니다.",Toast.LENGTH_SHORT).show()
+
+                    }
+                    else if (user != null) {
+                        Log.i(
+                            ContentValues.TAG, "사용자 정보 요청 성공" +
+                                "\n회원번호: ${user.id}" +
+                                "\n이메일: ${user.kakaoAccount?.email}" +
+                                "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                                "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+
+
+                        retrofitHelper.userWithdraw("", preferenceHelper.get_jwt_Token().toString()){
+
+                            if(it){
+                                preferenceHelper.logout()
+
+                                val mIntent = Intent(this, ActivityLogin::class.java)
+
+                                mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(mIntent)
+                                Toast.makeText(getApplicationContext(), "정상적으로 회원 탈퇴 처리 되었습니다.",Toast.LENGTH_SHORT).show()
+                            }else{
+                                showInvalidPasswordDialog(this)
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+// 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
+            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+                if (error != null) {
+                    Log.e(ContentValues.TAG, "카카오톡으로 로그인 실패", error)
+                    Toast.makeText(getApplicationContext(), "카카오 인증에 실패 했습니다.",Toast.LENGTH_SHORT).show()
+                    // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
+                    // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
+                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                        return@loginWithKakaoTalk
+                    }
+
+                    // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
+                    UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+                } else if (token != null) {
+                    Log.i(ContentValues.TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
+                    UserApiClient.instance.me{ user, error ->
+                        if (error != null) {
+                            Log.e(ContentValues.TAG, "사용자 정보 요청 실패", error)
+                        }
+                        else if (user != null) {
+                            Log.i(
+                                ContentValues.TAG, "사용자 정보 요청 성공" +
+                                    "\n회원번호: ${user.id}" +
+                                    "\n이메일: ${user.kakaoAccount?.email}" +
+                                    "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                                    "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+
+
+
+                        }
+                    }
+                }
+            }
+        } else {
+            UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+        }
+
     }
 
 

@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
+import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityPasswordInputBinding
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
@@ -90,7 +91,7 @@ class ActivityPasswordInput : AppCompatActivity() {
             mIntent.putExtra("user", user)
 
             startActivity(mIntent)
-
+            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         }
 
         password_et.addTextChangedListener(object : TextWatcher {
@@ -131,5 +132,17 @@ class ActivityPasswordInput : AppCompatActivity() {
     fun isPasswordValid(password: String): Boolean {
         val passwordRegex = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#\$%^*+=-]).{8,15}\$".toRegex()
         return password.matches(passwordRegex)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if(isFinishing()){
+            //back 버튼으로 종료시 동작
+
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+
+        }
+
     }
 }

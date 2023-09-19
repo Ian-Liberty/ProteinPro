@@ -88,7 +88,7 @@ class ActivityMyReview : AppCompatActivity() {
         // 뷰 초기화
 
         // 뷰 초기화
-        adapter = ReviewListAdapter(this, itemList)
+        adapter = ReviewListAdapter(this, itemList, "myReview")
         binding.reviewListRV.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.reviewListRV.adapter = adapter
 

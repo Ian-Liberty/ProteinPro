@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityLoginBinding
+import com.example.proteinpro.util.Class.User
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.ApiClient
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
@@ -28,6 +30,7 @@ import com.example.proteinpro.util.Retrofit.UserDataInterface
 import com.example.proteinpro.view.main.MainActivity
 import com.example.proteinpro.view.user.ActivityFindPassword_InputEmail
 import com.example.proteinpro.view.user.signup.ActivityBirthInput
+import com.example.proteinpro.view.user.signup.ActivityNicknameInput
 import com.google.gson.JsonElement
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
@@ -153,7 +156,14 @@ class ActivityLogin : AppCompatActivity() {
 
         signUp_tv.setOnClickListener{
             Log.i ("signUpTV", "회원가입 클릭")
+
+            var user = User()
+            user.type = 1// 카카오 타입 가입
+
             val mIntent = Intent(this, ActivityBirthInput::class.java)
+
+            mIntent.putExtra("user", user)
+
             startActivity(mIntent)
             overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         }
@@ -265,9 +275,48 @@ class ActivityLogin : AppCompatActivity() {
                                 "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
                                 "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
 
-                        val mIntent = Intent(this, MainActivity::class.java)
-                        startActivity(mIntent)
-                        finish()
+                        //이메일 체크
+
+                        val email = user.kakaoAccount?.email
+
+                        if (email != null) {
+
+                            retrofitHelper.checkEmailDuplication(email , object : RetrofitHelper.signupType {
+                                override fun onSuccess() {// 이메일 중복 없음
+
+                                    val mIntent = Intent(getApplicationContext(), ActivityBirthInput::class.java)
+
+                                    var user = User()
+                                    user.email = email
+                                    user.type = 2// 카카오 타입 가입
+
+                                    mIntent.putExtra("user", user)
+
+                                    startActivity(mIntent)
+                                }
+
+                                override fun onFailure(userSignupType: Int) {// 이메일 중복 있음
+
+                                    if(userSignupType == 2){
+                                        // 이미 가입된 회원가입 타입이 카카오 계정이라면
+                                        //자동 로그인?
+                                        login(applicationContext, email, "")
+                                    }else{
+
+                                        Toast.makeText(getApplicationContext(), "이미 가입된 유저입니다. 이메일로 로그인 부탁드립니다.",Toast.LENGTH_SHORT).show()
+                                        // 혹은 비밀번호 찾기 유도?
+
+                                    }
+
+                                }
+
+                            })
+
+                        }
+
+//                        val mIntent = Intent(this, MainActivity::class.java)
+//                        startActivity(mIntent)
+//                        finish()
 
                     }
 
@@ -302,7 +351,6 @@ class ActivityLogin : AppCompatActivity() {
                                     "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
                                     "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
                         }
-                        
                     }
                 }
             }
@@ -329,7 +377,7 @@ class ActivityLogin : AppCompatActivity() {
         return text1.isNotEmpty() && text2.isNotEmpty()
     }
 
-    private fun requestPermission() {
+    private fun requestPermission() {// 노티피케이션 퍼미션 요청
         Log.i ("requestPermission", "requestPermission")
         TedPermission.create()
             .setPermissionListener(object : PermissionListener{

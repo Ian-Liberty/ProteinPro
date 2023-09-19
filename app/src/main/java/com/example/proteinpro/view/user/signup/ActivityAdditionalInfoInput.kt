@@ -156,6 +156,7 @@ class ActivityAdditionalInfoInput : AppCompatActivity() {
                     if(isSuccess){
                         val mIntent = Intent(getApplicationContext(), MainActivity::class.java)
                         startActivity(mIntent)
+                        
 
                         Toast.makeText(getApplicationContext(), "${user.nickname} 님 환영합니다!",Toast.LENGTH_SHORT).show()
                     }else{

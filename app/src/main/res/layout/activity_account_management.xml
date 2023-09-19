@@ -106,6 +106,7 @@
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/round_background_border_gray"
         android:text="비밀번호 변경"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/logOut_BTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"

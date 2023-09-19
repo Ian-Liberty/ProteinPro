@@ -6,7 +6,10 @@ import android.util.Log
 import android.widget.Toast
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Class.User
+import com.example.proteinpro.util.Class.WalletDataItem
 import com.example.proteinpro.view.main.MainActivity
+import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,6 +19,16 @@ class RetrofitHelper(context: Context?) {
 
     private val retrofit = ApiClient.getApiClient()
     private val ctx = context
+
+    interface WalletData {
+        fun onSuccess(walletData: WalletDataItem)
+        fun onFailure()
+    }
+
+    interface signupType {
+        fun onSuccess()
+        fun onFailure(userSignupType : Int)
+    }
 
     /***
      * 인증번호 요청
@@ -148,7 +161,7 @@ class RetrofitHelper(context: Context?) {
     /***
      * 중복값 있으면 true 중복 없으면 false
      */
-   fun checkEmailDuplication(email: String, onResult: (Boolean) -> Unit) {
+   fun checkEmailDuplication(email: String, callback: signupType) {
 
         Log.i ("checkEmailDuplication", "이메일 중복 검사")
 
@@ -173,20 +186,23 @@ class RetrofitHelper(context: Context?) {
 
                         if(result == "false"){
                             // 중복된 이메일 있음
-                            Toast.makeText(ctx, "이미 사용중인 이메일 입니다.",Toast.LENGTH_SHORT).show()
-                            onResult(false)
+//                            Toast.makeText(ctx, "이미 사용중인 이메일 입니다.",Toast.LENGTH_SHORT).show()
+                            val data = jsonResponse.get("데이터").asJsonObject
+                            val type = data.get("타입").asInt
+
+                            callback.onFailure(type)
                         }else{
                             // 이메일 중복 없음
-                            onResult(true)
+                            callback.onSuccess()
                         }
 
                     } else {
                         Log.i("onFailure", "응답이 올바르지 않음")
-                        onResult(false)
+                        callback.onFailure(-1)// 예외사항은 -1 로 표기
                     }
                 } else {
                     Log.i("onFailure", "응답이 올바르지 않음")
-                    onResult(false)
+                    callback.onFailure(-1)
                 }
 
                 Log.i ("checkEmailDuplication", "이메일 중복 검사끝")
@@ -195,7 +211,7 @@ class RetrofitHelper(context: Context?) {
 
             override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
                 Log.i("onFailure", t.toString())
-                onResult(false)
+                callback.onFailure(-1)
             }
 
         })
@@ -316,7 +332,7 @@ class RetrofitHelper(context: Context?) {
         val 활동량 = user.getActivityLevelIntensity()
         val 등급 = 0
         val 탈퇴 = 0// 탈퇴전
-        val 타입 = 1// 일반로그인
+        val 타입 = user.type// 일반로그인
 
 
         val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
@@ -665,6 +681,61 @@ class RetrofitHelper(context: Context?) {
             override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
                 Log.i("onFailure", t.toString())
                 onResult(false)
+            }
+        })
+
+    }
+
+    fun getWallet(token: String, callback: WalletData){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(UserDataInterface::class.java)// 사용할 인터페이스
+
+
+
+        val call = api.지갑정보가져오기("Bearer "+token)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                            val data = jsonResponse.get("데이터")
+
+                            val gson = Gson()
+
+                            val item = gson.fromJson(data, WalletDataItem::class.java)
+
+                            callback.onSuccess(item)
+                        }else{
+                            Log.i ("정보태그", ""+jsonResponse.get("데이터"))
+                            callback.onFailure()
+                        }
+
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        callback.onFailure()
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    callback.onFailure()
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                callback.onFailure()
             }
         })
 
