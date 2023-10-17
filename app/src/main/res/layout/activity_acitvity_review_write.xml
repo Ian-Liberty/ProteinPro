@@ -84,7 +84,7 @@
                 android:layout_gravity="center_horizontal"
                 android:numStars="5"
                 android:stepSize="1"
-                android:rating="3"
+                android:rating="0"
                 android:progressTint="#FFcc00"
                 style="@android:style/Widget.Holo.RatingBar"
 
@@ -121,7 +121,7 @@
                 android:background="@drawable/round_background_border_white"
                 android:elevation="20dp"
                 android:padding="10dp"
-                android:hint="해당제품의 좋았던 점을 알려주세요"
+                android:hint="해당제품의 아쉬운 점을 알려주세요"
                 android:gravity="top"
                 android:maxHeight="300dp"
                 android:layout_margin="10dp"

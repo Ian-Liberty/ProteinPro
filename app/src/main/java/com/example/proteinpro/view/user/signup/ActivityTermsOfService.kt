@@ -11,6 +11,7 @@ import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityTermsOfServiceBinding
 import com.example.proteinpro.util.Class.User
 import com.example.proteinpro.view.ActivityPrivacyPolicy
+import com.example.proteinpro.view.ActivityTermsOfUse
 
 class ActivityTermsOfService : AppCompatActivity() {
     // 변수 선언
@@ -132,7 +133,7 @@ class ActivityTermsOfService : AppCompatActivity() {
             }
 
             binding.termsOfServiceIB.setOnClickListener {
-                val mIntent = Intent(getApplicationContext(), ActivityTermsOfService::class.java)
+                val mIntent = Intent(getApplicationContext(), ActivityTermsOfUse::class.java)
                 startActivity(mIntent)
             }
 

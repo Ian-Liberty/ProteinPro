@@ -147,7 +147,7 @@ class ActivityAccountManagement : AppCompatActivity() {
 
             }else if(preferenceHelper.getUser()?.type == 2){// 카카오 로그인
 
-
+                checkKakao()
 
 
             }else{

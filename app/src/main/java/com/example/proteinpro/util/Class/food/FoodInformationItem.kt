@@ -25,6 +25,8 @@ data class FoodInformationItem(
  val originMaterials: String = "",// 원재료 표기 원본
  val link: String = "",// 식품 구매 링크
  val grade : Float = 0.0f,
+ val isLike : Int = 0,
+ val LikeCount : Int = 0,
  val reviewList : ArrayList<ReviewItem> = ArrayList()
 
 )

@@ -277,6 +277,7 @@ class FoodRetrofitHelper(context: Context?) {
                             //데이터 파싱
                             val foodData = data.get("식품").asJsonObject// 식품 데이터
                             val nutrient = data.get("영양성분").asJsonObject// 영양성분
+                            val foodlike = data.get("관심식품").asJsonObject// 관심정보
                             val ProteinNames = data.get("단백질명").asJsonArray// 단백질 명 리스트
                             val additivesJsonArray  = data.get("첨가물리스트").asJsonArray // 첨가물 리스트
                             val aiReviewData = data.get("ai후기").asJsonObject
@@ -371,9 +372,11 @@ class FoodRetrofitHelper(context: Context?) {
 
                             val rowMaterials= foodData.get("원재료").asString
                             val originMaterials = foodData.get("원본").asString
-                            //nere
+                            //
 
-
+                            val isLike = foodlike.get("등록여부").asInt
+                            //0이면 미등록, 1이면 관심상품
+                            val likeCount = foodlike.get("관심갯수").asInt
 
                             val foodInformationItem =
                                 FoodInformationItem(
@@ -400,6 +403,8 @@ class FoodRetrofitHelper(context: Context?) {
                                     originMaterials,
                                     link,
                                     grade,
+                                    isLike,
+                                    likeCount,
                                     reviewList
                                 )
 
@@ -699,7 +704,6 @@ class FoodRetrofitHelper(context: Context?) {
 
             override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
 
-
                 if (response.isSuccessful) {
                     val jsonResponse = response.body()?.asJsonObject
                     Log.i("onSuccess", response.body().toString())
@@ -805,6 +809,138 @@ class FoodRetrofitHelper(context: Context?) {
             }
         })
 
+
+    }
+
+    fun addFavFood(foodKey : Int, token : String, onResult: (Boolean) -> Unit){
+        val token = "Bearer "+token
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+        val call = api.addFavFood(foodKey, token)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+                        //응답에서 변수 호출    jsonResponse.get("키값").asString
+
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            onResult(true)
+                        }else{
+                            onResult(false)
+                        }
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                onResult(false)
+            }
+
+        })
+    }
+
+    fun delFavFood(reviewId: Int, token: String , onResult: (Boolean) -> Unit){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+        val token = "Bearer "+token
+
+        val call = api.delFavFood(reviewId, token)
+
+        call?.enqueue(object : Callback<JsonElement> {
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+                        //응답에서 변수 호출    jsonResponse.get("키값").asString
+
+                        if(jsonResponse.get("메세지").asString == "true"){
+                            onResult(true)
+                        }else{
+                            onResult(false)
+                        }
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        onResult(false)
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    onResult(false)
+                }
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                onResult(false)
+            }
+
+        })
+
+    }
+
+    fun getMyFavList(token: String, skip : Int,  callback: MainFoodListCallback ){
+
+        val retrofit = ApiClient.getApiClient()
+        val api =retrofit.create(FoodDataInterface::class.java)// 사용할 인터페이스
+
+        val bToken = "Bearer "+token
+
+        val call = api.myFavFoodList(bToken, skip)
+
+        call?.enqueue(object : Callback<JsonElement?> {
+
+            override fun onResponse(call: Call<JsonElement?>, response: Response<JsonElement?>) {
+
+
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.asJsonObject
+                    Log.i("onSuccess", response.body().toString())
+
+                    if (jsonResponse != null) {
+        //             응답에서 변수 호출    jsonResponse.get("키값").asString
+                        val data = jsonResponse.get("데이터").asJsonObject
+                        val more_data = data.get("관심제품데이터").asJsonObject
+
+                        val foodList = more_data.get("관심제품목록").asJsonArray
+
+                        Log.i ("getMyFavList", ""+foodList)
+
+                        callback.onSuccess(foodList)
+
+                    } else {
+                        Log.e("onFailure", "응답이 올바르지 않음 : jsonResponse 값이 null 임")
+                        callback.onFailure()
+                    }
+                } else {
+                    Log.e("onFailure", "응답이 올바르지 않음 : response.isSuccessful 값이 false 임")
+                    callback.onFailure()
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonElement?>, t: Throwable) {
+                Log.i("onFailure", t.toString())
+                callback.onFailure()
+            }
+        })
 
     }
 

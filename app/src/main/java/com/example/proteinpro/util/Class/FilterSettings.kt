@@ -33,25 +33,25 @@ class FilterSettings {
     val 완두단백 = FilterItem(FilterType.KIND,"완두단백","완두단백")
     val 산양유단백 = FilterItem(FilterType.KIND,"산양유단백","산양유단백")
 
-    val 우유 = FilterItem(FilterType.ALLERGY,"우유", "우유")
-    val 호두 = FilterItem(FilterType.ALLERGY,"호두", "호두")
-    val 땅콩 = FilterItem(FilterType.ALLERGY,"땅콩", "땅콩")
-    val 잣 = FilterItem(FilterType.ALLERGY,"잣", "잣")
-    val 메밀 = FilterItem(FilterType.ALLERGY,"메밀", "메밀")
-    val 밀 = FilterItem(FilterType.ALLERGY,"밀", "밀")
-    val 아몬드 = FilterItem(FilterType.ALLERGY,"아몬드", "아몬드")
-    val 토마토 = FilterItem(FilterType.ALLERGY,"토마토", "토마토")
+    val 우유 = FilterItem(FilterType.ALLERGY,"우유", "우유 \uD83E\uDD5B")
+    val 호두 = FilterItem(FilterType.ALLERGY,"호두", "호두 \uD83D\uDC3F️")
+    val 땅콩 = FilterItem(FilterType.ALLERGY,"땅콩", "땅콩 \uD83E\uDD5C")
+    val 잣 = FilterItem(FilterType.ALLERGY,"잣", "잣 \uD83C\uDF32")
+    val 메밀 = FilterItem(FilterType.ALLERGY,"메밀", "메밀 \uD83C\uDF3E")
+    val 밀 = FilterItem(FilterType.ALLERGY,"밀", "밀 \uD83C\uDF3E")
+    val 아몬드 = FilterItem(FilterType.ALLERGY,"아몬드", "아몬드 \uD83E\uDD5C")
+    val 토마토 = FilterItem(FilterType.ALLERGY,"토마토", "토마토 \uD83C\uDF45")
 
-    val 초코 = FilterItem(FilterType.TASTE,"초코", "초코")
-    val 곡물 = FilterItem(FilterType.TASTE,"곡물", "곡물")
-    val 딸기 = FilterItem(FilterType.TASTE,"딸기", "딸기")
-    val 바나나 = FilterItem(FilterType.TASTE,"바나나", "바나나")
-    val 커피 = FilterItem(FilterType.TASTE,"커피", "커피")
-    val 쿠키앤크림 = FilterItem(FilterType.TASTE,"쿠키앤크림", "쿠키앤크림")
-    val 바닐라 = FilterItem(FilterType.TASTE,"바닐라", "바닐라")
-    val 기타 = FilterItem(FilterType.TASTE,"기타", "기타")
+    val 초코 = FilterItem(FilterType.TASTE,"초코", "초코 \uD83C\uDF6B")
+    val 곡물 = FilterItem(FilterType.TASTE,"곡물", "곡물 \uD83C\uDF3E")
+    val 딸기 = FilterItem(FilterType.TASTE,"딸기", "딸기 \uD83C\uDF53")
+    val 바나나 = FilterItem(FilterType.TASTE,"바나나", "바나나 \uD83C\uDF4C")
+    val 커피 = FilterItem(FilterType.TASTE,"커피", "커피 ☕")
+    val 쿠키앤크림 = FilterItem(FilterType.TASTE,"쿠키앤크림", "쿠키앤크림\uD83C\uDF6A")
+    val 바닐라 = FilterItem(FilterType.TASTE,"바닐라", "바닐라 \uD83C\uDF66")
+    val 기타 = FilterItem(FilterType.TASTE,"기타", "기타 \uD83D\uDCAC")
 
-    val 첨가물제로 = FilterItem(FilterType.ETC,"첨가물","첨가물제로")
+    val 첨가물제로 = FilterItem(FilterType.ETC,"첨가물","첨가물제로 \uD83D\uDE45\u200D♂️")
 
     val 유당없음list = arrayListOf<FilterItem>(
         wpc,wph,대두단백,isp,hsp,완두단백
@@ -68,13 +68,13 @@ class FilterSettings {
 
     val effectFilterItems: ArrayList<FilterItem> = arrayListOf(
 
-        FilterItem(FilterType.ALL,"유당없음","유당없음", 유당없음list),
-        FilterItem(FilterType.ALL,"소화편리","소화편리", 소화편리list)
+        FilterItem(FilterType.ALL,"유당없음","유당없음 \uD83D\uDE45\u200D♂️", 유당없음list),
+        FilterItem(FilterType.ALL,"소화편리","소화편리 \uD83D\uDE00", 소화편리list)
 
     )
     val kindFilterItems: ArrayList<FilterItem> = arrayListOf(
 
-        FilterItem(FilterType.ALL,"식물성단백질","식물성 \uD83C\uDF31", 식물성list),
+        FilterItem(FilterType.ALL,"식물성단백질","식물성 \uD83C\uDF3F", 식물성list),
         FilterItem(FilterType.ALL,"동물성단백질","동물성 \uD83D\uDC2E", 동물성list),
         mpc,
         mpi,
@@ -108,8 +108,8 @@ class FilterSettings {
 
     val allFilters: ArrayList<FilterItem> = arrayListOf(
         // effectFilterItems 내의 아이템들
-        FilterItem(FilterType.ALL,"유당없음","유당없음", 유당없음list),
-        FilterItem(FilterType.ALL,"소화편리","소화편리", 소화편리list),
+        FilterItem(FilterType.ALL,"유당없음","유당없음 \uD83D\uDE45\u200D♂️", 유당없음list),
+        FilterItem(FilterType.ALL,"소화편리","소화편리 \uD83D\uDE00", 소화편리list),
 
         // kindFilterItems 내의 아이템들
         FilterItem(FilterType.ALL,"식물성단백질","식물성 \uD83C\uDF31", 유당없음list),

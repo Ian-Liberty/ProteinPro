@@ -2,15 +2,18 @@ package com.example.proteinpro.view.main.search
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import androidx.core.content.ContextCompat
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivitySearchFilterBinding
 import com.example.proteinpro.databinding.ChipBinding
 import com.example.proteinpro.util.Class.FilterSettings
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 
 class ActivitySearchFilter : AppCompatActivity() {
@@ -148,13 +151,34 @@ class ActivitySearchFilter : AppCompatActivity() {
         val chip = ChipBinding.inflate(layoutInflater).root
         chip.text = filter.Key
         chip.textSize = 16F
+        chip.isCheckedIconVisible = false
 
+        chip.setChipStrokeColorResource(R.color.black)
+        chip.chipStrokeWidth = 2.0f
+        chip.setChipBackgroundColorResource(R.color.chip_bg_state_list)
+        chip.setTextColor(ContextCompat.getColor(this, R.color.black))
+        chip.setOnCheckedChangeListener { buttonView, isChecked ->
+
+            if(isChecked) {
+                chip.setBackgroundColor(ContextCompat.getColor(this, R.color.text_blue))
+                chip.setTextColor(ContextCompat.getColor(this, R.color.white))
+                chip.setChipStrokeColorResource(R.color.white)
+                chip.chipStrokeWidth = 2.0f
+            }else{
+                chip.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                chip.setTextColor(ContextCompat.getColor(this, R.color.black))
+                chip.setChipStrokeColorResource(R.color.black)
+                chip.chipStrokeWidth = 2.0f
+            }
+
+        }
         chip.setOnClickListener {
 
             Log.i ("칩 클릭 이벤트", "이 Chip은 ${filter.Key} Chip 입니다. 요청할때 값은 ${filter.name} 입니다. child 값은 ${filter.child} 입니다.")
             Log.i ("isChecked", "isChecked: "+chip.isChecked)
 
             if(chip.isChecked){// 활성화 된 경우
+
 
                 if(filter.child.isNotEmpty()){// 멀티칩 인 경우
                     selectChips(filter.child)// child 에 해당하는 칩들 활성화

@@ -56,7 +56,6 @@ class ActivityEmailInput : AppCompatActivity() {
         initViews()
         initListener()
 
-
     }
 
     private fun initUtils(){
@@ -71,14 +70,10 @@ class ActivityEmailInput : AppCompatActivity() {
         back_btn_lo = binding.backBtnLo
     }
     private fun initListener(){
-
+        val mIntent = Intent(this, ActivityEmailCheck::class.java)
         next_btn.setOnClickListener {
             //이메일 중복 체크
             // 유저 객체에 이메일 값 할당
-            user.email = email_et.getText().toString()
-            val mIntent = Intent(this, ActivityNicknameInput::class.java)
-            retrofitHelper.checkEmailDuplication(user.email , object : RetrofitHelper.signupType {
-                override fun onSuccess() {// 이메일 중복 없음
 
                     mIntent.putExtra("user", user)
                     startActivity(mIntent)
@@ -93,29 +88,15 @@ class ActivityEmailInput : AppCompatActivity() {
                         }
 
                     }
-                }
 
-                override fun onFailure(userSignupType: Int) {// 이메일 중복 있음
 
-                    if(userSignupType == 2 || userSignupType == 1){
-                        // 이미 가입된 회원가입 타입이 카카오 계정이라면
-                        //자동 로그인?
-                        Toast.makeText(getApplicationContext(), "이미 가입된 유저입니다. 다른 이메일을 사용해 주세요",Toast.LENGTH_SHORT).show()
-                    }else{
-                        // 에러
-                        Log.i ("정보태그", "오류 checkEmailDuplication 함수 로그 확인")
-
-                    }
-
-                }
-
-            })
 
 //         checkEmailDuplication(this, email_et.text.toString())
 
         }
 
         email_et.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // 값이 변경되기전에 호출
             }
@@ -130,9 +111,34 @@ class ActivityEmailInput : AppCompatActivity() {
 
                 //만약 입력된 값이 이메일 형식에 부합 할 경우
                 if(isValidEmail(email_et.getText().toString())){
-                    warning_tv.isVisible = false// 경고 제거
-                    next_btn.isEnabled = true// 버튼 활성화
+                    // 이메일 중복 확인
+                    // 유저 객체에 이메일 값 할당
 
+                    user.email = email_et.getText().toString()
+
+                    retrofitHelper.checkEmailDuplication(user.email , object : RetrofitHelper.signupType {
+                        override fun onSuccess() {// 이메일 중복 없음
+
+                            warning_tv.isVisible = false// 경고 제거
+                            next_btn.isEnabled = true// 버튼 활성화
+                        }
+
+                        override fun onFailure(userSignupType: Int) {// 이메일 중복 있음
+
+                            if(userSignupType == 2 || userSignupType == 1){
+                                // 이미 가입된 회원가입 타입이 카카오 계정이라면
+                                //자동 로그인?
+                                warning_tv.setText("이미 가입된 유저입니다. 다른 이메일을 사용해 주세요")
+                                warning_tv.isVisible = true
+                            }else{
+                                // 에러
+                                Log.i ("정보태그", "오류 checkEmailDuplication 함수 로그 확인")
+
+                            }
+
+                        }
+
+                    })
 
                 }else{
                     warning_tv.setText("올바른 형식의 이메일을 작성해 주세요!")

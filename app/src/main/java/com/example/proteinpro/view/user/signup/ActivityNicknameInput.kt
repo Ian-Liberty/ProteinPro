@@ -73,44 +73,43 @@ class ActivityNicknameInput : AppCompatActivity() {
         back_btn_lo = binding.backBtnLo
     }
     private fun initListener(){
+
+
+        val mIntent = Intent(this, ActivityPasswordInput::class.java)
         // 리스너 초기화
         back_btn_lo.setOnClickListener {
             finish()
         }
 
         next_btn.setOnClickListener {
+
             user.nickname = nickname_et.text.toString()
-            val mIntent = Intent(this, ActivityAdditionalInfoInput::class.java)
-
             mIntent.putExtra("user", user)
-            retrofitHelper.checkNicknameDuplication(user.nickname){isSuccess ->
-                if(isSuccess){
-                    retrofitHelper.signUp(user){isSuccess ->
-                        if(isSuccess){
-                            retrofitHelper.login(this,user.email,user.password){
-                                if(it){
-                                    startActivity(mIntent)
-                                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "로그인에 실패 했습니다.",Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }else{
-                            Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요", Toast.LENGTH_SHORT).show()
-                        }
 
-                    }
+                    startActivity(mIntent)
+                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
-                }else{
-                    //중복된 닉네임
-                }
-            }
-
+//                    retrofitHelper.signUp(user){isSuccess ->
+//                        if(isSuccess){
+//                            retrofitHelper.login(this,user.email,user.password){
+//                                if(it){
+//                                    startActivity(mIntent)
+//                                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+//                                }else{
+//                                    Toast.makeText(getApplicationContext(), "로그인에 실패 했습니다.",Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
+//                        }else{
+//                            Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                    }
 
 
         }
 
         nickname_et.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -124,8 +123,27 @@ class ActivityNicknameInput : AppCompatActivity() {
                 if(isNicknameValid(nickname_et.text.toString())){
 
                     //닉네임 형식 유효
-                    warning_tv.isVisible = false
 
+                    retrofitHelper.checkNicknameDuplication(user.nickname){isSuccess ->
+                        if(isSuccess){
+                            // 중복되지 않음
+
+                            warning_tv.isVisible = false
+                            next_btn.isEnabled = true
+
+                        }else{
+                            //중복된 닉네임
+
+                            warning_tv.setText("이미 존재하는 닉네임 입니다")
+                            warning_tv.isVisible = true
+
+                            next_btn.isEnabled = false
+
+                        }
+                    }
+
+
+                    warning_tv.isVisible = false
                     next_btn.isEnabled = true
 
                 }else{

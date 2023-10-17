@@ -1,14 +1,17 @@
 package com.example.proteinpro.view.main.anotherContents
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.proteinpro.R
 import com.example.proteinpro.databinding.FragmentAnotherContentsBinding
+import com.example.proteinpro.util.Retrofit.ServerData
 import com.example.proteinpro.view.main.MainActivity
+
 
 class FragmentAnother_Contents : Fragment() {
 
@@ -71,13 +74,18 @@ class FragmentAnother_Contents : Fragment() {
         // MBTI 컨텐츠
         binding.MBTILL.setOnClickListener {
 
-            var fragmentMbtiContents = FragmentMbtiContents().apply {
+            val intent = Intent(Intent.ACTION_VIEW)
+            val uri = Uri.parse(ServerData.public_URL+"/mbtiTest/mbtiInput")
+            intent.data = uri
+            startActivity(intent)
 
-                arguments = Bundle().apply{
-                    // 전달할 데이터 있으면 여기에!
-                }
-            }
-            mainActivity.switchFragment(fragmentMbtiContents, "fragment_mbti_contents")
+//            var fragmentMbtiContents = FragmentMbtiContents().apply {
+//
+//                arguments = Bundle().apply{
+//                    // 전달할 데이터 있으면 여기에!
+//                }
+//            }
+//            mainActivity.switchFragment(fragmentMbtiContents, "fragment_mbti_contents")
         }
     }
 

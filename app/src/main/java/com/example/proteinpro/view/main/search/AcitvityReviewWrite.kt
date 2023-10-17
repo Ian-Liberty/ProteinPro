@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.Target
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityAcitvityReviewWriteBinding
 import com.example.proteinpro.util.Class.food.ReviewItem
+import com.example.proteinpro.util.Popup.PopupInterface
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.RecyclerView.PhotoListAdapter
 import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
@@ -178,12 +179,18 @@ class AcitvityReviewWrite : AppCompatActivity() {
             val token = preferenceHelper.get_jwt_Token()
             val key = intent.getIntExtra("foodKey" ,-1).toString()
             val imageFileList = urisToImageFiles(this, imageList)
-            Log.i ("정보태그", "imageFileList: "+ imageFileList.get(0))
+//            Log.i ("정보태그", "imageFileList: "+ imageFileList.get(0))
+
+            if(good.isEmpty() && bad.isEmpty()){
+                val popupInterface = PopupInterface(this)
+                popupInterface.showPopupMessage("알림", "긍정, 부정 리뷰를 모두 작성해 주세요!")
+                return@setOnClickListener
+            }
 
 
             val imagePartlist = imageFilesToMultipartParts(imageFileList)
 
-            Log.i ("imagePartlist", "imagePartlist: "+ imagePartlist.get(0))
+//            Log.i ("imagePartlist", "imagePartlist: "+ imagePartlist.get(0))
             /***
              * isChange 의 경우 수정으로 온 경우 처음 받은 이미지 리스트 상태를 비교해서 받아오도록 하자
              * (TODO)
@@ -302,18 +309,27 @@ class AcitvityReviewWrite : AppCompatActivity() {
             data?.let { it ->
                 if (it.clipData != null) {   // 사진을 여러개 선택한 경우
 
-                    val count = it.clipData!!.itemCount+ imageList.size
+                    var count = imageList.size
                     Log.i ("정보태그", "it.clipData: "+ it.clipData+" count: "+ count)
 
-                    if (count > 5) {
-                        Toast.makeText(this@AcitvityReviewWrite, "사진은 5장까지 선택 가능합니다.", Toast.LENGTH_SHORT)
-                            .show()
-                        return
-                    }
+//                    if (count > 5) {
+//                        Toast.makeText(this@AcitvityReviewWrite, "사진은 5장까지 선택 가능합니다.", Toast.LENGTH_SHORT)
+//                            .show()
+//                        return
+//                    }
 
                     for (i in 0 until it.clipData!!.itemCount) {
-                        val imageUri = it.clipData!!.getItemAt(i).uri
-                        imageList.add(imageUri)
+                        count = count+1
+                        Log.i ("정보태그", "count"+count)
+                        if (count > 5) {
+                            Toast.makeText(this@AcitvityReviewWrite, "사진은 5장까지 선택 가능합니다.", Toast.LENGTH_SHORT)
+                                .show()
+                            break
+                        }else{
+                            val imageUri = it.clipData!!.getItemAt(i).uri
+                            imageList.add(imageUri)
+                        }
+
                     }
                 } else {      // 1장 선택한 경우
                     val count = it.clipData!!.itemCount+ imageList.size

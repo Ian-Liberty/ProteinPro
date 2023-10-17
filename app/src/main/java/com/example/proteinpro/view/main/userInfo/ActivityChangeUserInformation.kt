@@ -3,6 +3,8 @@ package com.example.proteinpro.view.main.userInfo
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
@@ -61,6 +63,64 @@ class ActivityChangeUserInformation : AppCompatActivity() {
 
     private fun initListener(){
         // 리스너 초기화
+
+        binding.nicknameET.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+                if(binding.nicknameET.text.toString() == user.nickname){
+                    binding.nicknameWarningTv.isVisible = false
+                    binding.updateBTN.isEnabled = true
+                    return
+                }
+
+                if(isNicknameValid( binding.nicknameET.text.toString())){
+
+                    //닉네임 형식 유효
+
+                    retrofitHelper.checkNicknameDuplication(user.nickname){isSuccess ->
+                        if(isSuccess){
+                            // 중복되지 않음
+
+                            binding.nicknameWarningTv.isVisible = false
+                            binding.updateBTN.isEnabled = true
+
+                        }else{
+                            //중복된 닉네임
+
+                            binding.nicknameWarningTv.setText("이미 존재하는 닉네임 입니다")
+                            binding.nicknameWarningTv.isVisible = true
+
+                            binding.updateBTN.isEnabled = false
+
+                        }
+                    }
+
+
+                    binding.nicknameWarningTv.isVisible = false
+                    binding.updateBTN.isEnabled = true
+
+                }else{
+
+                    //닉네임 형식이 유효하지 않으면
+                    binding.nicknameWarningTv.setText("닉네임은 2~8자 사이의 영문이나 한글로 만들어해주세요! ")
+                    binding.nicknameWarningTv.isVisible = true
+
+                    binding.updateBTN.isEnabled = false
+                }
+
+
+            }
+
+        })
 
         binding.backBtn.setOnClickListener {
             onBackPressed()
@@ -265,5 +325,22 @@ class ActivityChangeUserInformation : AppCompatActivity() {
         alertDialog.show()
 
     }
+
+    fun isNicknameValid(nickname: String): Boolean {
+        val regex = Regex("^[a-zA-Z가-힣]{2,8}$")
+        return regex.matches(nickname) && !hasInvalidKoreanCharacter(nickname)
+    }
+
+    fun hasInvalidKoreanCharacter(nickname: String): Boolean {
+        val invalidKoreanCharacters = setOf('ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ',
+            'ㄲ', 'ㄸ', 'ㅃ', 'ㅆ', 'ㅉ', 'ㅏ', 'ㅓ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅣ')
+        for (char in nickname) {
+            if (char in invalidKoreanCharacters) {
+                return true
+            }
+        }
+        return false
+    }
+
 
 }

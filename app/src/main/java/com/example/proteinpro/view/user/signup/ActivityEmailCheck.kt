@@ -131,6 +131,8 @@ class ActivityEmailCheck : AppCompatActivity() {
             sign_certNum_6
         )
 
+
+
     }
     private fun initListener(){
         // 리스너 초기화
@@ -138,12 +140,20 @@ class ActivityEmailCheck : AppCompatActivity() {
         onDelKeyListener()
         next_btn.setOnClickListener(onClickButtonListener())
         resend_tv.setOnClickListener{
+            // 작성된 인증번호 초기화
+
+            for(editText in certNum){
+                editText.setText("")
+            }
+
             //리스너 초기화
             retrofitHelper.requestCertNum(user.email){isSuccess ->
                 if (isSuccess){
                 // 인증번호 요청 성공
                     Toast.makeText(getApplicationContext(), "인증번호를 다시 보내드렸어요!",Toast.LENGTH_SHORT).show()
+
                     restartCountdown()
+
                 }
                 else{
                 // 인증번호 요청 실패
@@ -175,12 +185,15 @@ class ActivityEmailCheck : AppCompatActivity() {
                 retrofitHelper.checkAuthnum(cert, token){isSuccess ->
                     if(isSuccess){
                         // 인증번호 확인 완료
-                        val mIntent = Intent(this, ActivityPasswordInput::class.java)
+                        val mIntent = Intent(this, ActivityNicknameInput::class.java)
 
                         mIntent.putExtra("user", user)
 
                         startActivity(mIntent)
                         overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+
+
+
                     }else{
                         // 인증 실패
 

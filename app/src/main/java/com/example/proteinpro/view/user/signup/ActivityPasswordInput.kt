@@ -84,14 +84,27 @@ class ActivityPasswordInput : AppCompatActivity() {
 
         next_btn.setOnClickListener {
 
-            val mIntent = Intent(getApplicationContext(), ActivityNicknameInput::class.java)
+            val mIntent = Intent(getApplicationContext(), ActivityAdditionalInfoInput::class.java)
 
             user.password = password_et.text.toString()
 
             mIntent.putExtra("user", user)
 
-            startActivity(mIntent)
-            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+            retrofitHelper.signUp(user){isSuccess ->
+                        if(isSuccess){
+                            retrofitHelper.login(this,user.email,user.password){
+                                if(it){
+                                    startActivity(mIntent)
+                                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "로그인에 실패 했습니다.",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }else{
+                            Toast.makeText(getApplicationContext(), "회원가입에 실패했습니다. 관리자에게 문의해 주세요", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
         }
 
         password_et.addTextChangedListener(object : TextWatcher {

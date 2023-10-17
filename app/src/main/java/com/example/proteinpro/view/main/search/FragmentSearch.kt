@@ -75,6 +75,13 @@ class FragmentSearch : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        binding.proteinSV.setQuery("", false)// 문구 초기화
+
+    }
+
     // 리스너 선언
     private fun initListener() {
         back_btn.setOnClickListener {

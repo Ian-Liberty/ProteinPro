@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -29,6 +30,7 @@ class FragmentProteinInformation(private val foodData: FoodInformationItem) : Fr
 
     private lateinit var preferenceHelper: PreferenceHelper
     private lateinit var FoodRetrofitHelper : FoodRetrofitHelper
+    private var buttonList : ArrayList<Button> = ArrayList()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -73,19 +75,11 @@ class FragmentProteinInformation(private val foodData: FoodInformationItem) : Fr
 
         val buttonContainer = binding.proteinDataFBL
 
-        if(foodData.proteinList.isEmpty()){
-
-        }else{
-            val firstItem = foodData.proteinList.get(0)
-
-            binding.titleTV.setText("💡 ${firstItem.name}")
-            binding.descTV.setText("${firstItem.explanation}")
-        }
-
 
         for(item in foodData.proteinList){
 
             val button = AppCompatButton(foodInformationActivity)
+            buttonList.add(button)
             val layoutParams = LinearLayout.LayoutParams(
                 180.dpToPx(), // 가로 크기를 180dp로 설정
                 40.dpToPx()   // 세로 크기를 40dp로 설정
@@ -93,9 +87,9 @@ class FragmentProteinInformation(private val foodData: FoodInformationItem) : Fr
 
             layoutParams.setMargins(5, 5, 5, 5)
             button.layoutParams = layoutParams
-            button.background = ContextCompat.getDrawable(foodInformationActivity, R.drawable.btn_ripple)
+            button.background = ContextCompat.getDrawable(foodInformationActivity, R.drawable.round_background_border_blue)
+            button.setTextColor(ContextCompat.getColorStateList(foodInformationActivity, R.color.text_blue))
             button.text = item.name
-            button.setTextColor(ContextCompat.getColorStateList(foodInformationActivity, R.drawable.txt_color))
             button.textSize = 16f // sp 단위이므로 f를 붙여줍니다
             button.setPadding(10.dpToPx(), 0, 10.dpToPx(), 0) // 가로 패딩을 추가
             button.setOnClickListener {
@@ -104,6 +98,9 @@ class FragmentProteinInformation(private val foodData: FoodInformationItem) : Fr
                 Log.i ("${item.name}", "버튼 클릭!")
                 binding.titleTV.setText("💡 ${item.name}")
                 binding.descTV.setText("${item.explanation}")
+                resetSelect()
+                item.isSelect = true
+                setButton()
 
             }
 
@@ -111,9 +108,23 @@ class FragmentProteinInformation(private val foodData: FoodInformationItem) : Fr
 
             buttonContainer.addView(button)
 
-
-
         }
+        if(foodData.proteinList.isEmpty()){
+
+        }else{
+
+            buttonList.get(0).callOnClick()
+
+//            val firstItem = foodData.proteinList.get(0)
+//            val button = buttonList.get(0)
+//            firstItem.isSelect = true
+
+//            binding.titleTV.setText("💡 ${firstItem.name}")
+//            binding.descTV.setText("${firstItem.explanation}")
+//            button.background = ContextCompat.getDrawable(foodInformationActivity, R.drawable.btn_ripple)
+//            button.setTextColor(ContextCompat.getColorStateList(foodInformationActivity, R.drawable.txt_color))
+        }
+
 
 
 
@@ -131,5 +142,24 @@ class FragmentProteinInformation(private val foodData: FoodInformationItem) : Fr
         return (this * Resources.getSystem().displayMetrics.density).toInt()
     }
 
+    fun resetSelect(){
+        for(i:Int in 0.. foodData.proteinList.size-1){
+            foodData.proteinList.get(i).isSelect = false
+        }
+    }
 
+    fun setButton(){
+        for(i:Int in 0.. foodData.proteinList.size -1){
+            if( foodData.proteinList.get(i).isSelect == false){// 선택 x
+                var button = buttonList.get(i)
+                button.background = ContextCompat.getDrawable(foodInformationActivity, R.drawable.round_background_border_blue)
+                button.setTextColor(ContextCompat.getColorStateList(foodInformationActivity, R.color.text_blue))
+            }else{// 선택된 버튼
+                var button = buttonList.get(i)
+                button.background = ContextCompat.getDrawable(foodInformationActivity, R.drawable.btn_ripple)
+                button.setTextColor(ContextCompat.getColorStateList(foodInformationActivity, R.drawable.txt_color))
+
+            }
+        }
+    }
 }

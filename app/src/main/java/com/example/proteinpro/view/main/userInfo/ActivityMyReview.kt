@@ -95,6 +95,9 @@ class ActivityMyReview : AppCompatActivity() {
     }
     private fun initListener(){
         // 리스너 초기화
+        binding.backBtn.setOnClickListener {
+            onBackPressed()
+        }
 
         val rv_Listener = object : ReviewListAdapter.OnItemClickListener {
             override fun onItemClick(v: View?, position: Int, item: ReviewItem) {

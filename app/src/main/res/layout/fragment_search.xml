@@ -53,7 +53,9 @@
                     android:background="@drawable/round_background_border_black"
                     android:transitionName="protein_SV"
                     app:iconifiedByDefault="false"
-                    app:queryHint="프프에서 검색해보세요!" />
+                    app:closeIcon="@drawable/baseline_clear_24"
+                    app:queryHint="프프에서 검색해보세요!"
+                    />
 
                 <TextView
                     android:id="@+id/cancel_button"

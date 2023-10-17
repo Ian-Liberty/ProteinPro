@@ -27,6 +27,10 @@ interface FoodDataInterface {
         val star: Int
     )
 
+    data class 식품키(
+        val 식품키: Int
+    )
+
     data class 후기변경기본(
 
        val 타입 : String,
@@ -108,13 +112,13 @@ interface FoodDataInterface {
 
     ): Call<JsonElement?>?
 
-
     // 제품단일조회
     @GET("food/m/{food_id}")
     fun getFoodData(
 
         @Path("food_id") category: String,
         @Header("Authorization") authorization: String
+
     ): Call<JsonElement?>?
 
     @GET("food/home/list/")
@@ -183,20 +187,43 @@ interface FoodDataInterface {
     fun deleteReview(
         @Path("review_id") reviewId: Int,
         @Header("Authorization") authorization: String
-    ): Call<Void> // 이 API는 응답 데이터가 필요하지 않으므로 Call<Void>를 사용합니다.
-
+    ): Call<Void>
     @POST("review/like")
     fun addLike(
         @Body request : 후기변경기본,
         @Header("Authorization") authorization: String
-    ): Call<Void> // 이 API는 응답 데이터가 필요하지 않으므로 Call<Void>를 사용합니다.
+    ): Call<Void>
 
     @DELETE("review/like/{review_id}")
     fun deleteLike(
         @Path("review_id") reviewId: Int,
         @Header("Authorization") authorization: String
-    ): Call<Void> // 이 API는 응답 데이터가 필요하지 않으므로 Call<Void>를 사용합니다.
+    ): Call<Void>
 
+    @POST("food/fav/")//관심상품 추가
+    fun addFavFood(
+        @Body 식품키: Int,
+        @Header("Authorization") authorization: String
+    ): Call<JsonElement>
+
+    @DELETE("food/fav/m/del/{food_id}")
+    fun delFavFood(
+        @Path("food_id") food_id: Int,
+        @Header("Authorization") authorization: String
+    ): Call<JsonElement>
+
+    /***
+     * TODO
+     * 백엔드 상태 확인후 고쳐둘것
+     */
+    @GET("food/fav/list")
+    fun myFavFoodList(
+
+        @Header("Authorization") authorization: String,
+        @Query("skip") skip : Int
+
+
+    ): Call<JsonElement>
 }
 
 

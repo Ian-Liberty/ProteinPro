@@ -21,6 +21,7 @@ import com.example.proteinpro.databinding.ActivityAcitvityReviewWriteBinding
 import com.example.proteinpro.databinding.ActivityFoodInformationBinding
 import com.example.proteinpro.util.Class.food.AdditiveItem
 import com.example.proteinpro.util.Class.food.FoodInformationItem
+import com.example.proteinpro.util.Popup.PopupInterface
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.FoodRetrofitHelper
 import com.example.proteinpro.util.Retrofit.ServerData
@@ -45,7 +46,8 @@ class ActivityFoodInformation : AppCompatActivity() {
 
     private lateinit var link: String
     private lateinit var foodInformationItem :FoodInformationItem
-
+    private var isLike = 0
+    private var likeCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +112,8 @@ class ActivityFoodInformation : AppCompatActivity() {
 
     fun setData(foodData: FoodInformationItem) {
         Log.i ("setData", "foodKey: "+foodData.key)
-
+        isLike = foodData.isLike
+        likeCount = foodData.LikeCount
         link = foodData.link
 
         //title
@@ -132,7 +135,7 @@ class ActivityFoodInformation : AppCompatActivity() {
         //메인 이미지
         Glide.with(this).load("https://proteinpro.kr/api/img/food/"+foodData.image).into(binding.foodImgIV)
 
-//        Glide.with(this).load(ServerData.img_URL+foodData.image).into(binding.foodImgIV)
+//      Glide.with(this).load(ServerData.img_URL+foodData.image).into(binding.foodImgIV)
 
         //후기 목록
         binding.reviewCountTv.setText("${foodData.reviewList.size} 개의 리뷰 >")
@@ -222,6 +225,18 @@ class ActivityFoodInformation : AppCompatActivity() {
             createAndAddTextView(word, 1)
         }
 
+        //관심상품 여부
+        val isLike = foodData.isLike
+        val likeCount = foodData.LikeCount
+
+        if(isLike == 0){
+            binding.favoriteIV.setImageResource(R.drawable.baseline_favorite_border_24)
+        }else{
+            binding.favoriteIV.setImageResource(R.drawable.baseline_favorite_24)
+        }
+
+        binding.favoriteTV.setText(likeCount.toString())
+
     }
 
     private fun setViewPager(){
@@ -297,6 +312,51 @@ class ActivityFoodInformation : AppCompatActivity() {
             mIntent.putExtra("name", foodInformationItem.name)
 
             startActivity(mIntent)
+
+        }
+
+        binding.favoriteIV.setOnClickListener {
+
+            val foodKey =  foodInformationItem.key.toInt()
+            val token = preferenceHelper.get_jwt_Token().toString()
+
+            if(isLike == 0){//내가 좋아요 한적 없을 경우
+
+                foodRetrofitHelper.addFavFood(foodKey,token){
+
+                    Log.i ("addFavFood", it.toString())
+                    if(it){
+                        // 좋아요 성공
+                        likeCount = likeCount + 1
+                        isLike = 1
+                        binding.favoriteIV.setImageResource(R.drawable.baseline_favorite_24)
+                        binding.favoriteTV.setText(likeCount.toString())
+                    }else{
+                        // 실패
+                    }
+                }
+
+            }else{ // 내가 이미 좋아요 한 경우
+                foodRetrofitHelper.delFavFood(foodKey, token){
+                    Log.i ("delFavFood", it.toString())
+                    if(it){
+                        // 좋아요 취소 성공
+                        likeCount = likeCount - 1
+                        isLike = 0
+                        binding.favoriteIV.setImageResource(R.drawable.baseline_favorite_border_24)
+                        binding.favoriteTV.setText(likeCount.toString())
+
+                    }else{
+                        // 실패
+                    }
+                }
+            }
+        }
+
+        binding.helpIV.setOnClickListener {
+
+            val popupInterface = PopupInterface(this)
+            popupInterface.showPopupMessage("알림","후기 데이터를 분석하는 ai 후기에요. 인공지능을 통해 후기데이터의 상위 키워드와 긍정적인 후기,부정적인 후기의 비율을 알수있어요." )
 
         }
 

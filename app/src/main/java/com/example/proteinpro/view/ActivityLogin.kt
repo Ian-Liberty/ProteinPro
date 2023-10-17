@@ -1,25 +1,22 @@
 package com.example.proteinpro.view
 
 import android.Manifest
-import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.GestureDetector
+import android.view.View.OnTouchListener
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-
 import com.example.proteinpro.R
 import com.example.proteinpro.databinding.ActivityLoginBinding
 import com.example.proteinpro.util.Class.User
@@ -30,7 +27,6 @@ import com.example.proteinpro.util.Retrofit.UserDataInterface
 import com.example.proteinpro.view.main.MainActivity
 import com.example.proteinpro.view.user.ActivityFindPassword_InputEmail
 import com.example.proteinpro.view.user.signup.ActivityBirthInput
-import com.example.proteinpro.view.user.signup.ActivityNicknameInput
 import com.google.gson.JsonElement
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
@@ -58,6 +54,8 @@ class ActivityLogin : AppCompatActivity() {
     private lateinit var email_et : EditText
     private lateinit var password_et: EditText
 
+    var detector: GestureDetector? = null //무슨 제스쳐를 했는지 감지
+
     //유틸 클래스 선언
     private lateinit var retrofitHelper: RetrofitHelper
     private lateinit var preferenceHelper: PreferenceHelper
@@ -67,7 +65,6 @@ class ActivityLogin : AppCompatActivity() {
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
     //!!는 Kotlin에서 Nullable 타입을 강제로 Non-nullable 타입으로 변환하는 것을 의미
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,7 +115,6 @@ class ActivityLogin : AppCompatActivity() {
                 }else{
                     Log.i ("checkisLogin", "유효하지 않은 토큰 입니다.")
                 }
-
             }
         }
     }
@@ -138,7 +134,57 @@ class ActivityLogin : AppCompatActivity() {
 
     }
     private fun initListener(){
-        // 리스너 초기화
+
+        binding.layout.setOnTouchListener(OnTouchListener { v, event ->
+            hideKeyboard()
+            false
+        })
+
+//        // 리스너 초기화
+//        detector = GestureDetector(this, object : GestureDetector.OnGestureListener {
+//            //화면이 눌렸을 때
+//            override fun onDown(e: MotionEvent): Boolean {
+//
+//                hideKeyboard()
+//                return true
+//            }
+//
+//            override fun onShowPress(e: MotionEvent) {
+//
+//            }
+//
+//            override fun onSingleTapUp(e: MotionEvent): Boolean {
+//                return true
+//            }
+//
+//            override fun onScroll(
+//                e1: MotionEvent,
+//                e2: MotionEvent,
+//                distanceX: Float,
+//                distanceY: Float
+//            ): Boolean {
+//                return true
+//            }
+//
+//            override fun onLongPress(e: MotionEvent) {
+//
+//            }
+//
+//            override fun onFling(
+//                e1: MotionEvent,
+//                e2: MotionEvent,
+//                velocityX: Float,
+//                velocityY: Float
+//            ): Boolean {
+//                return true
+//            }
+//
+//
+//        })
+//
+//        binding.layout.setOnTouchListener { _, event ->
+//            detector!!.onTouchEvent(event)
+//        }
 
         // 로그인 버튼 클릭 이벤트
         login_btn.setOnClickListener {
@@ -276,43 +322,9 @@ class ActivityLogin : AppCompatActivity() {
                                 "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
 
                         //이메일 체크
+                        startKakaoLogin(user)
 
-                        val email = user.kakaoAccount?.email
 
-                        if (email != null) {
-
-                            retrofitHelper.checkEmailDuplication(email , object : RetrofitHelper.signupType {
-                                override fun onSuccess() {// 이메일 중복 없음
-
-                                    val mIntent = Intent(getApplicationContext(), ActivityBirthInput::class.java)
-
-                                    var user = User()
-                                    user.email = email
-                                    user.type = 2// 카카오 타입 가입
-
-                                    mIntent.putExtra("user", user)
-
-                                    startActivity(mIntent)
-                                }
-
-                                override fun onFailure(userSignupType: Int) {// 이메일 중복 있음
-
-                                    if(userSignupType == 2){
-                                        // 이미 가입된 회원가입 타입이 카카오 계정이라면
-                                        //자동 로그인?
-                                        login(applicationContext, email, "")
-                                    }else{
-
-                                        Toast.makeText(getApplicationContext(), "이미 가입된 유저입니다. 이메일로 로그인 부탁드립니다.",Toast.LENGTH_SHORT).show()
-                                        // 혹은 비밀번호 찾기 유도?
-
-                                    }
-
-                                }
-
-                            })
-
-                        }
 
 //                        val mIntent = Intent(this, MainActivity::class.java)
 //                        startActivity(mIntent)
@@ -350,6 +362,8 @@ class ActivityLogin : AppCompatActivity() {
                                     "\n이메일: ${user.kakaoAccount?.email}" +
                                     "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
                                     "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+
+                            startKakaoLogin(user)
                         }
                     }
                 }
@@ -357,6 +371,47 @@ class ActivityLogin : AppCompatActivity() {
         } else {
             UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
         }
+
+    }
+
+    private fun startKakaoLogin(user: com.kakao.sdk.user.model.User) {
+        val email = user.kakaoAccount?.email
+
+        if (email != null) {
+
+            retrofitHelper.checkEmailDuplication(email , object : RetrofitHelper.signupType {
+                override fun onSuccess() {// 이메일 중복 없음
+
+                    val mIntent = Intent(getApplicationContext(), ActivityBirthInput::class.java)
+
+                    var user = User()
+                    user.email = email
+                    user.type = 2// 카카오 타입 가입
+
+                    mIntent.putExtra("user", user)
+
+                    startActivity(mIntent)
+                }
+
+                override fun onFailure(userSignupType: Int) {// 이메일 중복 있음
+
+                    if(userSignupType == 2){
+                        // 이미 가입된 회원가입 타입이 카카오 계정이라면
+                        //자동 로그인?
+                        login(applicationContext, email, "")
+                    }else{
+
+                        Toast.makeText(getApplicationContext(), "이미 가입된 유저입니다. 이메일로 로그인 부탁드립니다.",Toast.LENGTH_SHORT).show()
+                        // 혹은 비밀번호 찾기 유도?
+
+                    }
+
+                }
+
+            })
+
+        }
+
 
     }
 
@@ -402,6 +457,17 @@ class ActivityLogin : AppCompatActivity() {
             .setPermissions(Manifest.permission.POST_NOTIFICATIONS)
             .check()
 
+    }
+
+    fun hideKeyboard() {
+        val currentFocusView = currentFocus
+        if (currentFocusView != null) {
+            val inputManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputManager.hideSoftInputFromWindow(
+                currentFocusView.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS
+            )
+        }
     }
 
 

@@ -4,6 +4,7 @@ import android.content.Intent
 
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -22,6 +23,7 @@ import com.example.proteinpro.util.Class.User
 import com.example.proteinpro.util.Class.WalletDataItem
 import com.example.proteinpro.util.PreferenceHelper
 import com.example.proteinpro.util.Retrofit.RetrofitHelper
+import com.example.proteinpro.util.Retrofit.ServerData
 import com.example.proteinpro.view.ActivityPrivacyPolicy
 import com.example.proteinpro.view.ActivityTermsOfUse
 import com.example.proteinpro.view.main.MainActivity
@@ -131,6 +133,12 @@ class FragmentUserInfo : Fragment() {
 
 
         }
+        binding.mbtiBTN.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            val uri = Uri.parse(ServerData.public_URL+"/mbtiTest/mbtiInput")
+            intent.data = uri
+            startActivity(intent)
+        }
 
     }
 
@@ -138,7 +146,6 @@ class FragmentUserInfo : Fragment() {
     private fun initViews() {
 
         val user = preferenceHelper.getUser()
-
 
         var content : String = "${user?.nickname} 님 \n오늘도 프프하세요."
         Log.i ("userInfo", ""+content)
